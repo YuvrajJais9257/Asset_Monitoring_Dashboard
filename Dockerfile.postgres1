@@ -1,0 +1,23 @@
+FROM postgres:15
+
+# Set environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=Admin123*
+#ENV POSTGRES_DB=hyphenview_new
+ENV PGDATA=/var/lib/postgresql/data/pgdata
+
+# Install dos2unix to fix line ending issues
+RUN apt-get update && apt-get install -y dos2unix && apt-get clean
+
+# Copy the dump file and scripts
+COPY pgbackup.dump /docker-entrypoint-initdb.d/
+COPY pgprocedures.sql /docker-entrypoint-initdb.d/
+COPY restore-dump.sh /docker-entrypoint-initdb.d/
+
+# Fix line endings and set permissions
+RUN dos2unix /docker-entrypoint-initdb.d/restore-dump.sh \
+    && dos2unix /docker-entrypoint-initdb.d/pgprocedures.sql \
+    && chmod +x /docker-entrypoint-initdb.d/restore-dump.sh
+
+# Expose the PostgreSQL port
+EXPOSE 5432

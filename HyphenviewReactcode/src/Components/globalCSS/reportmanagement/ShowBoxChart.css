@@ -1,0 +1,29 @@
+.show_box_detail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5rem;
+  width: 39rem;
+  /* transform: translateX(22rem); */
+}
+.box-template-container,
+.default-box-container {
+  /* width: 50%;
+  max-width: 33rem; */
+  display: flex;
+  width: 36rem !important;
+  height: 24rem !important;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.show_box_container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+ 
+
+ 

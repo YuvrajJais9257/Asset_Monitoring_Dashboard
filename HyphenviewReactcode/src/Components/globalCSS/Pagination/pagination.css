@@ -1,0 +1,92 @@
+/*modified by Yuvraj Jaiswal*/
+.pagination-container {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.pagination-item {
+  margin: 0 5px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1rem !important;
+  font-weight: 400!important;
+  font-family: "Poppins", sans-serif !important;
+  color: #fff !important;
+  background-color: #212529 !important;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+}
+
+.pagination-item.selected {
+  color: #fff;
+  background-color: #0d6efd !important;
+  /* Blue for the active page */
+  font-size: 1rem !important;
+  font-weight: 400!important;
+  font-family: "Poppins", sans-serif !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+}
+
+/* Dots for pagination */
+.pagination-item.dots {
+  pointer-events: none;
+  color: #666;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Disabled state */
+.pagination-item.disabled {
+  color: #bbb; /* Disabled text color */
+  cursor: not-allowed;
+  background-color: #eaeaea;
+  box-shadow: none;
+}
+
+/* Hover and focus animations */
+.pagination-item:not(.disabled):hover {
+  transform: scale(1.05); /* Slight scaling on hover */
+  background-color: #e0f0ff; /* Soft blue highlight */
+}
+
+.dots {
+  margin: 0 5px;
+  font-size: 1rem !important;
+  user-select: none;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow_p {
+  margin: 0;
+  color: inherit;
+  font-size: 1rem !important;
+  font-weight: normal;
+  transition: transform 0.3s ease;
+}
+
+.arrow_p:hover {
+  transform: translateX(2px); /* Slight nudge animation */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pagination-item {
+    padding: 6px 12px;
+    font-size: 1rem !important;
+    font-weight: 400!important;
+    font-family: "Poppins", sans-serif !important;
+  }
+  .arrow_p {
+    font-size: 1rem !important;
+  }
+}

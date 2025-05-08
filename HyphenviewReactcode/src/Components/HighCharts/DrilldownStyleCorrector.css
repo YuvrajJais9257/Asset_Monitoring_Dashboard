@@ -1,0 +1,247 @@
+/* Drilldown Page */
+
+.css-1q289a0 {
+  border: none !important;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  background: transparent !important;
+  border: none !important;
+  border-radius: none !important;
+}
+
+table tr {
+  border-radius: 0px !important;
+}
+
+.css-1atu56z-MuiPaper-root {
+  box-shadow: none !important;
+}
+tr:nth-child(odd):hover {
+  background: #eeeeee !important;
+  color: #212529 !important;
+}
+.MuiTable-root {
+  border: none !important;
+}
+tr:nth-child(odd) {
+  border-radius: 1rem !important;
+}
+.css-10gei56 {
+  box-shadow: none !important;
+}
+.css-1ypa3xa-MuiTableFooter-root {
+  outline: none !important;
+}
+/* .css-1slhyb8-MuiTypography-root{
+    margin-top: 5rem ! important;
+  } */
+.css-8k4lth {
+  padding-top: 0px !important;
+}
+.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+  padding-right: 24px;
+  min-width: 35px !important;
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+.css-i316z9-MuiPagination-root .Mui-selected {
+  background-color: #0d6efd !important;
+}
+.css-19xm0h7-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+  background: #0d6efd !important;
+}
+
+.MuiTableHead-root, tr.MuiTableRow-root.MuiTableRow-head {
+  background: linear-gradient(45deg, #579ada, #579ada);
+}
+.MuiBox-root > button {
+  background-color: black !important;
+  color: white !important;
+}
+
+.css-ssspk8-MuiTableRow-root:hover {
+  background-color: #4d5256 !important;
+}
+
+.Mui-TableHeadCell-Content-Wrapper.MuiBox-root.css-lapokc {
+  color: #000000 !important;
+    text-transform: capitalize;
+}
+.MuiTableRow-root.MuiTableRow-head.css-ssspk8-MuiTableRow-root:hover {
+  background: linear-gradient(45deg, #579ada, #fbfcfe) !important;
+  color: white !important;
+}
+
+.MuiBox-root.css-1llu0od {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+.MuiBox-root.css-qpxlqp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative !important;
+}
+
+.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiPaginationItem-icon
+  .css-g2z002-MuiSvgIcon-root-MuiPaginationItem-icon {
+  color: black !important;
+}
+
+/* .css-1knaqv7-MuiButtonBase-root-MuiButton-root {
+  background-color: black !important;
+  color: white !important;
+  margin: 0 0.5rem !important;
+  height: 2.6rem;
+  border-radius: 50% !important;
+  min-width: 3rem !important;
+} */
+
+.MuiPaginationItem-root {
+  color: white !important;
+  background-color: black !important;
+}
+
+.css-2jdjhv-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+  color: white !important;
+}
+.css-929hxt-MuiInputBase-input-MuiInput-input,
+.css-2jdjhv-MuiSelect-select-MuiInputBase-input-MuiInput-input,
+.MuiFormHelperText-root.MuiFormHelperText-sizeMedium {
+  color: white !important;
+}
+
+
+.css-701a9n-MuiTableHead-root {
+  height: 6rem !important;
+  border-radius: 1rem !important;
+}
+
+.css-apge8j-MuiTableRow-root:hover {
+  background-color: #4d5256 !important;
+}
+
+.css-118e0ip-MuiTableHead-root > tr:hover {
+  background-color: #4d5256 !important;
+}
+
+.css-78trlr-MuiButtonBase-root-MuiIconButton-root > span > svg {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+.css-1mmm5cp-MuiInputBase-root-MuiInput-root-MuiSelect-root {
+  color: black !important;
+  border: 0.1rem solid #999 !important;
+  border-radius: 0.5rem !important;
+}
+.css-yf8vq0-MuiSelect-nativeInput {
+  background-color: transparent !important;
+  top: 0.5rem !important;
+  left: 1rem !important;
+  position: absolute;
+  border: none;
+}
+
+.MuiPagination-ul > li > button,
+.MuiPaginationItem-root {
+  background-color: #000 !important;
+  color: white !important;
+}
+
+.MuiPaginationItem-ellipsis {
+  height: 2.2rem !important;
+  border-radius: 0.5rem !important;
+}
+
+.css-16rp2hs-MuiButtonBase-root-MuiCheckbox-root {
+  color: white !important;
+  background-color: black !important;
+}
+.css-16rp2hs-MuiButtonBase-root-MuiCheckbox-root:hover {
+  color: white !important;
+  background-color: #4d5256 !important;
+}
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  border-radius: 1rem !important;
+  min-width: 9.375rem !important;
+  max-width: 33rem !important;
+  overflow: scroll !important;
+}
+
+.css-kg9q0s-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button,
+.css-1nkg345-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button {
+  background-color: black !important;
+  color: white !important;
+  margin: 0 0.1rem !important;
+}
+
+.css-1nkg345-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button:hover {
+  background-color: #4d5256 !important;
+  color: white !important;
+}
+.Mui-selected{
+  background-color: #212529 !important;
+  color: white !important;
+  border-radius: 1rem !important;
+}
+.css-1roo1oa-MuiList-root-MuiMultiSectionDigitalClockSection-root>li:hover {
+  background-color: #4d5256 !important;
+  color: white !important;
+  border-radius: 1rem !important;
+}
+
+.css-kg9q0s-MuiButtonBase-root-MuiIconButton-root-MuiPickersArrowSwitcher-button:hover {
+  background-color: #4d5256 !important;
+  color: white !important;
+}
+
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper,
+.css-1k4oq0i-MuiPaper-root-MuiPickersPopper-paper {
+  border-radius: 1rem !important;
+}
+.css-1hdg57s-MuiTableRow-root>td>button, .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper>ul>li {
+  font-size: 0.9rem !important; 
+  font-family: "Poppins", sans-serif !important;
+}
+.css-1ywof4l{
+  background-color: #fff !important;
+  color: #000 !important;
+  border-radius: 1rem !important;
+}
+.css-gavykb-MuiChip-root>span{
+  color: #000 !important;
+  background-color: #fff !important;
+  width: 100% !important;
+  border-radius: 1rem !important;
+}
+.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium{
+  width: 2rem !important;
+  height: 2rem !important;
+  border-radius: 50% !important;
+  margin: 0 0.5rem !important;
+}
+.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium>span{
+  background-color: none !important;
+}
+.MuiSvgIcon-root.MuiSvgIcon-colorPrimary.MuiSvgIcon-fontSizeMedium{
+  border-radius: 1rem !important;
+}
+.MuiBox-root>button, .MuiBox-root>span>button{
+  background-color: #0d6efd !important;
+  /* color: white !important;
+  border-radius: 1rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  margin-left:2px !important; */
+}
+.Mui-TableHeadCell-ResizeHandle-Wrapper.MuiBox-root{
+  background-color: #0d6efd !important;
+  width: 0.5rem !important;
+  min-width: 0 !important;
+  border-radius: 1rem !important;
+  /* border: 1px solid #212529 !important; */
+}

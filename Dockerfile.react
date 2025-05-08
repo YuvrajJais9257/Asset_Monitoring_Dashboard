@@ -1,0 +1,20 @@
+FROM node:20.5.0-alpine
+
+WORKDIR /app/Hyphenview
+
+COPY HyphenviewReactcode/package*.json ./
+RUN npm ci
+
+# RUN apk update && apk add nginx
+
+COPY HyphenviewReactcode .
+# COPY HyphenView/ssl .
+# RUN npm run build
+# COPY ssl_files /home/
+# COPY hyphenview /etc/nginx/sites-available/
+# RUN ln -s /etc/nginx/sites-available/hyphenview /etc/nginx/sites-enabled/
+
+EXPOSE 3000 80 443
+
+# Start in development mode for hot reloading
+CMD ["npm", "start"]

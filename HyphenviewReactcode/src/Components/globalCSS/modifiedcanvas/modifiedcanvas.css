@@ -1,0 +1,153 @@
+.modified_container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 5px;
+  margin: 0 10px;
+  /* align-items: center; */
+  width: calc(100vw - 75px);
+  margin-left: 75px;
+}
+
+.modified_side_bar {
+  width: 200px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 0 10px;
+  background: linear-gradient(45deg, #579ada, #fbfcfe);
+  border-radius: 20px;
+}
+
+.modified_chart_type {
+  height: auto;
+  border: 1px solid black;
+  text-align: center;
+  padding: 11px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  margin-top: 10px;
+}
+
+
+.modified_has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.9rem;
+  text-align: center;
+  pointer-events: none;
+  color: #0d6efd;
+  margin-left: 140px;
+}
+
+.modified_toggling_part {
+  width: 1300px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 0 10px;
+  border: 1px solid #0000003b;
+  border-radius: 20px;
+  background: #e9ecef;
+}
+
+.modified_right_part_of_container {
+  width: 200px;
+  display: flex;
+  border: 1px solid whitesmoke;
+  padding: 10px;
+  margin-right: 5px;
+  flex-direction: column;
+  border-radius: 20px;
+}
+
+.modified_right_part_of_container button {
+  width: 150px;
+  padding: 10px;
+  margin-right: 5px;
+  margin-top: 5px;
+  color: #ffffff;
+  background: #0d6efd;
+}
+
+.space_between {
+  margin-top: 2px;
+}
+
+#modified-details-input-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 5px;
+  margin: 0 10px;
+  align-items: center;
+  margin-left: 80px;
+  width: calc(100vw - 98px);
+}
+
+.modified-detail-entry {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+#modified-name-input-container {
+  height: 33px;
+}
+
+#modified-description-textarea-container {
+  height: 33px;
+}
+
+#modified-description {
+  height: 33px;
+}
+
+#modified-verification-button-container {
+  margin: 10px;
+}
+
+#modified-verify-button {
+  min-width: 150px;
+  margin-top: 10px;
+  transform: translateX(7px);
+  background: #0d6efd;
+}
+
+
+.modified_right_part_of_container button:hover {
+
+  transform: translateY(-2px);
+
+  background-color: #0b5ed7;
+
+  border: 1px solid #0b5ed7;
+
+  color: #fff;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+/* Media Query for screens 768px and below */
+@media only screen and (max-width: 768px) {
+  .modified_container {
+    flex-direction: column;
+  }
+
+  .modified_side_bar,
+  .modified_toggling_part,
+  .modified_right_part_of_container {
+    width: 100%;
+  }
+
+  .modified_toggling_part {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,114 @@
+.DashboardManagement_report_to_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 60px;
+    width: calc(100vw - 70px);
+    overflow-x: auto;
+
+}
+
+.Dashboard_Management_List>span {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.DashboardManagement_report_displayed span {
+    margin-right: 10px;
+    width: 70px;
+    height: 30px;
+    border: 1px solid #424344;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}
+
+
+.DashboardManagement_displayed_updation_pavi {
+    width: 54.5rem;
+    background: transparent;
+}
+
+.DashboardManagement_report_table_container {
+    width: calc(100vw - 120px);
+    overflow-x: auto;
+}
+
+.DashboardManagement_Report_search {
+    display: flex;
+    align-items: center;
+}
+
+.DashboardManagement_Report_search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.9rem;
+    text-align: center;
+    pointer-events: none;
+    color: #0d6efd;
+    margin-left: 140px;
+}
+
+
+
+.DashboardManagement_report_button_cnt>button {
+    /* margin-left: 20px; */
+    /* width: 180px; */
+    /* width: 180px; */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #0d6efd;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 5px;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.DashboardManagement_report_button_cnt>button:hover {
+    transform: translateY(-2px);
+    background-color: #0b5ed7;
+    border: 1px solid #0b5ed7;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.DashboardManagement_report_to_group>span {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+
+.DashboardManagement_displayed_btn {
+    font-size: 1rem !important;
+    font-weight: 500;
+    background-color: #ffffff !important;
+    /* border: 1px solid #0d6efd4a !important; */
+    border-radius: 15px !important;
+    margin: 10px;
+    color: #000 !important;
+}
+
+.DashboardManagement_displayed_btn:hover {
+    color: #185ee0 !important;
+    transition: color .5s ease-in-out, background-color .5s ease-in-out, border-color .5s ease-in-out;
+    border: none !important;
+}
+
+.for-search-box {
+    margin-top: 25px;
+}
+
+.for-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    width: calc(100vw - 130px);
+    margin-top: 15px;
+}

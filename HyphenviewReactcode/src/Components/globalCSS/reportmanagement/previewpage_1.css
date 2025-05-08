@@ -1,0 +1,140 @@
+/*modified By Yuvraj Jaiswal*/
+
+
+.customize-chart-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.previchartcnt {
+  /* margin-left: 100px; */
+  margin-top: 20px;
+  width: calc(100vw - 100px) !important;
+  height: 35rem !important;
+  border: none !important;
+  overflow: scroll !important;
+  border-radius: 5px;
+}
+
+
+.Preview_button_cnt {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 10px;
+}
+
+.draggable-button-color-layout {
+  position: fixed;
+  top: 21%;
+  right: 3.5%;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+}
+
+.highChartsColorConfigurationView {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.Preview_button_cnt button {
+  width: 100px;
+  margin-right: 10px;
+}
+
+/*new changes*/
+.custom-color-super-container {
+  height: 72%;
+  width: auto !important;
+  visibility: visible;
+  position: fixed;
+  display: inline-flex;
+  /* Use inline-flex to allow width to adjust based on content */
+  flex-direction: column;
+  /* Stack items vertically */
+  max-width: 100%;
+  /* Ensure it doesn't exceed the viewport */
+  top: 14% !important;
+  border-radius: 10px;
+
+}
+
+.custom-color-input {
+  display: flex;
+  width: 100% !important;
+  justify-content: flex-start;
+  /* Align items to the start */
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.custom-color-show {
+  flex: 0 0 auto;
+  /* Prevents shrinking */
+  margin-right: 10px;
+  /* Space between input and label */
+}
+
+.custom-color-show>input {
+  width: 40px;
+  /* Fixed width for color input */
+  height: 2rem;
+  border-radius: 5px;
+  border: 3px solid #ccc;
+}
+
+.custom-color-label {
+  flex-grow: 1;
+  /* Allows label to take available space */
+  font-size: 12px !important;
+  font-weight: bold !important;
+  overflow: hidden;
+  /* Prevents overflow */
+  text-overflow: ellipsis;
+  /* Adds ellipsis for overflow text */
+  white-space: nowrap;
+  /* Prevents line breaks in label */
+  margin: 1rem 0;
+}
+
+/*new changes*/
+
+.draggable-button-color-layout>img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+.draggable-toggle-button {
+  position: absolute;
+  top: calc(100% - 35rem);
+  right: 2.2%;
+  background-color: #90ee90;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.previewChartpage {
+  position: relative;
+}
+
+.preview_page_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 60px;
+  width: calc(100vw - 60px);
+}

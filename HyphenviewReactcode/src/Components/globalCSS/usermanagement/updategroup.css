@@ -1,0 +1,107 @@
+/* .Report_Assign_page{
+ 
+} */
+ 
+.Save_Reset_button_cnt {
+    /* display: flex;
+      flex-direction: row; */
+    margin-left: 20px;
+  }
+   
+  .Save_Reset_button_cnt > button {
+    margin-top: 35px;
+    margin-bottom: 30px;
+    /* width: 180px; */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #0d6efd;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 5px;
+    transition: transform 0.3s ease, background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+   
+  .Save_Reset_button_cnt > button:hover {
+    transform: translateY(-2px);
+    background-color: #0b5ed7;
+    border: 1px solid #0b5ed7;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+   
+  .Report_Assign_page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 60px;
+    width: calc(100vw - 70px);
+    overflow-x: hidden;
+  }
+   
+  .Report_Assign_page > span {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+   
+  .Assign_group_btn1 {
+    width: 80px;
+    height: 33px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    text-align: center !important;
+    font-size: 15px;
+    margin-left: 3px;
+  }
+   
+  .UpdateGroup_table_sub_container {
+    width: calc(100vw - 120px);
+    overflow: scroll !important;
+  }
+  .UpdateGroup_table_sub_container table{
+      overflow: scroll !important;
+  }
+   
+  .UpdateGroup_search {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Ensure it stays above the table content */
+    padding: 5px; /* Optional: add some padding for better appearance */
+  }
+   
+  .UpdateGroup_search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.9rem;
+    text-align: center;
+    pointer-events: none;
+    color: #0d6efd;
+    margin-left: 140px;
+  }
+   
+  .Save_Reset_button_search_container {
+    gap: 20px;
+    display: flex;
+    justify-content: end;
+    width: 90vw;
+    margin: 0 auto;
+  }
+   
+  .Save_Reset_button_cnt {
+    display: flex;
+    align-items: center;
+  }
+   
+  .UpdateGroup_container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Allows search to take up remaining space */
+  }
+   

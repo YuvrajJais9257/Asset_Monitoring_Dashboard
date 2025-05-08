@@ -1,0 +1,12 @@
+FROM mysql:8.0
+
+COPY march.sql /docker-entrypoint-initdb.d/
+COPY procedures.sql /docker-entrypoint-initdb.d/
+
+# Set environment variables
+ENV MYSQL_ROOT_PASSWORD=Admin123*
+ENV MYSQL_DATABASE=hyphenview_new_release_test
+
+
+# Expose the MySQL port
+EXPOSE 3306 33061

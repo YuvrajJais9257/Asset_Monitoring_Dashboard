@@ -1,0 +1,160 @@
+.boxContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-between; */
+    margin: 20px;
+}
+
+.gradientColorPickerModal{
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.colorDiv{
+    display: flex;
+}
+.colorDiv>label{
+    flex: 1;
+    float: left;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+.colorDiv>input{
+    flex: 0.5;
+    float: right;
+}
+
+
+
+.orientationButtons{
+    border-radius: 50%;
+    padding-right: 5px;
+    border: none;
+ 
+}
+
+.controlModalContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+
+ 
+.previewBox {
+   
+    height: 140px;
+    width: 340px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+}
+ 
+.previewBox img {
+    height: 45px;
+    width: 45px;
+   
+}
+ 
+.previewTitle {
+    font-weight: 800;
+    font-size: 20px;
+    margin: 0;
+}
+ 
+.previewContent {
+    font-size: 16px;
+}
+ 
+.controlsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin-left: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+ 
+.controlItem {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.controlModalSolidItem{
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    width: 100%;
+}
+.controlModalGradientItem{
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 100%;
+}
+ 
+.controlItem label, .controlModalSolidItem label, .controlModalGradientItem label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.controlModalSolidItem label {
+    flex: 1;
+    float: left;
+}
+
+.controlModalSolidItem input[type="color"], .controlModalSolidItem select{
+    flex: 1;
+    float: right;
+}
+
+ 
+.controlItem input[type="color"],
+.controlItem select, .controlModalSolidItem input[type="color"], .controlModalSolidItem select, .controlModalGradientItem input[type="color"], .controlModalGradientItem select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+ 
+.controlItem input[type="color"]:focus,
+.controlItem select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+ 
+.previewContainer{
+width: 20%;
+position: relative;
+bottom: 40px;
+}
+ 
+.previewcontent{
+    width: 80%;
+    text-align: center;
+    position: relative;
+    bottom: 22px;
+}

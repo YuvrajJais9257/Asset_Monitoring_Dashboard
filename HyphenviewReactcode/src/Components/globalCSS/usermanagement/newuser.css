@@ -1,0 +1,113 @@
+body .new-user-page {
+    /* margin: 0;
+    background: linear-gradient(to right, #1a1b5a, #82259e); */
+    background-image: url("../../Assets/bg-3.jpg");
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.New_user_managemet_btn1 {
+    width: 130px;
+    height: 33px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    text-align: center !important;
+    font-size: 15px;
+    margin-left: 3px;
+}
+
+.new_user_message {
+    text-align: center;
+    color: red;
+}
+
+/* .New_user_managemet_btn2 {
+    width: 180px;
+    height: 33px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    text-align: center !important;
+    font-size: 15px;
+    margin-left: 3px;
+} */
+
+/* .New_user_page {
+    margin: 20px;
+    max-width: 630px;
+} */
+
+.New_user_management_page {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    margin: 10px;
+    align-items: center;
+    margin-left: 90px;
+
+}
+
+.New_user_management_page>span {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.New_user_managemet_btn2 {
+    color: white;
+    /* padding: 7px 5px; */
+    width: fit-content;
+    border: none;
+    background: rgb(66, 67, 68);
+    border-radius: 5px;
+    /* font-size: 16px; */
+    margin-left: 5px;
+    border: 1px solid transparent;
+    transition: 0.4s background ease-in;
+    cursor: pointer;
+    /* font-weight: ; */
+}
+
+.New_user_managemet_btn2:hover {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    transition: 0.3s background ease-in;
+}
+
+.btn-login {
+    border: 1px solid #1a4ed8;
+    /* Darker border for a sleek look */
+    border-radius: 1.5rem;
+    background-color: #1d5dfb;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(29, 93, 251, 0.3);
+    text-transform: uppercase;
+}
+
+.btn-login:hover {
+    background-color: #174bc4;
+    /* Darker blue on hover */
+    border-color: #133ea3;
+    box-shadow: 0 6px 12px rgba(23, 75, 196, 0.4);
+    transform: translateY(-2px);
+    /* Slight lift on hover */
+}
+
+.btn-login:active {
+    background-color: #123a9c;
+    box-shadow: 0 3px 6px rgba(18, 58, 156, 0.4);
+    transform: translateY(1px);
+}
+
+.create-user-password,
+.create-user-email {
+    border-radius: 1.5rem;
+    padding: 0.6rem;
+}

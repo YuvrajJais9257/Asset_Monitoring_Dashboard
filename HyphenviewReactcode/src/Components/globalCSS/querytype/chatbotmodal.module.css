@@ -1,0 +1,49 @@
+/* modified by kashish */
+.recommended_adjustments {
+    position: fixed;
+    width: 18rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(105, 179, 221, 0.5);
+    font-family: Arial, Helvetica, sans-serif;
+    z-index: 3;
+    justify-self: center;
+    padding: 0.5rem;
+    right: 0.8rem;
+    margin-top: 8rem;
+    border-radius: 10px;
+}
+
+.recommended_adjustments .popup__box svg {
+    float: right;
+    margin: 0.5rem 1rem;
+    width: 12px;
+    fill: rgb(248, 115, 115);
+    cursor: pointer;
+}
+.recommended_adjustments .popup__box {
+    position: relative;
+    /* left: 32%; */
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 100%;
+    
+}
+
+
+.save_changes_btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.Add_remove_data{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+   
+}

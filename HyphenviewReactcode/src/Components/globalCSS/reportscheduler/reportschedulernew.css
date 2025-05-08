@@ -1,0 +1,270 @@
+body .ReportSchedulerNew-Container{
+  background-image: url('../../Assets/bg-3.jpg');
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    height: 100vh;
+}
+body .ReportSchedulerUpdate-Container{
+  background-image: url('../../Assets/bg-3.jpg');
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+    height: 100vh;
+}
+
+*{
+  font-size: 0.9rem;
+}
+
+
+.schedule_report_container {
+display: flex;
+    flex-direction: row;
+    padding: 5px;
+    margin: 10px;
+    align-items: center;
+    margin-left: 90px;
+}
+
+.schedule_report_container > span {
+  margin-right: 5px;
+  cursor: pointer;
+}
+#form-container{
+  
+  vertical-align: middle;
+  margin: 20px;
+}
+#report-scheduler-form{
+  border-radius: 8px;
+    padding: 25px 30px;
+    width: 40vw;
+    min-height: 50vh; /* Ensures minimum height for smaller screens */
+    max-height: 90vh; /* Prevents excessive height on large screens */
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.5s ease;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeIn 1s forwards;
+    margin: 0 auto;
+    overflow-y: auto; /* Enables scrolling for overflow content */
+}
+#big-container{
+  align-items: center;
+}
+.label{
+  text-align: right;
+  color: black;
+  font-style: normal;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+.icon-container{
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+}
+.schedule-time-icon-container{
+  padding-right: 6px;
+}
+.start-date-icon-container{
+  padding-right: 7px;
+}
+.excel-icon-container{
+  padding-right: 9px;
+}
+.report-display-icon-container{
+  padding-right: 8px;
+}
+.button-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dropdown-button-container{
+  /* flex:1; */
+  width: 300px;
+  height:40px;
+}
+.unordered-list-container{
+  margin:0;
+  padding: 0;
+  position: absolute;
+  z-index: 3;
+  top: 40px;
+  width: 18rem;
+  /* left: 25px; */
+  /* flex: 1; */
+  /* width: 100%; */
+  display: flex;
+  justify-content: center;
+  border-radius: 24px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.dropdown-setter-button{
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  color: #212529;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  width:100%;
+  height: 28px;
+  font-size: 0.9rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.dropdown-setter-button:hover{
+  background-color: #fff;
+  color: #212529;
+  border: 1px solid #dee2e6;
+}
+.icon-container.title-icon{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 4px;
+  width:25px;
+}
+/* .input-group{
+  width: 75%;
+} */
+
+.input-group .btn:focus{
+   z-index: none !important;
+}
+.react-datepicker-wrapper{
+  width: 100%;
+}
+.react-datepicker__input-container input{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.search-bar-holder{
+  padding: 5px 5px 5px 30px;
+  width: 119%;
+}
+/* li{
+  padding-left: 27px;
+} */
+.form-control{
+  font-size: 0.9rem;
+}
+.react-multi-email{
+  height:32px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.react-multi-email input{
+  height:25px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+#email-body-textarea{
+  height: 60px;
+}
+.external-button-container{
+  display: flex;
+  justify-content: center;
+}
+
+.searchbarwrap{
+  height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.search-bar{
+  width: auto;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+
+.exceldivwrap{
+  height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.clickout{
+  position: absolute;
+  background: #dddddd00;
+  width:100%;
+  z-index: 8;
+}
+
+.unordered-list-container{
+  z-index: 10;
+}
+
+.border-style{
+  border-radius: 1.5rem !important;
+}
+.ReportSchedulerUpdate-Button{
+  color: white;
+    padding: 5px 5px;
+    width: fit-content;
+    border: none;
+    background: #0d6efd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    transition: 0.4s backgroundease-in;
+    cursor: pointer;
+}
+
+
+/* Media Queries for better responsiveness */
+@media (max-width: 768px) {
+  #report-scheduler-form {
+      width: 80vw; /* Adjust width for smaller devices */
+      min-height: 40vh; /* Adjust height for better fit */
+  }
+}
+
+@media (max-width: 480px) {
+  #report-scheduler-form {
+      width: 90vw; /* Makes it more mobile-friendly */
+      min-height: 40vh;
+  }
+}
+
+
+/* Add this to your reportschedulernew.css file */
+.email-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 38px;
+  height: auto !important;
+  /* border: 1px solid #ced4da; */
+  word-break: break-word;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  /* padding: 0.375rem 0.75rem; */
+}
+
+.email-input-container .react-multi-email {
+  width: 100%;
+  height: auto !important;
+  min-height: 38px;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.email-input-container .react-multi-email > span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.email-input-container [data-tag] {
+  margin-bottom: 4px;
+}

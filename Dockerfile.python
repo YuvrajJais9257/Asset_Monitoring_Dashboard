@@ -1,0 +1,30 @@
+# Use an official Python runtime as a parent image
+FROM python:3.12-slim
+
+# Set timezone to IST
+ENV TZ=Asia/Kolkata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install PostgreSQL development files before pip install
+RUN apt-get update \
+    && apt-get install -y libpq-dev gcc vim pkg-config default-libmysqlclient-dev cron\
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container
+COPY hyphen_alchemy_4/app/requirements.txt .
+
+# Install any dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code to the working directory
+COPY hyphen_alchemy_4/app/ .
+
+# Expose the ports the app runs on
+EXPOSE 3001 3002 8000 9001
+
+# Run the application
+CMD ["python", "main.py"]
+# CMD ["tail", "-f", "/dev/null"]

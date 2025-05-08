@@ -1,0 +1,164 @@
+
+
+.title {
+    font-size: 20px;
+    /* font-weight: bold; */
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0d6efd;
+  }
+
+
+  .btn-login {
+    background: #5a67d8;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 45%;
+}
+
+
+.generalcontainer {
+    display: flex;
+    /* height: 100vh; */
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    /* background-color: #f4f4f4; */
+    position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translateX(-50%) translateY(-50%);
+    
+}
+
+.generalconformcontainer {
+    display: flex;
+    /* height: 100vh; */
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+
+.generalsubcontainer{
+    /* max-width: 500px; */
+    width: 40vw;
+    height: 400px;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.5s ease;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeIn 1s forwards;
+    margin: 0 auto;
+}
+
+
+/* Keyframe for fade-in animation */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+.generalconformsubcontainer {
+    max-width: 500px;
+    width: 514px;
+    height: 640px;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.resetpassword p {
+    color: red;
+    text-align: center;
+}
+
+.resetpassword form {
+    max-width: 100%;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+.textfield {
+    font-weight: bold;
+    text-align: left;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+}
+
+/* .generalsubcontainer input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 8px;
+} */
+
+.generalsubcontainer select {
+    /* width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 8px; */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #5a67d83d;
+    border-radius: 20px;
+}
+
+/* .generalsubcontainer button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.resetpassword button:hover {
+    background-color: #0056b3;
+} */
+
+.eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.generalsubcontainer .field .box {
+    position: relative;
+}
+
+/* Add the styles for the eye icons if needed */
+.generalsubcontainer .box .eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+

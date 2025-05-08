@@ -1,0 +1,112 @@
+/* Basic container for alignment */
+.table-top {
+  display: flex;
+  justify-content: end;
+  width: 90vw;
+  margin: 0 auto;
+}
+
+/* Adjusting left-side alignment */
+.right-side-elements {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Reduced space between the download button and search box */
+  /*  margin-right: 30px; You can keep or adjust this if needed */
+}
+
+/* Download Button */
+.download-container {
+  display: flex;
+  align-items: center;
+}
+
+
+
+.download-btn {
+  display: flex; 
+    align-items: center;
+    padding: 10px; 
+    border: 1px solid #0d6efd; 
+    background-color: #0d6efd; 
+    color: white; 
+    border-radius: 40px; 
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px); /* Subtle lift effect */
+  background-color: #0b5ed7; /* Slightly darker on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+.download-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+
+.download-text {
+  font-size: 16px;
+}
+
+/* Search Box */
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 15px; /* Rounded corners */
+  max-width: 300px;
+  width: 100%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.search-container:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  transform: scale(1.02); /* Slight scale-up effect */
+}
+
+.search-box {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  flex: 1; /* Take available space */
+  transition: background-color 0.3s ease;
+}
+
+.search-box:focus {
+  background-color: #f9f9f9; /* Slight color change on focus */
+}
+
+.search-icon {
+  margin-right: 15px; /* Spacing */
+  font-size: 18px;
+  color: #0d6efd;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.search-icon:hover {
+  transform: rotate(15deg); /* Rotate effect on hover */
+  color: #0056b3; /* Slightly darker blue */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Stack elements on smaller screens */
+    align-items: stretch;
+  }
+
+  .right-side-elements {
+    flex-direction: column; /* Stack button and search box */
+    gap: 10px;
+    margin-right: 0; /* Remove additional right margin on small screens */
+  }
+
+  .search-container,
+  .download-btn {
+    width: 100%; /* Full width on small screens */
+  }
+}

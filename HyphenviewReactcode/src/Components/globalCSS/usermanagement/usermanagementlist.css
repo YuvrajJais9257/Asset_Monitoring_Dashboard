@@ -1,0 +1,281 @@
+.user_managemet_btn2{
+  width: 130px;
+  height: 33px;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  text-align: center !important;
+  font-size: 15px;
+  padding: 0%;
+  margin-left: 3px;
+  
+}
+
+.user_managemet_btn1{
+  width: 350px;
+  height: 33px;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  text-align: center !important;
+  font-size: 15px;
+  padding: 0%;
+  margin-left: 3px; 
+}
+
+.user_management_page > span{
+  margin-right:5px;
+  cursor: pointer;
+}
+
+.user_management_page > button{
+  margin-left:10px;
+  /* width: 350px; */
+}
+
+.user_management_search{
+  display: flex;
+  flex-direction: column;
+  float: right;
+}
+
+
+.user-search{
+  float: right;
+  /* width: 300px; */
+}
+.user-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.user-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.User_export_csv{
+  position: relative;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 25px;
+  background-color: whitesmoke;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.user_report_search{
+  display: flex;
+  align-items: center;
+}
+
+.User_export_csv span{
+ margin-left: 10px ;
+ 
+}
+
+.user_export_search_cotainer{
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 20px 0px;
+  align-items: center;
+
+}
+
+.user_management_table_content{
+  margin: 20px;
+  overflow: scroll;
+}
+
+
+/* Style for the dropdown toggle button */
+#dropdown-basic {
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for the dropdown button */
+#dropdown-basic:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the dropdown menu */
+.dropdown-menu {
+  animation: fadeIn 0.3s ease-in-out;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation keyframes for dropdown menu */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Style for dropdown items */
+.dropdown-item {
+  padding: 8px 12px;
+  border-radius: 55px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect for dropdown items */
+.dropdown-item:hover {
+  background-color: rgb(13, 110, 253);
+  color: white;
+  transform: scale(1.05);
+}
+
+
+/* Fixed Sidebar (Header) */
+.Header-not-use {
+position: fixed; /* Fix the header to the left side */
+top: 0;
+left: 0;
+width: 250px; /* Adjust the width of the sidebar */
+height: 100%; /* Full height */
+background-color: #f8f9fa; /* Background color for the sidebar */
+box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for the sidebar */
+z-index: 999; /* Ensure it's above the content */
+overflow-y: auto; /* Scroll if content overflows */
+}
+
+/* User Management Page (content section) */
+.user_management_page {
+  display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 60px;
+      width: calc(100vw - 70px);
+      overflow-x: auto;
+}
+
+.Page-Header{
+  margin-top: 15px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  display: flex;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  margin-left: 60px;
+  width: calc(100vw - 130px);
+}
+
+/* Style for the user management table container */
+.report-management-List_table_sub_container {
+width: 100%;
+/* padding: 0px 85px;
+margin-left: 30px; */
+}
+
+/* Responsive table for mobile */
+@media (max-width: 768px) {
+.user_management_table_container {
+    margin-left: 0;
+    padding: 10px;
+}
+
+#table-to-excel {
+    width: 100%; /* Ensure table takes full width on smaller screens */
+    /* overflow-x: auto; */
+}
+}
+
+
+/* Adjust the position of the table and search areas */
+.user_export_search_cotainer {
+display: flex;
+justify-content: space-between;
+margin: 20px 20px 0px;
+align-items: center;
+margin-left: 250px; /* Ensure space between sidebar and content */
+}
+
+/* Adjusting other classes */
+.user_management_page > span {
+margin-right: 5px;
+cursor: pointer;
+}
+
+/* Right-side elements such as buttons, search, etc. */
+.right-side-elements {
+display: flex;
+justify-content: space-between;
+/* width: calc(100% - 250px);  Ensure right-side elements don't overflow the sidebar */
+}
+
+/* Fix the table width */
+.List_table_sub_container {
+width: 100%;
+  /* overflow-x: auto;
+  padding: 0 80px;
+  margin-left: 35px; */
+}
+
+@media (max-width: 1200px) {
+.List_table_sub_container {
+    padding: 0 10px; 
+    overflow-x: hidden;/* Adjust padding for medium screens */
+}
+.user_management_table_container {
+  overflow-x: hidden; 
+}
+}
+
+@media (max-width: 992px) {
+.List_table_sub_container {
+    padding: 0 5px; /* Reduce padding for smaller screens */
+}
+}
+
+@media (max-width: 768px) {
+.List_table_sub_container {
+    padding: 0 3px; /* Further reduce padding for mobile screens */
+}
+}
+
+@media (max-width: 576px) {
+.List_table_sub_container {
+    padding: 0 2px; /* Minimal padding for very small screens */
+}
+
+/* Optionally, you can adjust the table layout here */
+table {
+    font-size: 14px; /* Reduce font size for mobile devices */
+}
+}
+
+
+
+.table-top {
+display: flex;
+justify-content: space-between;
+ /* Ensure space is accounted for */
+}
+
+/* Adjust search box and other elements to prevent overlapping */
+.search-container {
+margin-left: auto;
+}
+
+

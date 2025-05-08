@@ -1,0 +1,133 @@
+.modalOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    background-color: rgb(36 36 36 / 95%);
+    z-index: 500;
+}
+
+.modalContainer {
+    background-color: white;
+    border-radius: 0.375rem; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    padding: 1rem 0.5rem;
+    position: relative;
+}
+
+.conditionButton {
+    border: 1px solid #e5e7eb;
+    margin-top: 1rem;
+    border-radius: 0.375rem;
+    padding: 1rem 0.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.rotateButton {
+    transform: rotate(90deg);
+    width: 1.75rem;
+    border: none;
+    background: none;
+}
+
+.conditionGroup {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.selectInput {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    /* padding: 0.25rem 0.5rem; */
+    padding: 8px;
+    cursor: pointer;
+    width: 10rem;
+}
+
+.textInput {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    width: 14rem;
+}
+
+.selectedValues{
+    display: flex;
+    gap: 4px;
+    max-width: 10rem;
+    overflow-x: auto;
+    flex-wrap: wrap;
+}
+
+.selectedValue{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-width: 1px;
+    border-radius: 0.375rem;
+    background-color: rgb(203 213 225 );
+    position: relative;
+    width: 14rem;
+}
+
+.selectedValueText {
+    width: fit-content;
+    padding-right: 1.6rem;
+    padding-left: 2px;
+}
+
+.removeButton {
+    position: absolute;
+    right: 0px;
+    top: auto;
+    background: none;
+    border: none;
+    background-color: none;
+    font-size: 1.25rem /* 20px */;
+    line-height: 1.75rem 
+}
+
+.removeConditionButton {
+    font-size: 1.5rem;
+    margin-left: auto;
+    border: none;
+    background: none;
+}
+
+.actionButtons {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.primaryButton {
+    border: 1px solid #e5e7eb;
+    margin-top: 1rem;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #3b82f6;
+    color: white;
+    cursor: pointer;
+}
+
+.close{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+}
+
+.date{
+    border-radius: 8px;
+    padding: 0px 4px;
+}
+.formvalue{
+    padding: 3px;
+}

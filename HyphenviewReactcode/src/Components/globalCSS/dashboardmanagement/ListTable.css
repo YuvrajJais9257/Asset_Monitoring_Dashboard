@@ -1,0 +1,172 @@
+/* ResponsiveTable.css */
+.responsive-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    border-radius: 10px;
+    /* overflow: hidden; */
+    /* margin: 0px 20px 20px 20px; */
+    overflow-x: auto;
+    /* padding: 0 80px; */
+    margin: 0 auto;
+}
+
+.responsive-table th,
+.responsive-table td {
+    padding: 8px 16px;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #333;
+}
+
+.responsive-table .table-header {
+    background: linear-gradient(45deg, #579ada, #fbfcfe); /* Header gradient */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Remove hover effect from table header */
+.responsive-table th:hover {
+    background-color: transparent; /* Ensure no background change */
+    /*color: inherit;  Keep the original text color */
+}
+
+
+.responsive-table .table-row {
+    transition: all 0.3s ease;
+    border-bottom: 2px solid #f0f0f0;
+    border-radius: 8px;
+}
+
+/* Lightened color for odd and even rows based on header gradient */
+tr:nth-child(odd) {
+    background-color: #b1d4f354; /* Light blue based on header gradient */
+}
+
+tr:nth-child(even) {
+    background-color: #eaf4fe91; /* Very light blue, close to white */
+}
+
+table tr {
+    border-radius: 10px;
+}
+
+table tr td:first-child {
+    border-top-left-radius: 10px; /* Top-left corner of the first cell */
+    border-bottom-left-radius: 10px; /* Bottom-left corner of the first cell */
+}
+
+table tr td:last-child {
+    border-top-right-radius: 10px; /* Top-right corner of the last cell */
+    border-bottom-right-radius: 10px; /* Bottom-right corner of the last cell */
+}
+
+/* Hover effect for odd and even rows */
+tr:nth-child(odd):hover {
+    background-color: #b1d4f3;
+}
+
+tr:nth-child(even):hover {
+    background-color: #eaf4fe;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 768px) {
+    .responsive-table {
+        font-size: 12px;
+    }
+
+    .responsive-table th,
+    .responsive-table td {
+        padding: 10px;
+    }
+}
+
+/* Make sure the table is scrollable on small devices */
+@media (max-width: 480px) {
+    .responsive-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+table th:first-child {
+    border-radius: 20px 0 0 20px;
+}
+
+table th:last-child {
+    border-radius: 0 20px 20px 0;
+}
+
+.responsive-table .table-row td:first-child {
+    border-radius: 20px 0 0 20px; /* Round left corners */
+}
+
+.responsive-table .table-row td:last-child {
+    border-radius: 0 20px 20px 0 !important; /* Round right corners */
+}
+
+/* Style for action icons (without display flex) */
+.action-icons {
+    gap: 10px;
+}
+
+/* Edit and Delete buttons as inline-blocks */
+.edit-button,
+.delete-button,
+.hide-button,
+.download-button {
+    width: 36px; /* Circular width */
+    height: 36px; /* Circular height */
+    border: none;
+    border-radius: 50%; /* Make buttons circular */
+    display: inline-block !important; /* Align buttons horizontally */
+    text-align: center;
+    line-height: 36px; /* Vertically center the icons */
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    margin-right: 5px; /* Optional, to add space between buttons */
+}
+
+/* Edit button styling */
+.edit-button {
+    background-color: #4caf50; /* Green */
+}
+
+/* Delete button styling */
+.delete-button {
+    background-color: #f44336; /* Red */
+}
+
+.hide-button {
+    background-color: #4bb9da;
+}
+
+.hide-button:hover {
+    background-color: #398da6;
+}
+
+.download-button {
+    background-color: #eea944;
+}
+
+.download-button:hover {
+    background-color: #bb8435;
+}
+
+/* Add hover effect for buttons */
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+.delete-button:hover {
+    background-color: #d32f2f;
+}
+

@@ -1,0 +1,420 @@
+/* General Styles 
+modified by yuvraj jaiswal
+added styles for otp validation form and reset password form
+12 feb 2025
+*/
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+.loginPage {
+  margin: 0;
+  background: linear-gradient(45deg, #6610f275, #0d6efdeb);
+  background-image: url("../../Assets/bg-6.jpg");
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Add intro animation */
+.loginContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+  opacity: 0;
+  transform: scale(0.9);
+  animation: fadeIn 1s forwards;
+}
+
+/* Keyframe for fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.loginForm {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.formContent {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 25px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroupOtp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formGroupBtnContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-top: 20px; */
+}
+
+.formGroup input,
+.formGroupOtp input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #5a67d83d;
+  border-radius: 20px;
+}
+
+.formGroup input:focus,
+.formGroupOtp input:focus {
+  outline: none;
+  border-color: #5a67d8;
+}
+
+.btnLogin,
+.btnForgotPassword {
+  background: #5a67d8;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 10rem;
+  margin: 1rem 1rem;
+}
+
+.btnForgotPassword {
+  background: #4c51bf;
+}
+
+.btnLogin:active {
+  background: #5a67d8;
+  color: white;
+}
+
+.btnForgotPassword:active {
+  background: #4c51bf;
+  color: white;
+}
+
+.btnLogin:hover {
+  background: #4c51bf;
+  color: #fff;
+}
+
+.btnForgotPassword:hover {
+  background: #3c40a1;
+  color: #fff;
+}
+
+.swapButton {
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35%;
+  border-radius: 20px;
+  background-color: #fff;
+  border: 1px solid #5a67d8;
+  color: #5a67d8;
+}
+
+.swapButton:hover {
+  background: #4c51bf;
+  color: #fff;
+}
+
+.swapButton svg {
+  margin-right: 10px;
+}
+
+.loginInfo {
+  flex: 1;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  background-image: url("../../Assets/bg-8.jpg");
+  background-size: cover;
+  background-position: left;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 20px;
+  transition: transform 0.5s ease;
+  border-radius: 10px;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.loginInfo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.loginInfo h2 {
+  position: relative;
+  z-index: 2;
+  max-width: 300px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: clamp(16px, 2.5vw, 24px);
+  font-weight: bolder;
+}
+
+.moveLeft {
+  transform: translateX(-100%);
+}
+
+.moveRight {
+  transform: translateX(100%);
+}
+
+.swapped .loginForm {
+  transform: translateX(93%);
+}
+
+.swapped .loginInfo {
+  transform: translateX(-107%);
+  border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .loginContainer {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .loginInfo {
+    display: none;
+  }
+
+  .loginForm {
+    flex: 1;
+    width: 100%;
+    padding: 20px;
+    height: clamp(50vh, 70vh, 90vh);
+  }
+
+  .formContent {
+    margin: 0 auto;
+    max-width: 400px;
+  }
+
+  .swapButton {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginForm {
+    padding: 15px;
+    height: auto;
+  }
+
+  .formContent {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .formGroup input,
+  .formGroupOtp input {
+    padding: 8px;
+  }
+
+  .btnLogin {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginForm {
+    padding: 10px;
+    height: auto;
+  }
+
+  .formGroup input,
+  .formGroupOtp input {
+    padding: 6px;
+  }
+
+  .btnLogin {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+}
+
+.forgotPassword {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: blue; /* Change color as needed */
+  cursor: pointer; /* Indicates it's clickable */
+}
+
+/*new changes */
+
+.otpInputLogin {
+  border-radius: 2rem;
+  width: 95%;
+  margin: 0.5rem 0;
+  transform: translateX(9px);
+  border: 1px solid #ddd;
+  display: block;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  appearance: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.otpInputLogin:focus {
+  border-color: #5a67d8;
+  outline: 0;
+  /* box-shadow: 0 0 0 0.2rem rgba(90, 103, 216, 0.25); */
+}
+
+.resetLoginPassword {
+  width: 40rem !important;
+  /* height: 540px; */
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: 0px -6rem !important;
+  animation: fadeIn 1s forwards;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+.resetLoginFormContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-image: url("../../Assets/bg-3.jpg");
+  background-position: center;
+  background-size: cover;
+  /* margin: 10%; */
+}
+
+.restLoginTitle {
+  color: #0d6efd;
+  font-size: 20px !important;
+  font-weight: 400;
+}
+
+.resetLoginForm {
+  width: 100%;
+}
+
+.resetLoginFormGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.resetLoginLabel {
+  font-size: 0.9rem;
+  color: #555555;
+  font-weight: bold;
+}
+.resetLoginFormInput:focus {
+  color: rgba(33, 37, 41, 0.8);
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+.resetLoginButton {
+  border: 1px solid #1a4ed8 !important;
+  border-radius: 1.5rem;
+  background-color: #1d5dfb !important;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.3sease-in-out;
+  box-shadow: 0 4px 8px rgba(29, 93, 251, 0.3);
+  text-transform: uppercase;
+}
+.resetLoginButton:hover {
+  background-color: #174bc4;
+  border-color: #133ea3;
+  box-shadow: 0 6px 12px rgba(23, 75, 196, 0.4);
+  transform: translateY(-2px);
+}
+.forgotPasswordText {
+  font-size: 0.9rem;
+  color: #3c48b3;
+  text-align: center;
+  margin-top: 10px;
+  transform: translate(-22px, 1px);
+  font-weight: 700;
+  cursor: pointer;
+}
+.resendtext {
+  font-size: 14px;
+}
+.resendOtpLink {
+  font-size: 18px;
+  color: #3c48b3;
+  font-weight: bold;
+  cursor: pointer;
+}

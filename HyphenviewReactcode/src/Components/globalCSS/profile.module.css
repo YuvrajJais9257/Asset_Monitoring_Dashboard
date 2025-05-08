@@ -1,0 +1,305 @@
+/* Profile Container */
+.profileContainer {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 20px;
+}
+
+.profilePage {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  height: 100vh;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Top Buttons */
+.topButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Back Icon with Blue Background */
+.backIconContainer {
+  width: 40px;
+  height: 40px;
+  background: #0d6efd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.backIconContainer:hover {
+  background: #0b5ed7;
+}
+
+.backIcon {
+  font-size: 20px;
+  color: #fff;
+}
+
+/* Profile Content Layout */
+.profileContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Avatar Card */
+.avatarCard {
+  flex: 1 1 25%;
+  min-width: 300px;
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar */
+.avatarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 300px;
+  /* Increased size */
+  /* height: auto; */
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.userEmail {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* Upload Branding Section */
+.uploadCard {
+  flex: 1 1 70%;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background: #f9f9f9;
+}
+
+.uploadCard h4 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.uploadSection {
+  margin-bottom: 15px;
+}
+
+.uploadSection label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #444;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.uploadSection input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Save Button */
+.saveButton {
+  margin-top: 15px;
+  font-size: 14px;
+  padding: 6px 12px;
+  /* Reduced size */
+  width: auto;
+}
+
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.successMessage {
+  color: green;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .profileContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .avatarCard,
+  .uploadCard {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .avatar {
+    width: 140px;
+    height: 140px;
+  }
+
+  .uploadCard h4 {
+    font-size: 18px;
+  }
+}
+
+/* Add these styles to your profile.module.css file */
+
+.previewContainer {
+  margin-top: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #2f0573, #5d0fdd);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.profilePageImage {
+  max-width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+}
+
+.previewControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+/* Checkered background to indicate transparency */
+.transparentBg {
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Add these styles to your profile.module.css file */
+
+.cropperModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cropperContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cropperContainer {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.cropperActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.previewControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.controlsContainer {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

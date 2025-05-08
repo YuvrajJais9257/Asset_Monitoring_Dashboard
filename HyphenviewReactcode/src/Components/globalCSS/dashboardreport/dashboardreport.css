@@ -1,0 +1,105 @@
+
+.DashboardReport_table_export_rearch{
+
+    align-items: center;
+    align-items: center;
+  
+}
+
+
+
+.DashboardReport_table_export_rearch .Report_export_csv{
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    width: 36px;
+    height: 25px;
+
+    cursor: pointer;
+}
+
+.DashboardReport_table_export_rearc.Report_export_csv span{
+    margin-left: 10px ;
+    
+ }
+
+
+.dashboardresponsive-header{
+  background: linear-gradient(to right, #4694e8, #4694e8, #4694e8) !important;
+  color: white !important;
+}
+
+.dashboardresponsive-header:hover{
+  background: linear-gradient(to right, #4694e8, #4694e8, #4694e8) !important;
+  background-color: #4694e8 !important;
+  color: #fff ;
+}
+
+.has-search .form-right-cnt {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.900rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.DashboardReport_table_sub_container{
+    position: relative;
+    overflow: scroll;
+    max-height: 260px;
+
+}
+
+
+
+
+
+.DashboardReport_table_button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.DashboardReport_table_button button{
+    width: 120px;
+    margin-right: 5px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.pagination-bar {
+    display: flex;
+    justify-content: center;
+  }
+
+
+.DashboardReport_header_title{
+    position: relative;
+    font-size: 15px;
+    font-weight: 600; 
+    text-align: center;
+ }
+
+ .top{
+    display: flex;
+    flex-direction: row;
+    padding: 0%;
+    justify-content: space-between;
+ }
+
+ .bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+
+ .dt-search{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+ }

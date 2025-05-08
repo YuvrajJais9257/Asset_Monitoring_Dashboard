@@ -1,0 +1,290 @@
+/* ReportPage.css */
+
+/* Add your custom styling here */
+
+/* Container styling */
+/* .container {
+    margin: 20px;
+  } */
+
+/* Form styling */
+
+.well {
+  /* background-color: #f8f9fa;
+  border: 1px solid #ddd; */
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.Custom_header_container {
+  display: flex
+;
+    flex-direction: row;
+    padding: 5px;
+    margin: 10px;
+    align-items: center;
+    margin-left: 90px;
+}
+
+.Custom_header_container > span {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* Legend styling */
+legend {
+  font-size: 18px;
+  color: #343a40;
+  margin-bottom: 20px;
+}
+
+.upload-logo-option {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Textarea styling */
+textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+}
+
+/* Button styling */
+.btn-secondary,
+.btn-warning {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+
+
+.input-group-addon {
+  min-width: 40px;
+}
+
+
+.radio-inline {
+  margin-right: 15px;
+}
+
+.charts_img {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+/* .chart_type {
+  border-radius: 0px;
+} */
+
+.alert {
+  margin-top: 20px;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background-color: #ffca2c;
+}
+
+.custom-btn:hover {
+  background-color: #008cba;
+}
+.param_button {
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  left: 74px;
+  position: relative;
+}
+
+.param_button button {
+  margin: 5px;
+}
+
+.customformpage {
+  text-align: center;
+  vertical-align: middle;
+  margin: 20px;
+}
+
+.testalinritemval {
+  text-align: right;
+  color: black;
+  font-style: normal;
+}
+
+.custom-btn {
+  margin: 0px 2px 0px 0px;
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #008cba;
+  color: white; 
+}
+
+.custom-btn:last-child {
+  margin-right: 0;
+}
+
+img.charts_img {
+  height: 35px;
+  width: 35px;
+}
+
+
+
+input.radBut {
+  margin: 15px;
+}
+
+.Custom_container {
+  align-items: center;
+}
+
+.custome-mapping-container {
+  display: flex;
+  align-items: center;
+
+  left: 33.8%;
+  position: relative;
+}
+
+.chart_bot_icon {
+  width: 70px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.searchMappingItemIcon {
+  transform: translateX(10px);
+}
+.reportMappinAndTaggingDiv {
+  display: flex;
+
+  flex: 1;
+
+  float: right;
+
+  flex-direction: row;
+
+  max-width: 72% !important;
+}
+
+
+
+.reportTaggingButton {
+  transform: translateX(10px);
+
+  min-width: 15% !important;
+}
+
+.reportTaggingButton button {
+  min-width: 100% !important;
+}
+
+.ReportNameForMapping {
+  min-width: 85% !important;
+}
+
+.ReportNameFill,
+.MasterColumnFill {
+  flex: 1;
+
+  float: left;
+
+  max-width: 48%;
+}
+
+.DrillDownColumnForMapping {
+  min-width: 100% !important;
+}
+
+.columnSelectCustomQuery{
+  transform: translateX(10px);
+  z-index: 999;
+}
+
+.chart_bot_icon{
+  width: 70px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.selectForReportNameDropDown, .reactSelectForMasterColumn{
+  flex: 1;
+  float: left;
+  margin-right: 12px;
+}
+.ReactSelectForReportTitleDrilldown{
+  height: 33px !important;
+}
+.dataFromBackDiv{
+  transform: translateY(5px); 
+}
+.formGroupForReportMapping>input{
+  height: 39px !important;
+}
+.reactSelectForDrillDownSecond, .reactSelectForMasterColumn{
+  height: 33px !important;
+}
+.reactSelectForDrillDownSecond{
+  text-wrap: nowrap;
+}
+
+
+
+.MasterColumnFill{
+
+  transform: translateX(-17px);
+
+} 
+
+.columnSelectCustomQuery {
+  transform: translateX(10px);
+
+  z-index: 999;
+}
+.searchMappingItemIcon{
+  transform: translateX(10px);
+}
+
+.alert-for-update-custom-query {
+  background-color: #fff3cd; /* Light yellow background */
+  color: #856404; /* Darker yellowish text */
+  border: 1px solid #ffeeba; /* Light yellow border */
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px; /* Rounded corners */
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.alert-for-update-custom-query .alert-icon {
+  margin-right: 10px;
+}
+
+.alert-for-update-custom-query .alert-message {
+  flex: 1;
+}
+
+.alert-for-update-custom-query .close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #856404;
+  cursor: pointer;
+}
+
+.alert-for-update-custom-query .close-btn:hover {
+  color: #6c757d; /* Slightly darker gray on hover */
+}
+
+.adjustment-style{
+  margin-left: 10px;
+  width: 86%;
+ }

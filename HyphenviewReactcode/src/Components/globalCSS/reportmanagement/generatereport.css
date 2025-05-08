@@ -1,0 +1,521 @@
+.generate-report-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.export-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.filter-sort-container{
+  display: flex;
+  justify-content: flex-end;
+  margin: 1%;
+}
+.filter-sort-container button{
+  margin-right: 5px;
+}
+
+.sort-filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sort-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.Generateresponsive{
+  background: linear-gradient(to right, #595959, #8c8c8c, #a1a1a1) !important;
+  color: white !important;
+}
+
+.Generateresponsive:hover{
+  background-color: #4D5256 !important;
+  color: #fff ;
+}
+
+.sort-options-select {
+  width: 150px;
+}
+
+th{
+  text-wrap: nowrap;
+}
+
+#back-to-page-nav-btn{
+  height: fit-content;
+  margin: 1%;
+}
+
+.dt-layout-cell{
+  width: 100%;
+  
+}
+.dt-info{
+  text-align: center;
+}
+
+.filter-toggle-btn {
+  border: 1px solid #999;
+  border-radius: 0;
+  cursor: pointer;
+}
+.filter-toggle-icon, .sort-by-btn-icon{
+  width: 30px;
+  height: 24px;
+}
+.add-sort-item-icon{
+  width: 30px;
+  height: 32px;
+  margin-left: 5px;
+  margin: 1%;
+}
+.sort-remove-icon{
+  width: 25px;
+  height: 29px;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+.remove-filter-item-btn{
+  border-radius: 50%;
+  margin: 1%;
+}
+.sort-options-select{
+  margin: 1%;
+}
+#sort-by-btn{
+  border: 1px solid #999;
+  border-radius: 0;
+}
+.sort-options-super-parent{
+  display: flex;
+  justify-content: space-between;
+  margin: 1%;
+}
+.apply-sort{
+  height: 34px;
+  transform: translateY(7px);
+}
+.sort-options-item-container{
+  display: flex;
+  flex-direction: column;
+}
+.sort-options-item{
+  display: flex;
+  margin: 5px;
+}
+.dtsb-title{
+  color: transparent;
+}
+.dtsb-searchBuilder{
+  margin: 1%;
+}
+.dt-search{
+  margin-top: 12px;
+  margin: 1%;
+  display: none;
+}
+
+.dtSearch-magnifyingGlassIcon{
+transform: translate(-10px, 5px);
+}
+
+.dt-length{
+  margin: 1%;
+  display: flex;
+}
+.table-container-div{
+  width: 100%;
+}
+#myTable{
+  width: 100% !important;
+}
+
+/* .dt-buttons{
+display: flex;
+justify-content: end;
+} */
+.wrapper-of-backButton-and-dtButtons{
+display: flex;
+justify-content: space-between;
+}
+
+
+.Generate_table_button_subContainer button{
+margin-right: 5px;
+}
+
+.Generate_table_button{
+display: flex;
+justify-content: center;
+margin: 1%;
+}
+
+.dt-info{
+text-align: center;
+}
+
+.dt-paging{
+margin: 1%;
+text-align: center;
+}
+
+.dt-layout-row.dt-layout-table{
+  width: 98% !important;
+}
+
+
+
+div.dt-layout-row{
+  display: flex;
+  margin: 1%;
+  flex-direction: column;
+}
+
+.dt-button-collection.dtb-collection-closeable{
+  left: 0px !important;
+}
+
+div.dt-container div.dt-layout-row div.dt-layout-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dt-buttons{
+margin: 1%;
+}
+.dt-button-collection{
+margin: 1%;
+max-width: 96%;
+}
+
+.dt-button-collection label{
+margin-left: 3%;
+}
+
+.wrapper-of-dtLength-and-dtSearch{
+display: flex;
+justify-content: space-between;
+}
+
+.dt-length label{
+transform: translate(10px, 5px);
+}
+
+
+
+table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
+text-align: left;
+width: auto;
+}
+
+.custom-table .MuiTable-root {
+  border: 1px solid #ddd;
+}
+
+/* Styling the table header area */
+.horizontal-stripe-table .MuiTableHead-root {
+  background-color: #f0f0f0; /* Light grey color for the header background */
+  color: #333333; /* Darker text color for header text */
+}
+
+.horizontal-stripe-table .MuiTableHead-root .MuiTableCell-root {
+  color: #333333; /* Text color for header cells */
+  font-weight: bold; /* Make header text bold */
+  padding: 12px; /* Adjust padding as needed */
+  border-bottom: 2px solid #dddddd; /* Light grey border for header cells */
+}
+/* Styling the export icons and buttons */
+.horizontal-stripe-table .MuiIconButton-root {
+  color: #007bff; /* Set color for icons */
+  background-color: #f0f0f0; /* Light grey background for icon buttons */
+  border-radius: 4px; /* Rounded corners for the button */
+  margin: 0 4px; /* Add some spacing between buttons */
+}
+
+.horizontal-stripe-table .MuiIconButton-root:hover {
+  background-color: #e0e0e0; /* Slightly darker grey on hover */
+}
+
+/* Adjust table cell padding */
+.MuiTableCell-root {
+  width:auto;
+  padding: 8px 16px; /* Adjust as needed */
+}
+
+/* Change table header background color and text alignment */
+.MuiTableHead-root .MuiTableCell-root {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  text-align: left; /* Align text to the left */
+  border-bottom: 2px solid #ddd;
+}
+
+/* Set alternating row colors */
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) {
+  background-color: #fafafa;
+}
+
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: #ffffff;
+}
+
+/* Customize table borders */
+.MuiTable-root {
+  border: 1px solid #ddd;
+}
+
+.MuiTableCell-root {
+  border-right: 1px solid #ddd;
+}
+
+/* Remove border from last column */
+.MuiTableCell-root:last-child {
+  border-right: none;
+}
+
+/* Add hover effect for table rows */
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #f1f1f1;
+}
+
+/* Customize pagination button styles */
+.MuiPaginationItem-root {
+  color: #1976d2; /* Change to your desired color */
+}
+
+.MuiPaginationItem-root.Mui-selected {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Adjust table header font size */
+.MuiTableHead-root .MuiTableCell-root {
+  font-size: 1rem; /* Adjust as needed */
+}
+
+/* Adjust table body font size */
+.MuiTableBody-root .MuiTableCell-root {
+  font-size: 0.875rem; /* Adjust as needed */
+}
+
+/* Align table cell content vertically in the center */
+.MuiTableCell-root {
+  vertical-align: middle;
+}
+
+/* Customizing the drag handle in the row reordering */
+[data-row-drag-handle] {
+  cursor: grab;
+  color: #757575; /* Change to your desired color */
+}
+
+/* Adjust the horizontal scrollbar styling */
+.Custom_container .MuiTableContainer-root {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar {
+  height: 8px;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 4px;
+}
+/* Adjust table cell padding */
+.MuiTableCell-root {
+    padding: 8px 16px; /* Adjust as needed */
+}
+
+/* Change table header background color and text alignment */
+.MuiTableHead-root .MuiTableCell-root {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    text-align: left; /* Align text to the left */
+    border-bottom: 2px solid #ddd;
+}
+
+/* Set alternating row colors */
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) {
+    background-color: #fafafa;
+}
+
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+    background-color: #ffffff;
+}
+
+/* Customize table borders */
+.MuiTable-root {
+    border: 1px solid #ddd;
+}
+
+
+
+/* Remove border from last column */
+.MuiTableCell-root:last-child {
+    border-right: none;
+}
+
+/* Add hover effect for table rows */
+.MuiTableBody-root .MuiTableRow-root:hover {
+    background-color: #f1f1f1;
+}
+
+/* Customize pagination button styles */
+.MuiPaginationItem-root {
+    color: #1976d2; /* Change to your desired color */
+}
+
+.MuiPaginationItem-root.Mui-selected {
+    background-color: #1976d2;
+    color: white;
+}
+
+/* Adjust table header font size */
+.MuiTableHead-root .MuiTableCell-root {
+    font-size: 1rem; /* Adjust as needed */
+}
+
+/* Adjust table body font size */
+.MuiTableBody-root .MuiTableCell-root {
+    font-size: 0.875rem; /* Adjust as needed */
+}
+
+
+
+/* Customizing the drag handle in the row reordering */
+[data-row-drag-handle] {
+    cursor: grab;
+    color: #757575; /* Change to your desired color */
+}
+
+
+.Custom_container .MuiTableContainer-root {
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar {
+    height: 8px;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+}
+
+.Custom_container .MuiTableContainer-root::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 4px;
+}
+
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: #ffffff; 
+}
+
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #f5f5f5; 
+}
+
+.MuiTableBody-root .MuiTableCell-root:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5; 
+  z-index: -1; 
+}
+
+
+
+.MuiDataGrid-pinnedColumn {
+  color: black !important;
+}
+.table-container table {
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-size: 1rem; 
+}
+
+.MuiTableCell-root {
+ 
+  border-right: none;
+  vertical-align: middle;
+  position: relative;
+}
+
+
+.MuiTableCell-root:last-child {
+  border-right: none;
+}
+
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) {
+  background-color: #fafafa;
+}
+
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: #ffffff;
+}
+
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #f1f1f1;
+}
+
+
+.MuiTableBody-root .MuiTableCell-root:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  z-index: -1;
+}
+
+
+.View-Report-Page-Header{
+   margin-top: 15px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    display: flex;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    margin-left: 101px;
+    width: calc(100vw - 101px);
+}
+

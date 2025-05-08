@@ -1,0 +1,101 @@
+/* assignfeature.css */
+
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+  background-image: url("../../Assets/bg-3.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.form-container {
+  width: 600px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;animation: fadeIn 1s forwards;
+  margin: 0 auto;
+}
+
+
+/* Keyframe for fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+input[type="file"] {
+  padding: 5px;
+}
+
+
+input[type="file"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.note {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: -8px;
+  margin-bottom: 15px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+
+.Header {
+  margin-bottom: 20px;
+}
+
+
+.feature-name{
+  padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #0000002b;
+}
+.choose-file{
+  padding: 10px !important;
+    border-radius: 20px !important; 
+    border: 1px solid #0000002b !important;
+}
