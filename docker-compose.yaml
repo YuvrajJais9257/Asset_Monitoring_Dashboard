@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   react-app:
-    image: react1-app:latest
+    image: react-app:latest
 
     ports:
       # - "3000:3000"

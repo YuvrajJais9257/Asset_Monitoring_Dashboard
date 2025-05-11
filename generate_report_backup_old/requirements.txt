@@ -1,0 +1,10 @@
+fastapi
+openpyxl
+pandas
+psycopg2
+reportlab
+mysql-connector-python
+vertica-python
+sqlalchemy
+uvicorn
+python-multipart

@@ -32,15 +32,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-FILES_DIR = "/files"
+FILES_DIR = "/app/files"
 os.makedirs(FILES_DIR, exist_ok=True)
 FILES_DIR = os.path.join(os.getcwd(), "files")
-
-# host = 'db'
-# port = 3306
-# username = 'root'
-# password = 'Admin123*'
-# schema = 'hyphenview_new_release_test'
 
 mysql_connection = {
     'host' : 'db',
@@ -230,7 +224,7 @@ def detect_long_text_columns_postgres(rows, columns, max_length=10):
 
     return long_text_columns
 
-def first_page_content(db_type,customer_id, user_email_id, canvas, doc, report_title, time, start_date=0, end_date=0):
+def first_page_content(customer_id, user_email_id, canvas, doc, report_title, time, start_date=0, end_date=0):
     """
     Adds an image (e.g., logo) at the top-left, aligns the report title in the same row, 
     and includes the report period below the report generation timestamp.
@@ -255,20 +249,17 @@ def first_page_content(db_type,customer_id, user_email_id, canvas, doc, report_t
 
     # Draw image (logo)
     try:
-        if db_type == "mysql":
-            img_path = fetch_image_from_mysql(customer_id)
-        elif db_type == "postgres":
-            img_path = fetch_image_from_postgres(customer_id)
-
+        # img_path = fetch_image_from_mysql(customer_id)
+        img_path = fetch_image_from_postgres(customer_id)
         canvas.drawImage(img_path, img_x, img_y, width=img_width, height=img_height, mask='auto')
     except Exception as e:
+        print(f"Error loading image: {e}")
         pass
-        #print(f"Error loading image: {e}")
 
-    canvas.setFont("Helvetica-Bold", 14)
-    text_width = canvas.stringWidth(user_email_id, "Helvetica-Bold", 14)
-    x_text_below = img_x + (img_width - text_width) / 2  # Centered below the image
-    y_text_below = img_y - 20  # Spacing between image and text
+    #canvas.setFont("Helvetica-Bold", 14)
+    #text_width = canvas.stringWidth(user_email_id, "Helvetica-Bold", 14)
+    #x_text_below = img_x + (img_width - text_width) / 2  # Centered below the image
+    #y_text_below = img_y - 20  # Spacing between image and text
     #canvas.drawString(x_text_below, y_text_below, user_email_id)
 
     # Report Title (aligned horizontally with the image)
@@ -376,7 +367,8 @@ def fetch_mysql_data(user_email_id, customer_id, host, port, database, user, pas
         columns = [column[0] for column in cursor.description]
         workbook = openpyxl.Workbook()
         worksheet = workbook.active
-        img_path = fetch_image_from_mysql(customer_id)
+        # img_path = fetch_image_from_mysql(customer_id)
+        img_path = fetch_image_from_postgres(customer_id)
         img = excel_img(img_path)
         img.width = 100
         img.height = 50
@@ -438,6 +430,7 @@ def fetch_postgres_data(user_email_id, customer_id, host, port, database, user, 
         cursor.execute(query)
 
         columns = [desc[0] for desc in cursor.description]
+        # img_path = fetch_image_from_mysql(customer_id)
         img_path = fetch_image_from_postgres(customer_id)
         img = excel_img(img_path)
         img.width = 100
@@ -499,7 +492,8 @@ def fetch_vertica_data(user_email_id, customer_id, host, port, database, user, p
         cursor.execute(query)
 
         columns = [desc[0] for desc in cursor.description]
-        img_path = fetch_image_from_mysql(customer_id)
+        # img_path = fetch_image_from_mysql(customer_id)
+        img_path = fetch_image_from_postgres(customer_id)
         img = excel_img(img_path)
         img.width = 100
         img.height = 50
@@ -608,9 +602,9 @@ def generate_where_clause_mysql(filter_options, filter_operations):
                 continue              
 
             if operation == "equals":
-                clause = f"`{column}` IN ({', '.join([f'{value}' for value in values])})"
+                clause = f"`{column}` IN ({', '.join([f'\'{value}\'' for value in values])})"
             elif operation == "notEquals":
-                clause = f"`{column}` NOT IN ({', '.join([f'{value}' for value in values])})"
+                clause = f"`{column}` NOT IN ({', '.join([f'\'{value}\'' for value in values])})"
             elif operation in ("contains", "fuzzy"):
                 clause = " OR ".join([f"`{column}` LIKE '%{value}%'" for value in values])
             elif operation == "startsWith":
@@ -694,9 +688,7 @@ async def generate_report_pdf(user_email_id, customer_id, db_type, query, host, 
         time = datetime.now()
         new_formatted_time = time.strftime("%Y-%m-%d_%H-%M-%S")
         # report_name = os.path.join("/root/hyphenview_jan_release_25/hyphen_alchemy_4/app/files", report_name)
-        # report_name = os.path.join("/home/abhishek/generate_report_backup/files", report_name)
         report_name = os.path.join(FILES_DIR, report_name)
-        
 
         db_config = {
             'host': host,
@@ -833,13 +825,12 @@ async def generate_report_pdf(user_email_id, customer_id, db_type, query, host, 
                 return{"status":500,"Error":"Column limit exceeded, max columns allowed = 12"}
 
         valid_filename = f"{report_name}_{new_formatted_time}.pdf"
-        #report_title = f"{report_title}_{new_formatted_time}.pdf"
-        report_title = report_title
+        report_title = f"{report_title}"
         def on_first_page_function(canvas, doc):
             if (start_date==None and end_date==None) or (start_date=='null' and end_date=='null') or (start_date=='' and end_date==''):
-                first_page_content(db_type,customer_id, user_email_id, canvas, doc, report_title, time)
+                first_page_content(customer_id, user_email_id, canvas, doc, report_title, time)
             else:
-                first_page_content(db_type,customer_id, user_email_id, canvas, doc, report_title, time, start_date, end_date)
+                first_page_content(customer_id, user_email_id, canvas, doc, report_title, time, start_date, end_date)
 
         output_doc = SimpleDocTemplate(valid_filename, pagesize=(A1[1], A1[0]))
         output_doc.build(all_tables, onFirstPage=on_first_page_function)
@@ -857,7 +848,6 @@ async def generate_report_excel(user_email_id, customer_id, db_type, query, host
         schema = database
         username = username
         password = password
-        # report_name = os.path.join("/home/abhishek/generate_report_backup/files", report_name)
         report_name = os.path.join(FILES_DIR, report_name)
         if port:
             port = port
@@ -920,7 +910,6 @@ async def generate_report_csv(user_email_id, db_type, query, host, username, pas
     try:
         time = datetime.now()
         current_datetime_str = time.strftime("%Y-%m-%d_%H-%M-%S")
-        # report_name = os.path.join("/home/abhishek/generate_report_backup/files", report_name)
         report_name = os.path.join(FILES_DIR, report_name)
         valid_filename = f"{report_name}_{current_datetime_str}.csv"
         # Create a copy of the dataframe to avoid modifying the original
@@ -932,12 +921,14 @@ async def generate_report_csv(user_email_id, db_type, query, host, username, pas
     
         # Create the rows for our CSV
         rows_to_write = []
-        rows_to_write.append([f"**{report_title}**"])
-        if start_date!= None and end_date!= None:
+        rows_to_write.append([f"{report_title}"])
+        if start_date!=None and end_date!=None:
             time_period = "Report Period: " + start_date + " to " + end_date
-            rows_to_write.append([f"**{time_period}**"])
-        rows_to_write.append([f"**Report Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}**"])
-        gen_by = f"**Generated By : {user_email_id}**"
+            rows_to_write.append([f"{time_period}"])
+        else:
+            rows_to_write.append([])
+        rows_to_write.append([f"Report Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"])
+        gen_by = f"Generated By : {user_email_id}"
         rows_to_write.append([gen_by])
         rows_to_write.append([])
         if df_copy.empty:
@@ -964,7 +955,6 @@ async def generate_report_csv(user_email_id, db_type, query, host, username, pas
         with open(valid_filename, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerows(rows_to_write)
-
         report_title = valid_filename.strip().split('/')[-1]
         return {"message":"Report Generated Successfully.","file_url":valid_filename,"report_title":report_title}
 
@@ -975,7 +965,6 @@ async def generate_report_csv(user_email_id, db_type, query, host, username, pas
 async def extract(user_details: Request):
     try:
         user_details = await user_details.json()
-
         if "user_email_id" in user_details:
             user_email_id = user_details.get("user_email_id")
         customer_id = user_details.get("customer_id")
@@ -997,21 +986,6 @@ async def extract(user_details: Request):
                 content="Missing required parameters: customer_id or database_type.",
             )
         # Select database service
-        # if database_type == "mysql":
-        #     database_url = {
-        #         "host": host,
-        #         "port": port,
-        #         "username": username,
-        #         "password": password,
-        #         "database": schema,
-        #     }
-        # else:
-        #     return JSONResponse(
-        #         status_code=status.HTTP_400_BAD_REQUEST,
-        #         content=f"Unsupported database type: {database_type}",
-        #     )
-
-        # Connect to the database
         try:
             if database_type == "postgres":
                 conn = psycopg2.connect(
@@ -1039,44 +1013,60 @@ async def extract(user_details: Request):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content=f"Database connection failed: {db_connect_error}",
             )
+
+        # Connect to the database
+        # try:
+        #     conn = mysql.connector.connect(
+        #         host=database_url["host"],
+        #         port=database_url["port"],
+        #         user=database_url["username"],
+        #         password=database_url["password"],
+        #         database=database_url["database"],
+        #     )
+        # except Exception as db_connect_error:
+        #     return JSONResponse(
+        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         content=f"Database connection failed: {db_connect_error}",
+        #     )
         # Fetch master report details
-        try:
-            if flag != "drilldownpage":
-                report_name = master_report_name
-                pass
-            else:
+        if flag!="drilldownpage":
+            report_name = master_report_name
+            pass
+        else:
+            try:
                 if detailed_report_id:
                     where_conditions = {
-                        "customer_id": customer_id,
-                        "detailed_report_id": detailed_report_id
+                    "customer_id": customer_id,
+                    "detailed_report_id": detailed_report_id
                     }
                 else:
                     where_conditions = {
-                        "customer_id": customer_id,
-                        "master_report": master_report_name
+                    "customer_id": customer_id,
+                    "master_report": master_report_name
                     }
                 columns = ["*"]
-                
+            
                 result = read_records(
-                    conn, table="detailed_report", columns=columns, where_conditions=where_conditions
+                conn, table="detailed_report", columns=columns, where_conditions=where_conditions
                 )
                 if not result:
                     return JSONResponse(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        content="No master_report found for the given details.",
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    content="No master_report found for the given details.",
                     )
 
                 report_name = result[0]["drilldown_report"]
                 drilldown_column = ast.literal_eval(result[0]["drilldown_column"])
-        except Exception as fetch_template_error:
-            return JSONResponse(
+            except Exception as fetch_template_error:
+                return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content=f"Error fetching report template: {fetch_template_error}",
-            )
+                )
 
         # Fetch report template details
         try:
-            print('................',report_name)
+            
+
             where_conditions = {
                 "customer_id": customer_id,
                 "report_template_name": report_name
@@ -1099,7 +1089,6 @@ async def extract(user_details: Request):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content=f"Error fetching report template: {fetch_template_error}",
             )
-            
 
         # Fetch secondary database details
         try:
@@ -1168,7 +1157,7 @@ async def extract(user_details: Request):
                         query = f'SELECT {joined_column_names} FROM ({query}) AS MAIN WHERE {where_clause}'
                     else:
                         query = f'SELECT * FROM ({query}) AS MAIN WHERE {where_clause}'
-                    print(query)
+                    
                 elif db_config["rdbms_name"] == 'postgres':
                     where_clause = generate_where_clause_postgres(filter_options, filter_operations)
                     if column_names and len(column_names) > 0:
@@ -1201,12 +1190,12 @@ async def extract(user_details: Request):
                     )
                 query += order_by_clause
 
+
         except Exception as construct_query_error:
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content=f"Error constructing query: {construct_query_error}",
             )
-        
         if file_format == "pdf":
             res = await generate_report_pdf(user_email_id, customer_id, db_config['rdbms_name'],query,db_config['domain_name'],db_config['db_user_name'],
                                       db_config['db_password'],db_config['db_schema_name'],db_config['db_port'],master_report_name,master_report_name)
@@ -1216,20 +1205,19 @@ async def extract(user_details: Request):
         elif file_format == "csv":
             res = await generate_report_csv(user_email_id, db_config['rdbms_name'],query,db_config['domain_name'],db_config['db_user_name'],
                                       db_config['db_password'],db_config['db_schema_name'],db_config['db_port'],master_report_name,master_report_name)
-        print(res)
+        
         file_path = res["file_url"]
+        
         report_title = res["report_title"]
         _, extension = os.path.splitext(file_path)
         
-        print(extension)
-        
-        if report_title.endswith(extension):
-            report_title = report_title[: -len(extension)]
-
         with open(file_path,'rb') as new:
             file_content = new.read()
         compressed_data = zlib.compress(file_content, level=zlib.Z_BEST_COMPRESSION)
         compressed_stream = io.BytesIO(compressed_data)
+
+        if report_title.endswith(extension):
+            report_title = report_title[: -len(extension)]
 
         def iterfile():
             yield from compressed_stream
