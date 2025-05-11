@@ -1,5 +1,5 @@
 """This module contains pyadntic models for database related operations"""
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, validator,BaseModel
 from typing import Optional
 from .basic_validation import BaseModelWithHTMLValidation
 from typing import Dict, List,Type,Any
@@ -71,7 +71,7 @@ class LoginData(BaseModelWithHTMLValidation):
     password: str
 
 
-class save_report_template_input(BaseModelWithHTMLValidation):
+class save_report_template_input(BaseModel):
     """Pydantic model to save report template"""
     report_template_name: str
     chart_colours: Optional[dict] = {}

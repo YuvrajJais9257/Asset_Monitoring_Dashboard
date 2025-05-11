@@ -19,7 +19,10 @@ import utilities.loggings as LOGGINGS
 from service.MphasisPassword import MphasisScheduler
 from psycopg2 import extras
 
-
+path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "local_reports")
+ 
+if not os.path.exists(path):
+    os.makedirs(path)
 # Purge old files
 delete_old_files(os.path.join(os.path.dirname(os.path.abspath(__file__)), "local_reports"))
 
@@ -260,7 +263,7 @@ class ScheduledTask:
                         logger.info("created pdf")
                     elif format_type == "xlsx":
                         logger.info("excel generation started")
-                        generate_excel_report(df, filename, report_id, start_date,end_date,db_type)
+                        generate_excel_report(df, filename, report_id, start_date,end_date)
                         logger.info("excel generated")
                     attachments.append(filename)
             logger.info("attach: %s ",attachments)

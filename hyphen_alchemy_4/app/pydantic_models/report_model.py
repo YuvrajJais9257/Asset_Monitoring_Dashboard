@@ -1,5 +1,5 @@
 """This module contains pydantic models for report related operations"""
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, validator,BaseModel
 from typing import Optional
 from typing import Dict, List, Type, Any
 from fastapi import UploadFile
@@ -56,7 +56,7 @@ class getReportData_input(BaseModelWithHTMLValidation):
     database_type: str
     _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class reportPreview_input(BaseModelWithHTMLValidation):
+class reportPreview_input(BaseModel):
     """Pydantic model for getting report preview."""
     report_name: str
     report_type: str
@@ -237,7 +237,7 @@ class filter_input(BaseModelWithHTMLValidation):
     database_type: str
     _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class updateReport_input(BaseModelWithHTMLValidation):
+class updateReport_input(BaseModel):
     """Pydantic model to update report."""
     report_template_name: Optional[str] = None
     report_id: int = None

@@ -206,6 +206,9 @@ def fetch_image_from_mysql(customer_id):
     :param output_path: Path where the image should be saved
     :return: Path to the saved image file or None if no image is found
     """
+    cursor_logger = LOGGINGS.CustomLogger()
+    logging = cursor_logger.setup_logger()
+    logging.info("connecting to mysql for fetching image")
 
     try:
         # Connect to MySQL database
@@ -236,7 +239,7 @@ def fetch_image_from_mysql(customer_id):
             return 'logo.png'
 
     except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        logging.error("Error: %s",err)
         return None
 
     finally:
@@ -310,6 +313,11 @@ def first_page_content(db_type,canvas, doc, report_title, dates, custom_page_siz
     """
     Draw the first page content of the report.
     """
+    db_type = config['primary_database']['database_type']
+    cursor_logger = LOGGINGS.CustomLogger()
+    logging = cursor_logger.setup_logger()
+    logging.info("first Page content generation started.")
+
     dates = dates.strftime("%Y-%m-%d %H:%M:%S")
     page_width, page_height = doc.pagesize
     x_text = 350
@@ -317,11 +325,15 @@ def first_page_content(db_type,canvas, doc, report_title, dates, custom_page_siz
     y_text = custom_page_size[0] - 60
     report_title = report_title.upper()
     # logo_path = "logo.png"
+
+    logging.info("db_type: %s",db_type)
     
     if db_type == "mysql":
         logo_path = fetch_image_from_mysql(customer_id)
     elif db_type == "postgres":
         logo_path = fetch_image_from_postgres(customer_id)
+    
+    logging.info("Image fetched successfully")
 
     canvas.setFont("Helvetica-Bold", 15)
     canvas.drawString(x_text, y_text, report_title)
@@ -463,6 +475,7 @@ def generate_pdf_report(report_query, filename, db_config, title_text, db_type):
             all_tables.append(table)
 
         # Generate PDF
+        logging.info("fetch image")
         def on_first_page_function(canvas, doc):
             first_page_content(db_type,canvas, doc, title_text, time, custom_page_size)
 
@@ -470,6 +483,7 @@ def generate_pdf_report(report_query, filename, db_config, title_text, db_type):
             filename, pagesize=(custom_page_size[1], custom_page_size[0])
         )
         output_doc.build(all_tables, onFirstPage=on_first_page_function)
+        logging.info("fetched image")
 
     except Exception as e:
         logging.error(f"Error in pdf Exception: {str(e)}")
@@ -479,8 +493,9 @@ def generate_pdf_report(report_query, filename, db_config, title_text, db_type):
         if 'conn' in locals():
             conn.close()
 
-def generate_excel_report(df,filename, title_text,start_date,end_date,db_type):
+def generate_excel_report(df,filename, title_text,start_date,end_date):
     try:
+        db_type = config['primary_database']['database_type']
         cursor_logger = LOGGINGS.CustomLogger()
         logging = cursor_logger.setup_logger()
         

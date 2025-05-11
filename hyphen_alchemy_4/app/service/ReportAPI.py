@@ -3045,42 +3045,78 @@ class ReportManager:
                                 
                             if key == "report_template_name":
                                 if user_details['database_type'] == "postgres":
-                                    
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     (db_values[key], value, "", ""),
+                                    # )
+                                    # cursor.execute("CALL update_report_name(%s, %s, %s, %s)", ( db_values[key], value,"",""))
                                     cursor.execute(
                                         """
                                         CALL update_report_name(
                                             %s::varchar,
                                             %s::varchar,
                                             %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
                                             %s::varchar
                                         )
                                         """,
-                                        (db_values[key], value, "", "")
+                                        (db_values[key], value, "", "","","")
                                     )
                                 else:
                                     cursor.callproc(
                                         "UpdateReportName",
-                                        (db_values[key], value, "", ""),
+                                        (db_values[key], value, "", "","",""),
                                     )
                             elif key == "report_type":
                                 if user_details['database_type'] == "postgres":
-                                    
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     ("", "", db_values[key], value),
+                                    # )
                                     cursor.execute(
                                         """
                                         CALL update_report_name(
                                             %s::varchar,
                                             %s::varchar,
                                             %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
                                             %s::varchar
                                         )
                                         """,
-                                        ("", "", db_values[key], value)
+                                        ("", "", db_values[key], value,"","")
                                     )
 
                                 else:
                                     cursor.callproc(
                                         "UpdateReportName",
-                                        (db_values[key], value, "", ""),
+                                        (db_values[key], value, "", "","",""),
+                                    )
+                            elif key == "chart_type":
+                                if user_details['database_type'] == "postgres":
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     ("", "", db_values[key], value),
+                                    # )
+                                    cursor.execute(
+                                        """
+                                        CALL update_report_name(
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar
+                                        )
+                                        """,
+                                        ("", "","","",db_values[key], value)
+                                    )
+
+                                else:
+                                    cursor.callproc(
+                                        "UpdateReportName",
+                                        ("","",db_values[key], value),
                                     )
                             logging.info(
                                 "Called stored procedure UpdateReportName with \

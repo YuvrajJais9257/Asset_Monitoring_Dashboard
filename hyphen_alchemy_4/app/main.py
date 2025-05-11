@@ -28,11 +28,11 @@ def remove_pid_file():
 
 def run_api_db():
     """Run the database API."""
-    uvicorn.run("middlware.db_management_middleware:db_app", host="0.0.0.0", port=8000)
+    uvicorn.run("middlware.db_management_middleware:db_app", host="0.0.0.0", port=8000 ,ssl_keyfile="/app/ssl/certificates/reissue/hyphenview.in_key.txt" ,ssl_certfile="/app/ssl/certificates/reissue/hyphenview.in.crt")
 
 def run_api_main():
     """Run the main API."""
-    uvicorn.run("middlware.middleware:create_app", host="0.0.0.0", port=3001)
+    uvicorn.run("middlware.middleware:create_app", host="0.0.0.0", port=3001,ssl_keyfile="/app/ssl/certificates/reissue/hyphenview.in_key.txt" ,ssl_certfile="/app/ssl/certificates/reissue/hyphenview.in.crt")
 
 # for windows machine
 # def run_api_report():
@@ -50,14 +50,25 @@ def run_api_report():
  
     # Command to run Gunicorn with Uvicorn workers
     command = [
-        "gunicorn",
-        "-w", str(num_workers),  # Number of workers
-        "-k", "uvicorn.workers.UvicornWorker",  # Use Uvicorn worker class
-        "middlware.report_management_middleware:report_app",  # Module:App format
-        "--bind", f"{host}:{port}",
-    ]
- 
-    # Run the command
+
+         "gunicorn",
+
+         "-w", str(num_workers),  # Number of workers
+
+         "-k", "uvicorn.workers.UvicornWorker",  # Use Uvicorn worker class
+
+         "middlware.report_management_middleware:report_app",  # Module:App format
+
+         "--bind", f"{host}:{port}",
+
+         "--certfile", "/app/ssl/certificates/reissue/hyphenview.in.crt",  # Path to your SSL certificate
+
+         "--keyfile", "/app/ssl/certificates/reissue/hyphenview.in_key.txt"       # Path to your private key
+
+     ]
+
+     # Run the command
+    # Command to run Gunicorn with Uvicorn workers
     subprocess.run(command)
 
 def acquire_lock():
@@ -104,7 +115,7 @@ def run_api_schedule():
 
 def run_api_chatbot():
     """Run the chatbot API."""
-    uvicorn.run("middlware.chatbot_management_middleware:chatbot_management_app", host="0.0.0.0", port=9001)
+    uvicorn.run("middlware.chatbot_management_middleware:chatbot_management_app", host="0.0.0.0",port=9001,ssl_keyfile="/app/ssl/certificates/reissue/hyphenview.in_key.txt" ,ssl_certfile="/app/ssl/certificates/reissue/hyphenview.in.crt")
 
 def is_port_in_use(port):
     """Check if a port is in use."""

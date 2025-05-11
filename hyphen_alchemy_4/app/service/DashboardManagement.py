@@ -622,7 +622,7 @@ class DashboardManagement:
                 logging.info("No frame exist with name :{dataframe_name}")
                 return {
                     "statusCode":self.conf['codes']['no records'],
-                    "message": "{} not found".format(
+                    "message": "{} frame verified Successfully".format(
                         dataframe_name
                     ),
                     "verify": 0,
