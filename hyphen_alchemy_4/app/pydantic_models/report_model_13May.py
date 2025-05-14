@@ -1,5 +1,5 @@
 """This module contains pydantic models for report related operations"""
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, validator,BaseModel
 from typing import Optional
 from typing import Dict, List, Type, Any
 from fastapi import UploadFile
@@ -24,6 +24,7 @@ class getReportTemplatealldetail_input(BaseModelWithHTMLValidation):
     """Pydantic model for getting report template detail."""
     email: Optional[EmailStr]
     database_type: str
+    group_id:int
     _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class getReportAccesses_input(BaseModelWithHTMLValidation):
@@ -55,7 +56,7 @@ class getReportData_input(BaseModelWithHTMLValidation):
     database_type: str
     _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class reportPreview_input(BaseModelWithHTMLValidation):
+class reportPreview_input(BaseModel):
     """Pydantic model for getting report preview."""
     report_name: str
     report_type: str
@@ -136,26 +137,29 @@ class assignFeatures_input(BaseModelWithHTMLValidation):
 class getaccessaccordingtogroupid_input(BaseModelWithHTMLValidation):
     """Pydantic model for getting access according to groupid."""
     group_id: int
+    database_type: str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class getTags_input(BaseModelWithHTMLValidation):
   """Pydantic model for getting report tags."""
   customer_id: int
-  connection_type: str
   schema: str
   for_master_report: str
   query: Optional[str] = None
   report_title: Optional[str] = None
-  _validate_database_type = validator('connection_type', allow_reuse=True)(validate_database_type)
+  database_type: str
+  connection_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 
 class checkDrillDown_input(BaseModelWithHTMLValidation):
   """Pydantic model for checking report drilldown."""
   query: str
   type: str
-  db_type: Optional[str] = None
   schema_name: Optional[str] = None
   customer_id: Optional[int] = None
-  _validate_database_type = validator('db_type', allow_reuse=True)(validate_database_type)
+  database_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class saveDrillDownReport_input(BaseModelWithHTMLValidation):
   """Pydantic model for saving drilldown report."""
@@ -164,6 +168,8 @@ class saveDrillDownReport_input(BaseModelWithHTMLValidation):
   master_report: str
   drilldown_report: str
   customer_id: int
+  database_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class getDrillDownData_input(BaseModelWithHTMLValidation):
   """Pydantic model for getting drilldown data."""
@@ -173,7 +179,8 @@ class getDrillDownData_input(BaseModelWithHTMLValidation):
   page_size : Optional[int] = None
   page_no : Optional[int] = None
   selectedSeriesName: Optional[str] = ''
-  database_type: Optional[str] = 'mysql'
+  database_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class updateDrillDownReport_input(BaseModelWithHTMLValidation):
   """Pydantic model for updating drilldown report."""
@@ -182,6 +189,8 @@ class updateDrillDownReport_input(BaseModelWithHTMLValidation):
   master_report: str
   drilldown_report: str
   customer_id: int
+  database_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class getUpdateDrillDown_input(BaseModelWithHTMLValidation):
   """Pydantic model for getting updated drilldown report."""
@@ -190,15 +199,17 @@ class getUpdateDrillDown_input(BaseModelWithHTMLValidation):
   master_report: str
   query: str
   customer_id: int
-  db_type: str
-  _validate_database_type = validator('db_type', allow_reuse=True)(validate_database_type)
+  database_type: str
+  _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class insert_data_input(BaseModelWithHTMLValidation):
     """Pydantic model for inserting data."""
     title: str
     file_path: str
     selected_columns: List[str]
- 
+    database_type: str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
+
 class chart_input(BaseModelWithHTMLValidation):
     """Pydantic model for chart."""
     chart_type: str
@@ -206,6 +217,8 @@ class chart_input(BaseModelWithHTMLValidation):
     column_types: Dict[str, str]
     table_name: str
     report_title: str
+    database_type: str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class Condition(BaseModelWithHTMLValidation):
     """Pydantic model for conditions"""
@@ -221,8 +234,10 @@ class filter_input(BaseModelWithHTMLValidation):
     table_name: str
     report_title: str
     conditions: List[Condition]
+    database_type: str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class updateReport_input(BaseModelWithHTMLValidation):
+class updateReport_input(BaseModel):
     """Pydantic model to update report."""
     report_template_name: Optional[str] = None
     report_id: int = None
@@ -254,16 +269,19 @@ class updateReport_input(BaseModelWithHTMLValidation):
     text_alignment: Optional[str] = None
     box_customization_options: Optional[Dict] = {}
     chart_customizations_options: Optional[dict] = None
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class UploadImageRequest(BaseModelWithHTMLValidation):
     """Pydantic model for uploading image."""
     feature_name: str
     customer_id: str
     database_type: str
-
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 class upload_csv_input(BaseModelWithHTMLValidation):
     """Pydantic model for uploading csv."""
     file_location: str
+    database_type: str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class getschemanamedetail_input(BaseModelWithHTMLValidation):
     """Pydantic model to get schema details."""
@@ -271,6 +289,7 @@ class getschemanamedetail_input(BaseModelWithHTMLValidation):
     group_id: int
     connection_type: str
     database_type : str
+    _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class fetchUniques_input(BaseModelWithHTMLValidation):
     """Pydantic model for fetching Uniques input."""

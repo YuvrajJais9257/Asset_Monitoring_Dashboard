@@ -12,7 +12,7 @@ from pathlib import Path
 from fastapi import HTTPException, UploadFile, File, Form, status
 from fastapi.responses import JSONResponse
 from fastapi.responses import StreamingResponse
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 import psycopg2
 import requests
 from database_services.common import CommonDatabaseServices
@@ -20,13 +20,13 @@ from utilities.config import config
 import utilities.loggings as LOGGINGS
 from pydantic_models.report_model import Condition,updateReport_input,\
       UploadImageRequest, upload_csv_input
-# from database_services.postgres_service import PostgreSQLServices
+
 import zlib
 import io
 from database_services.common import DatabaseChunkProcessor
-# from database_services.mysql_service import MySQLServices, generate_where_clause_mysql
+
 from database_services.common import MySQLServices, generate_where_clause_mysql
-# from database_services.postgres_service import PostgreSQLServices, generate_where_clause_postgres
+
 from database_services.common import PostgreSQLServices, generate_where_clause_postgres, generate_where_clause_vertica
 from database_services.common import OracleServices
 from fastapi.responses import StreamingResponse
@@ -60,7 +60,7 @@ class ReportManager:
             cursor_logger = LOGGINGS.CustomLogger()
             logging = cursor_logger.setup_logger()
             self.db_services = db_services
-            # self.dask_service = dask_service
+
             self.database_chunk_processor = DatabaseChunkProcessor()
             self.conf = config
             self.ALLOWED_EXTENSIONS = set(
@@ -125,103 +125,6 @@ class ReportManager:
                 "error":f"Chart path error: {e}",
             }
 
-    # async def get_report(self, user_details: dict):
-    #     """
-    #     This function fetches a list of report templates based on user details such \
-    #         as customer_id, group_id,
-    #     and email. It queries the MySQL database for reports that the user has access to.
-
-    #     - If the reports are found, they are returned in JSON format.
-    #     - If no reports are found, an appropriate message is returned.
-    #     - In case of an error, it logs the error and returns an internal server error response.
-    #     """
-    #     try:
-    #         # Extract user details from the input dictionary
-    #         cursor_logger = LOGGINGS.CustomLogger()
-    #         logging = cursor_logger.setup_logger()
-    #         customer_id = user_details.get("customer_id")
-    #         email = user_details.get("email")
-    #         database_type = user_details.get("database_type")
-    #         group_id = user_details.get("group_id")
-
-    #         # Log the received request
-    #         logging.info(
-    #             f"Request received: customer_id={customer_id}, email={email}, \
-    #                 database_type={database_type}, group_id={group_id}"
-    #         )
-
-    #         if database_type == "mysql":
-    #             # Prepare MySQL database connection details
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-
-    #             # Establish a connection to MySQL database
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-
-    #             # Query to fetch report templates the user has access to
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 report_templates = []
-    #                 cursor.execute(
-    #                     f"select * from {config['database_tables']['view_report_access_group']}\
-    #                           where customer_id = %s and group_id = %s and access_mask != 'null'\
-    #                               and user_email_id = %s ORDER BY report_id DESC",
-    #                     (customer_id, group_id, email),
-    #                 )
-    #                 result = cursor.fetchall()
-
-    #                 for item in result:
-    #                     db_details_id = item["db_details_id"]
-    #                     cursor.execute(
-    #                         f"select rdbms_name, db_schema_name from {config['database_tables']['database_details']} "
-    #                         f"where db_details_id = %s",
-    #                         (db_details_id,)
-    #                     )
-    #                     db_details = cursor.fetchone()
-                        
-    #                     report_templates.append(
-    #                         {
-    #                             "report_id": item["report_id"],
-    #                             "report_name": item["report_template_name"],
-    #                             "report_type": item["report_type"],
-    #                             "chart_type": item["chart_type"],
-    #                             "drilldown": item["enable_drilldown"],
-    #                             "rdbms_name": db_details["rdbms_name"] if db_details else None,
-    #                             "db_schema_name": db_details["db_schema_name"] if db_details else None,
-    #                             "access_mask": item["access_mask"],
-    #                         }
-    #                     )
-    #                 database_mysql.close()
-
-    #                 # Return the fetched report templates
-    #                 if len(report_templates) > 0:
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_200_OK, content=report_templates
-    #                     )
-    #                 else:
-    #                     # Log and return message if no templates found
-    #                     logging.info(
-    #                         f"No templates found for customer_id={customer_id}, group_id={group_id}"
-    #                     )
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_204_NO_CONTENT,
-    #                         content="No Templates Found",
-    #                     )
-
-    #     except Exception as unexpected_exception:
-    #         # Log any unexpected exception and return an error response
-    #         logging.error(
-    #             f"Unexpected error: {unexpected_exception}", exc_info=True
-    #         )
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content=f"Internal server error: {unexpected_exception}",
-    #         )
-
     async def get_report(self, user_details: dict):
         """
         This function fetches a list of report templates based on user details such \
@@ -250,7 +153,7 @@ class ReportManager:
                 if database_type == "mysql":
                     database_url = self.mysql_database_url
                     database_service = MySQLServices(**database_url)
-                    cursor = database_service.connect().cursor(dictionary=True)
+                    database_service.connect()
                     logging.info("Using MySQL database service.")
                 elif database_type == "oracle":
                     database_url = self.oracle_database_url
@@ -260,7 +163,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect()
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return {
@@ -285,14 +188,9 @@ class ReportManager:
                     "StatusCode":int(config['codes']['database error']),
                     "error":f"Query execution error: {e}",
                 }
-            # result = cursor.fetchall()
+
             for item in result:
                 db_details_id = item["db_details_id"]
-                # cursor.execute(
-                #     f"select rdbms_name, db_schema_name from {config['database_tables']['database_details']} "
-                #     f"where db_details_id = %s",
-                #     (db_details_id,)
-                # )
                 try:
 
                     db_details = database_service.read_records(
@@ -306,7 +204,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['database error']),
                         "error":f"Database details error: {e}",
                     }
-                # db_details = cursor.fetchone()
+       
                 report_templates.append(
                     {
                         "report_id": item["report_id"],
@@ -319,11 +217,11 @@ class ReportManager:
                         "access_mask": item["access_mask"],
                     }
                 )
-            # database_mysql.close()
+       
 
             # Return the fetched report templates
             if len(report_templates) > 0:
-                # database_service.close_connection()
+       
                 return{
                     "StatusCode":int(config['codes']['success']),
                     "content":report_templates,
@@ -333,193 +231,24 @@ class ReportManager:
                 logging.info(
                     f"No templates found for customer_id={customer_id}, group_id={group_id}"
                 )
-                # database_service.close_connection()
+       
                 return{
                     "StatusCode":int(config['codes']['no records']),
                     "error":f"No Templates Found",
                 }
-            
-                # return JSONResponse(
-                #     status_code=status.HTTP_204_NO_CONTENT,
-                #     content="No Templates Found",
-                # )
-
+       
         except Exception as unexpected_exception:
             # Log any unexpected exception and return an error response
             logging.error(
                 f"Unexpected error: {unexpected_exception}", exc_info=True
             )
-            # database_service.close_connection()
+       
             return{
                 "StatusCode":int(config['codes']['internal error']),
                 "error":f"Internal server error: {unexpected_exception}",
             }
         finally:
             database_service.close_connection()
-
-    # async def get_reportTemplate(self, user_details: dict):
-    #     """
-    #     This function fetches all the report templates available for a given user based on \
-    #         their role.
-    #     If the user belongs to an 'Admin' group, it returns all report templates for that \
-    #         customer.
-    #     For other groups, it fetches templates mapped to their group.
-    #     """
-    #     try:
-    #         cursor_logger = LOGGINGS.CustomLogger()
-    #         logging = cursor_logger.setup_logger()
-    #         # Log the received request
-    #         logging.info("Received request with user details: %s", user_details)
-    #         email = user_details.get("email")
-    #         # group_id = user_details.get("group_id")
-    #         database_type = user_details.get("database_type")
-
-    #         if database_type == "mysql":
-    #             # Prepare MySQL database connection details
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-
-    #             # Establish a connection to MySQL database
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             # Query to fetch the user’s customer_id and group_id using their email
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"select customer_id, group_id from\
-    #                           {config['database_tables']['user_account']}\
-    #                               where user_email_id = %s",
-    #                     (email,),
-    #                 )
-    #                 result = cursor.fetchall()
-
-    #                 # Handle case where no user is found
-    #                 if not result:
-    #                     logging.warning("No user found with email: %s", email)
-    #                     raise HTTPException(status_code=404, detail="User not found")
-
-    #                 # Extract customer_id and group_id from the result
-    #                 customer_id = result[0]["customer_id"]
-    #                 group_id = result[0]["group_id"]
-
-    #                 # Fetch group name to determine the user’s role
-    #                 logging.info("Fetching group name for group_id: %s", group_id)
-    #                 cursor.execute(
-    #                     f"select groupname from {config['database_tables']['user_group']} \
-    #                         where group_id = %s",
-    #                     (group_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 groupname = result[0]["groupname"]
-
-    #                 if groupname in ["SuperAdmin"]:
-    #                     # If the user is an Admin, fetch all report templates
-    #                     logging.info(
-    #                         "User is an Admin. Fetching all report templates for customer_id: %s",
-    #                         customer_id,
-    #                     )
-    #                     cursor.execute(
-    #                         f"select * from {config['database_tables']['report_template']} \
-    #                             where customer_id = %s ORDER BY report_id DESC",
-    #                         (customer_id,),
-    #                     )
-    #                     result = cursor.fetchall()
-
-    #                     # Prepare the report templates response
-    #                     report_templates = [
-    #                         {
-    #                             "report_id": item["report_id"],
-    #                             "report_name": item["report_template_name"],
-    #                             "report_type": item["report_type"],
-    #                             "chart_type": item["chart_type"],
-    #                             "drilldown": item["enable_drilldown"],
-    #                             "query": item["defined_query"],
-    #                             "start_date": item["start_date"],
-    #                             "end_date": item["end_date"],
-    #                             "enable_drilldown": item["enable_drilldown"],
-    #                             "auto_update_interval": item["auto_update_interval"],
-    #                             "time_period": item["time_period"],
-    #                             "show_in_dashboard": item["show_in_dashboard"],
-    #                         }
-    #                         for item in result
-    #                     ]
-
-    #                     # Close MySQL connection
-    #                     database_mysql.close()
-
-    #                     # Return the report templates
-    #                     logging.info(
-    #                         "Successfully fetched and returned report templates for Admin user"
-    #                     )
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_200_OK, content=report_templates
-    #                     )
-    #                 elif groupname:
-    #                     # If the user is in another group, fetch group-specific report templates
-    #                     report_templates = []
-    #                     logging.info(
-    #                         "User is in group: %s. Fetching report templates", groupname
-    #                     )
-
-    #                     # Query to fetch report templates mapped to the group
-    #                     cursor.execute(
-    #                         f"select * from {config['database_tables']['group_report_map']}\
-    #                               where group_id = %s",
-    #                         (group_id,),
-    #                     )
-    #                     result = cursor.fetchall()
-    #                     report_template_ids = [data["report_id"] for data in result]
-
-    #                     for i in report_template_ids:
-    #                         cursor.execute(
-    #                             f"select report_id, report_template_name, report_type,\
-    #                                   chart_type, enable_drilldown from\
-    #                                       {config['database_tables']['report_template']}\
-    #                                           where customer_id = %s and report_id = %s\
-    #                                               ORDER BY report_id DESC",
-    #                             (customer_id, i),
-    #                         )
-    #                         result = cursor.fetchall()
-    #                         report_templates.append(
-    #                             {
-    #                                 "report_id": result[0]["report_id"],
-    #                                 "report_name": result[0]["report_template_name"],
-    #                                 "report_type": result[0]["report_type"],
-    #                                 "chart_type": result[0]["chart_type"],
-    #                                 "drilldown": result[0]["enable_drilldown"],
-    #                             }
-    #                         )
-
-    #                     # Close MySQL connection
-    #                     database_mysql.close()
-
-    #                     # Return the group-specific report templates
-    #                     logging.info(
-    #                         "Successfully fetched and returned report templates for user group"
-    #                     )
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_200_OK, content=report_templates
-    #                     )
-    #                 else:
-    #                     # No templates found case
-    #                     database_mysql.close()
-    #                     logging.warning("No templates found for user")
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_200_OK,
-    #                         content="No Templates Found",
-    #                     )
-
-    #     except Exception as unexpected_exception:
-    #         # Log any unexpected exception and return an error response
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500, detail=f"Internal server error: {unexpected_exception}"
-    #         )
 
     async def get_reportTemplate(self, user_details: dict):
         """
@@ -535,6 +264,7 @@ class ReportManager:
             # Log the received request
             logging.info("Received request with user details: %s", user_details)
             email = user_details.get("email")
+            group_id = user_details.get("group_id")
             database_type = user_details.get("database_type")
 
             try:
@@ -552,7 +282,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -570,15 +300,7 @@ class ReportManager:
             
             logging.info(f"Connected to {database_type} database")
 
-            # Query to fetch the user’s customer_id and group_id using their email
-        # with database_mysql.cursor(dictionary=True) as cursor:
-            # cursor.execute(
-            #     f"select customer_id, group_id from\
-            #           {config['database_tables']['user_account']}\
-            #               where user_email_id = %s",
-            #     (email,),
-            # )
-            # result = cursor.fetchall()
+           
     
             columns = ["customer_id", "group_id"]
             try:
@@ -605,12 +327,7 @@ class ReportManager:
 
             # Fetch group name to determine the user’s role
             logging.info("Fetching group name for group_id: %s", group_id)
-            # cursor.execute(
-            #     f"select groupname from {config['database_tables']['user_group']} \
-            #         where group_id = %s",
-            #     (group_id,),
-            # )
-            # result = cursor.fetchall()
+            
             columns = ["groupname"]
             try:
                 result = database_service.read_records(
@@ -684,12 +401,7 @@ class ReportManager:
                 )
 
                 # Query to fetch report templates mapped to the group
-                # cursor.execute(
-                #     f"select * from {config['database_tables']['group_report_map']}\
-                #           where group_id = %s",
-                #     (group_id,),
-                # )
-                # result = cursor.fetchall()
+
                 try:
                     columns = ["*"]
                     result = database_service.read_records(
@@ -764,64 +476,6 @@ class ReportManager:
         finally:
             database_service.close_connection()
 
-    # async def get_access(self, user_details: dict):
-    #     """
-    #     This function retrieves report access details for a specific user group based on the\
-    #           group_id and customer_id.
-    #     It fetches the list of reports that the group has access to from the MySQL database.
-    #     """
-    #     try:
-    #         cursor_logger = LOGGINGS.CustomLogger()
-    #         logging = cursor_logger.setup_logger()
-    #         # Log the received request
-    #         logging.info("Received request with user details: %s", user_details)
-    #         group_id = user_details.get("group_id")
-    #         customer_id = user_details.get("customer_id")
-    #         database_type = user_details.get("database_type")
-
-    #         if database_type == "mysql":
-    #             # Prepare MySQL database connection details
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-
-    #             # Establish a connection to MySQL database
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             # Query to fetch report access for the group
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 logging.info(
-    #                     "Fetching report access for group_id: %s and customer_id: %s",
-    #                     group_id,
-    #                     customer_id,
-    #                 )
-    #                 cursor.execute(
-    #                     f"select * from {config['database_tables']['view_report_access_group']} \
-    #                         where group_id = %s and customer_id = %s",
-    #                     (group_id, customer_id),
-    #                 )
-    #                 result = cursor.fetchall()
-
-    #                 # Close MySQL connection
-    #                 database_mysql.close()
-
-    #                 # Return the fetched report access details
-    #                 logging.info(
-    #                     "Successfully fetched and returned report accesses"
-    #                 )
-    #                 return JSONResponse(status_code=status.HTTP_200_OK, content=result)
-
-    #     except Exception as unexpected_exception:
-    #         # Log any unexpected exception and return an error response
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500, detail=f"Internal server error: {unexpected_exception}"
-    #         )
 
     async def get_access(self, user_details: dict):
         """
@@ -852,7 +506,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -931,7 +585,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -966,7 +620,11 @@ class ReportManager:
  
             if not result:
                 logging.warning("No report found with report_id: %s", report_id)
-                raise HTTPException(status_code=404, detail="Report not found")
+                return {
+                    "StatusCode": 404,
+                    "Error": "Report not found"
+                }
+                #raise HTTPException(status_code=404, detail="Report not found")
  
             db_details_id = result[0]["db_details_id"]
             logging.info(
@@ -1021,8 +679,13 @@ class ReportManager:
             result[0]['chart_colours'] = chart_customizations_options['chart_colours']
             result[0]['chart_subtitle'] = chart_customizations_options['chart_subtitle']
             result[0].pop("chart_customizations_options")
-            if result[0]['upload_logo'] and isinstance(result[0]['upload_logo'], memoryview):
-                result[0]['upload_logo'] = base64.b64encode(result[0]['upload_logo'].tobytes()).decode('utf-8')
+            
+            if database_type == "mysql":
+                result[0]['upload_logo'] = str(result[0]["upload_logo"])
+            else:
+                logo_path = result[0]["upload_logo"]
+                if isinstance(logo_path, memoryview):
+                    result[0]['upload_logo'] = logo_path.tobytes()
 
             return{
                 "StatusCode":int(config['codes']['success']),
@@ -1038,70 +701,7 @@ class ReportManager:
         finally:
             database_service.close_connection()
 
-    # async def getGroupwiseReports(self, user_details: dict):
-    #     """
-    #     This function retrieves all reports associated with a particular group based on \
-    #         the group_id.
-    #     It queries the MySQL database and returns the list of reports accessible by that group.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     # Log the received request
-    #     logging.info("Received request with details: %s", user_details)
-    #     group_id = user_details.get("group_id")
-    #     logging.info("Received request with group_id: %s", group_id)
-
-    #     database_type = user_details.get("database_type")
-
-    #     if database_type == "mysql":
-    #         # Prepare MySQL database connection details
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-
-    #         # Establish a connection to MySQL database
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-
-    #         try:
-    #             # Query to fetch reports for the group
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 logging.info(
-    #                     "Executing query to get groupwise reports for group_id: %s",
-    #                     group_id,
-    #                 )
-    #                 cursor.execute(
-    #                     f"SELECT * FROM {config['database_tables']['view_report_access_group']}\
-    #                           WHERE group_id = %s",
-    #                     (group_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-
-    #                 # Log the number of fetched records
-    #                 logging.info(
-    #                     "Query executed successfully, fetched %d records", len(result)
-    #                 )
-
-    #                 # Return the groupwise reports
-    #                 return JSONResponse(status_code=status.HTTP_200_OK, content=result)
-
-    #         except Exception as e:
-    #             # Log any query execution error
-    #             logging.error("Error executing database query: %s", e)
-
-    #         finally:
-    #             # Close MySQL connection
-    #             database_mysql.close()
-    #             logging.info("Closed MySQL database connection")
-
-    #     else:
-    #         # If the database type is unsupported, raise an HTTP 400 error
-    #         logging.warning("Unsupported database type: %s", database_type)
-    #         raise HTTPException(status_code=400, detail="Unsupported database type")
+   
 
     async def getGroupwiseReports(self, user_details: dict):
         """
@@ -1131,7 +731,7 @@ class ReportManager:
             elif database_type == "postgres":
                 database_url = self.postgres_database_url
                 database_service = PostgreSQLServices(**database_url)
-                database_service.connect().cursor(cursor_factory=DictCursor)
+                database_service.connect().cursor(cursor_factory=RealDictCursor)
                 logging.info("Using Postgres database service.")
             else:
                 logging.error(f"Unsupported database type: {database_type}")
@@ -1218,7 +818,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -1481,7 +1081,7 @@ class ReportManager:
                             "message": "No Data Found",
 
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["data"]
                     if (result==None) or (len(result) == 0):
                         logging.info("No Data Found")
@@ -1529,13 +1129,13 @@ class ReportManager:
                             "StatusCode":int(config['codes']['no records']),
                             "message": "No Data Found",
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+               
 
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
                         if chart_type.lower() in [
                             "3darea"
-                        ]:  # in ['line','bar','column','gause','area','radial']:
+                        ]:  
                             columns = list(result[0].keys())
                             temp = {}
                             for col in columns:
@@ -1545,7 +1145,7 @@ class ReportManager:
                                         continue
                                     else:
                                         temp[col].append(i[col])
-                                    # names = list(result[''].keys())
+                                    
                             series = []
                             for item in temp[columns[1]]:
                                 ele = {"data": [], "name": item}
@@ -1643,12 +1243,12 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data": json_data
                             }
-                            # return json_data
+                            
 
             if report_type.lower() == "chart":
                 if (
                     chart_type.lower()
-                ):  # in ['line','bar','column','gause','area','radial']:
+                ):  
                     names = list(result[0].keys())
                     columns = list(result[0].keys())
                     transposed_data = list(zip(*[item.values() for item in result]))
@@ -1668,7 +1268,7 @@ class ReportManager:
                         json_data["labels"] = enable_labels.lower()                          
                         json_data["auto_update_interval"] = auto_update_interval
                         json_data["enable_labels"] = enable_labels
-                        # here changed
+                        
                         if type(chart_customizations_options["chart_colours"])=="str":
                             json_data["chart_colours"] = json.loads(chart_customizations_options["chart_colours"])
                         else:
@@ -1681,7 +1281,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": json_data
                     }
-                    # return json_data
+                    
             elif report_type.lower() == "box":
                 report_key = next(iter(result[0]))
                 report_value = result[0][report_key]
@@ -1704,7 +1304,7 @@ class ReportManager:
                     "StatusCode":int(config['codes']['success']),
                     "data": box_value
                 }
-                # return box_value
+                
 
             elif report_type.lower() == "table":
                 final_result = {}
@@ -1721,7 +1321,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": final_result
                     }
-                    # return final_result
+                    
                 elif db_type in ['postgres','vertica']:
                     column_names = list(result[0].keys())
                     final_result["column_names"] = column_names
@@ -1735,7 +1335,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": final_result
                     }
-                    # return final_result
+                    
 
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
@@ -1779,7 +1379,7 @@ class ReportManager:
                 elif report_details['database_type']=='postgres':
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -1836,7 +1436,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['no records']),
                         "message": "No Data Found",
                     }
-                    # return {"status":204,"message": "No Data Found","data":{}}
+                    
                 
                 result = secondary_data["data"]
                 total_records = secondary_data["total_records"]
@@ -1850,9 +1450,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['no records']),
                         "message": "No Data Found",
                     }
-                    # return {"status":204,"message": "No Data Found","data":{}}
-
-                # no need to make changes
+                    
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
                         if chart_type.lower() in ["3darea"]:
@@ -1865,7 +1463,7 @@ class ReportManager:
                                         continue
                                     else:
                                         temp[col].append(i[col])
-                                    # names = list(result[''].keys())
+                                    
                             series = []
                             for item in temp[columns[1]]:
                                 ele = {"data": [], "name": item}
@@ -1896,7 +1494,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data": json_data
                             }
-                            # return json_data
+                            
                         else:
                             columns = list(result[0].keys())
                             temp = {}
@@ -1933,7 +1531,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data": json_data
                             }
-                            # return json_data
+                            
 
             elif connection_type in ["postgres","vertica"]:
                 if connection_type == 'postgres':
@@ -1963,7 +1561,7 @@ class ReportManager:
                             "StatusCode":int(config['codes']['no records']),
                             "message": "No Data Found",
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["data"]
                     total_records = secondary_data["total_records"]
                     logging.info(
@@ -1995,7 +1593,7 @@ class ReportManager:
                             "StatusCode":int(config['codes']['no records']),
                             "message": "No Data Found",
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["result"]
                     total_records = secondary_data["total_records"]
                     logging.info("Fetched data from secondary Vertica database")
@@ -2006,7 +1604,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['no records']),
                         "message": "No Data Found",
                     }
-                    # return {"status":204,"message": "No Data Found","data":{}}
+                    
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
                         if chart_type.lower() in ["3darea"]:
@@ -2019,7 +1617,7 @@ class ReportManager:
                                         continue
                                     else:
                                         temp[col].append(i[col])
-                                    # names = list(result[''].keys())
+                                    
                             series = []
                             for item in temp[columns[1]]:
                                 ele = {"data": [], "name": item}
@@ -2050,7 +1648,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data": json_data
                             }
-                            # return json_data
+                            
                         else:
                             columns = list(result[0].keys())
                             temp = {}
@@ -2087,7 +1685,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data": json_data
                             }
-                            # return json_data
+                            
 
             if report_type.lower() == "chart":
                 if chart_type.lower():
@@ -2111,7 +1709,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": json_data
                     }
-                    # return json_data
+                    
             elif report_type.lower() == "box":
                 report_key = next(iter(result[0]))
                 if type(result[0]) == dict or type(result[0]) == psycopg2.extras.RealDictRow:
@@ -2136,7 +1734,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": final_result
                     }
-                    # return final_result
+                    
 
                 elif connection_type in ['postgres','vertica']:
                     column_names = list(result[0].keys())
@@ -2149,7 +1747,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data": final_result
                     }
-                    # return final_result
+                    
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
             raise HTTPException(
@@ -2159,69 +1757,7 @@ class ReportManager:
         finally:
             database_service.close_connection()
             logging.info(f"Closed {report_details['database_type']} database connection")
-        
-    # async def getAssignedReports(self, report_details: dict):
-    #     """
-    #     Retrieves the assigned reports for a customer from the MySQL database\
-    #           based on the provided customer ID.
-
-    #     Parameters:
-    #     report_details (dict): Contains information like database type and customer ID.
-
-    #     Returns:
-    #     JSON response or data: A list of assigned reports and their details.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request with details: %s", report_details)
-
-    #     try:
-    #         database_type = report_details.get("database_type")
-    #         customer_id = report_details.get("customer_id")
-
-    #         logging.info(
-    #             "Received request for assigned reports with database_type: %s, customer_id: %s",
-    #             database_type,
-    #             customer_id,
-    #         )
-
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"SELECT grm.group_id, grm.report_id, rt.report_template_name,\
-    #                           grm.access_mask FROM\
-    #                               {config['database_tables']['group_report_map']}\
-    #                                   AS grm INNER JOIN \
-    #                                     {config['database_tables']['report_template']}\
-    #                                           AS rt ON grm.report_id = rt.report_id \
-    #                                             WHERE grm.access_mask != 'null'\
-    #                                                   AND rt.customer_id = %s",
-    #                     (customer_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 logging.info("Fetched assigned reports")
-
-    #             database_mysql.close()
-    #             logging.info("Closed MySQL database connection")
-    #             return JSONResponse(status_code=status.HTTP_200_OK, content=result)
-
-    #         logging.error("Unsupported database type: %s", database_type)
-    #         raise HTTPException(status_code=400, detail="Unsupported database type")
-
-    #     except Exception as e:
-    #         logging.error("Unexpected error: %s", e)
-    #         raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
-
+   
     async def getAssignedReports(self, report_details: dict):
         """
         Retrieves the assigned reports for a customer from the MySQL database\
@@ -2261,7 +1797,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -2276,17 +1812,10 @@ class ReportManager:
                     "Error":f"Database connection error: {e}",
                 }
 
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
+            
             logging.info(f"Connected to {report_details['database_type']} database")
 
-        # with database_mysql.cursor(dictionary=True) as cursor:
+        
             try:
                     
                 cursor.execute(
@@ -2309,7 +1838,7 @@ class ReportManager:
                 }
             logging.info("Fetched assigned reports: %s", result)
 
-            # database_mysql.close()
+            
             logging.info(f"Closed {report_details['database_type']} database connection")
             return{
                 "StatusCode":int(config['codes']['success']),
@@ -2325,98 +1854,7 @@ class ReportManager:
         finally:
             database_service.close_connection()
             logging.info(f"Closed {report_details['database_type']} database connection")
-                
-    # async def getUsers(self, user_details: dict):
-    #     """
-    #     Fetches user details from the database based on the provided email and database type.
-    #     Retrieves user account information, associated groups, and other relevant details.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request with details: %s", user_details)
- 
-    #     email = user_details.get("email")
-    #     database_type = user_details.get("database_type")
-    #     logging.info(
-    #         "Received request for users with email: %s, database_type: %s",
-    #         email,
-    #         database_type,
-    #     )
- 
-    #     try:
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
- 
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"SELECT customer_id, group_id FROM \
-    #                         {config['database_tables']['user_account']} \
-    #                             WHERE user_email_id = %s",
-    #                     (email,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 logging.info("Fetched user account details: %s", result)
- 
-    #                 if not result:
-    #                     return []
- 
-    #                 group_id = result[0]["group_id"]
- 
-    #                 cursor.execute(
-    #                     f"SELECT groupname FROM {config['database_tables']['user_group']} \
-    #                         WHERE group_id = %s",
-    #                     (group_id,),
-    #                 )
-    #                 group_result = cursor.fetchall()
-    #                 logging.info("Fetched user group details: %s", group_result)
- 
-    #                 if not group_result:
-    #                     return []
- 
-    #                 groupname = group_result[0]["groupname"]
-
-    #                 cursor.execute(
-    #                         f"SELECT user_email_id, group_id, user_status, user_creation_date FROM {config['database_tables']['user_account']} ORDER BY user_creation_date DESC"
-    #                     )
- 
-    #                 result = cursor.fetchall()
-    #                 logging.info("Fetched user details: %s", result)
-                   
-    #                 results = []
-    #                 for item in result:
-    #                     cursor.execute(
-    #                         f"SELECT groupname FROM {config['database_tables']['user_group']}\
-    #                               WHERE group_id = %s",
-    #                         (item["group_id"],),
-    #                     )
-    #                     group_result = cursor.fetchall()
-    #                     if group_result:
-    #                         item["groupname"] = group_result[0]["groupname"]
- 
-    #                     cursor.execute(
-    #                         f"SELECT user_email_id, group_id FROM {config['database_tables']['user_group_map']} WHERE user_email_id = %s",(item['user_email_id'],)
-    #                     )
-    #                     group_names = cursor.fetchall()
-    #                     if group_names:
-    #                         item["asscoiated_groups"] = [group['group_id'] for group in group_names]
-    #                         results.append(item)
- 
-    #                 logging.info("Returned user details: %s", result)
-    #                 # print(results)
-    #                 return results
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500, detail=f"Internal server error: {unexpected_exception}"
-    #         )
+    
 
     async def getUsers(self, user_details: dict):
 
@@ -2446,7 +1884,7 @@ class ReportManager:
             elif database_type == "postgres":
                 database_url = self.postgres_database_url
                 database_service = PostgreSQLServices(**database_url)
-                cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
                 logging.info("Using Postgres database service.")
             else:
                 logging.error(f"Unsupported database type: {database_type}")
@@ -2485,16 +1923,11 @@ class ReportManager:
                     "StatusCode":int(config['codes']['no records']),
                     "Error":"No records found",
                 }
-                # return []
+                
 
             group_id = result[0]["group_id"]
 
-            # cursor.execute(
-            #     f"SELECT groupname FROM {config['database_tables']['user_group']} \
-            #         WHERE group_id = %s",
-            #     (group_id,),
-            # )
-            # group_result = cursor.fetchall()
+            
             try:
                     
                 columns = ["groupname"]
@@ -2516,7 +1949,7 @@ class ReportManager:
                     "StatusCode":int(config['codes']['no records']),
                     "Error":"No records found",
                 }
-                # return []
+                
 
             try:
                     
@@ -2535,12 +1968,7 @@ class ReportManager:
             
             results = []
             for item in result:
-                # cursor.execute(
-                #     f"SELECT groupname FROM {config['database_tables']['user_group']}\
-                #           WHERE group_id = %s",
-                #     (item["group_id"],),
-                # )
-                # group_result = cursor.fetchall()
+                
                 try:
                         
                     columns = ["groupname"]
@@ -2558,10 +1986,7 @@ class ReportManager:
                 if group_result:
                     item["groupname"] = group_result[0]["groupname"]
 
-                # cursor.execute(
-                #     f"SELECT user_email_id, group_id FROM {config['database_tables']['user_group_map']} WHERE user_email_id = %s",(item['user_email_id'],)
-                # )
-                # group_names = cursor.fetchall()
+                
                 try:
                         
                     columns = ["user_email_id", "group_id"]
@@ -2585,7 +2010,7 @@ class ReportManager:
                 "StatusCode":int(config['codes']['success']),
                 "data": results
             }
-            # return results
+            
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
 
@@ -2597,158 +2022,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info(f"Closed {user_details['database_type']} database connection")
 
-    # async def delete(self, report_details):
-    #     """
-    #     Deletes a report and its associated data from the database based on the provided report details.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request with details: %s", report_details)
-
-    #     report_id = report_details.get("report_id")
-    #     database_type = report_details.get("database_type")
-    #     customer_id = report_details.get("customer_id")
-    #     logging.info(
-    #         "Received request to delete report with report_id: %s, database_type: %s,\
-    #               customer_id: %s",
-    #         report_id,
-    #         database_type,
-    #         customer_id,
-    #     )
-
-    #     try:
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"SELECT * FROM {config['database_tables']['report_template']} \
-    #                         WHERE report_id = %s",
-    #                     (report_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 logging.info("Fetched report details: %s", result)
-
-    #                 if not result:
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_404_NOT_FOUND,
-    #                         content="Report not found",
-    #                     )
-
-    #                 report_name = result[0]["report_template_name"]
-    #                 report_type = result[0]["report_type"]
-
-    #                 drilldown_name_query = f"SELECT detailed_report_id, master_report,\
-    #                       drilldown_report FROM {config['database_tables']['detailed_report']} "
-
-    #                 if report_type.strip().lower() == "table":
-    #                     drilldown_query = (
-    #                         drilldown_name_query
-    #                         + "WHERE drilldown_report = %s AND customer_id = %s"
-    #                     )
-    #                     cursor.execute(drilldown_query, (report_name, customer_id))
-    #                     drilldown_reports = cursor.fetchall()
-
-    #                     for data in drilldown_reports:
-    #                         cursor.execute(
-    #                             f"DELETE FROM {config['database_tables']['detailed_report']} \
-    #                                 WHERE detailed_report_id = %s",
-    #                             (data["detailed_report_id"],),
-    #                         )
-    #                         cursor.execute(
-    #                             f"UPDATE {config['database_tables']['report_template']}\
-    #                                   SET enable_drilldown = 'no' WHERE report_template_name \
-    #                                     = %s",
-    #                             (data["master_report"],),
-    #                         )
-    #                         database_mysql.commit()
-
-    #                 elif report_type.strip().lower() == "chart":
-    #                     drilldown_query = (
-    #                         drilldown_name_query
-    #                         + "WHERE master_report = %s AND customer_id = %s"
-    #                     )
-    #                     cursor.execute(drilldown_query, (report_name, customer_id))
-    #                     drilldown_reports = cursor.fetchall()
-
-    #                     for data in drilldown_reports:
-    #                         cursor.execute(
-    #                             f"DELETE FROM {config['database_tables']['detailed_report']} \
-    #                                 WHERE detailed_report_id = %s",
-    #                             (data["detailed_report_id"],),
-    #                         )
-
-    #                 cursor.execute(
-    #                     f"DELETE FROM {config['database_tables']['group_report_map']}\
-    #                           WHERE report_id = %s",
-    #                     (report_id,),
-    #                 )
-    #                 logging.info(
-    #                     "Deleted from group_report_map for report_id: %s", report_id
-    #                 )
-
-    #                 cursor.execute(
-    #                     f"DELETE FROM {config['database_tables']['report_template']} \
-    #                         WHERE report_id = %s",
-    #                     (report_id,),
-    #                 )
-    #                 logging.info(
-    #                     "Deleted from report_template for report_id: %s", report_id
-    #                 )
-
-    #                 database_mysql.commit()
-
-    #                 cursor.execute(
-    #                     f"SELECT * FROM {config['database_tables']['dashboard_report_frame']} \
-    #                         WHERE customer_id = %s",
-    #                     (customer_id,),
-    #                 )
-    #                 dashboards = cursor.fetchall()
-    #                 logging.info(
-    #                     "Fetched dashboard report frames for customer_id: %s",
-    #                     customer_id,
-    #                 )
-
-    #                 for dashboard in dashboards:
-    #                     dashboard_json_frame_data_list = json.loads(
-    #                         dashboard["dashboard_json_frame_data"]
-    #                     )
-    #                     dashboard_name = dashboard["dashboard_report_name"]
-    #                     updated_data = [
-    #                         chart
-    #                         for chart in dashboard_json_frame_data_list
-    #                         if chart["chartType"] != report_name
-    #                     ]
-    #                     cursor.execute(
-    #                         f"UPDATE {config['database_tables']['dashboard_report_frame']}\
-    #                               SET dashboard_json_frame_data = %s WHERE customer_id = %s\
-    #                                   AND dashboard_report_name = %s",
-    #                         (json.dumps(updated_data), customer_id, dashboard_name),
-    #                     )
-    #                     database_mysql.commit()
-    #                     logging.info(
-    #                         "Updated dashboard_report_frame for customer_id: %s,\
-    #                               dashboard_report_name: %s",
-    #                         customer_id,
-    #                         dashboard_name,
-    #                     )
-
-    #             database_mysql.close()
-    #             logging.info("Closed MySQL database connection")
-    #             return JSONResponse(status_code=status.HTTP_200_OK, content="Deleted")
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500, detail=f"Internal server error: {unexpected_exception}"
-    #         )
+   
    
     async def delete(self, report_details):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -2770,7 +2044,8 @@ class ReportManager:
             if database_type == "mysql":
                 database_url = self.mysql_database_url
                 database_service = MySQLServices(**database_url)
-                cursor = database_service.connect().cursor(dictionary=True)
+                connection = database_service.connect()
+                cursor = connection.cursor(dictionary=True)
                 logging.info("Using MySQL database service.")
             elif database_type == "oracle":
                 database_url = self.oracle_database_url
@@ -2780,7 +2055,8 @@ class ReportManager:
             elif database_type == "postgres":
                 database_url = self.postgres_database_url
                 database_service = PostgreSQLServices(**database_url)
-                cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                connection = database_service.connect()
+                cursor = connection.cursor(cursor_factory=RealDictCursor)
                 logging.info("Using Postgres database service.")
             else:
                 logging.error(f"Unsupported database type: {database_type}")
@@ -2798,7 +2074,7 @@ class ReportManager:
 
             logging.info(f"Connected to {report_details['database_type']} database")
 
-        # with database_mysql.cursor(dictionary=True) as cursor:
+        
             try:
                     
                 cursor.execute(
@@ -2842,10 +2118,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['database error']),
                         "Error":f"Drilldown reports error: {e}",
                     }
-                    # return JSONResponse(
-                    #     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    #     content=f"Drilldown reports error: {e}",
-                    # )
+                    
 
                 for data in drilldown_reports:
                     try:
@@ -2861,7 +2134,7 @@ class ReportManager:
                                     = %s",
                             (data["master_report"],),
                         )
-                        database_service.commit()
+                        connection.commit()
                     except Exception as e:
                         logging.error(f"Error deleting detailed report: {e}")
                         return{
@@ -2933,7 +2206,7 @@ class ReportManager:
                 "Deleted from report_template for report_id: %s", report_id
             )
 
-            database_service.commit()
+            connection.commit()
             try:
                     
                 cursor.execute(
@@ -2954,9 +2227,13 @@ class ReportManager:
             )
 
             for dashboard in dashboards:
-                dashboard_json_frame_data_list = json.loads(
-                    dashboard["dashboard_json_frame_data"]
-                )
+                if type(dashboard["dashboard_json_frame_data"]) != list:
+                    dashboard_json_frame_data_list = json.loads(
+                        dashboard["dashboard_json_frame_data"]
+                    )
+                else:
+                    dashboard_json_frame_data_list = dashboard["dashboard_json_frame_data"]            
+                
                 dashboard_name = dashboard["dashboard_report_name"]
                 updated_data = [
                     chart
@@ -2971,7 +2248,7 @@ class ReportManager:
                                     AND dashboard_report_name = %s",
                         (json.dumps(updated_data), customer_id, dashboard_name),
                     )
-                    database_service.commit()
+                    connection.commit()
                 except Exception as e:
                     logging.error(f"Error updating dashboard report frame: {e}")
                     return{
@@ -2989,7 +2266,7 @@ class ReportManager:
                 "StatusCode":int(config['codes']['success']),
                 "data":"Deleted"
             }
-            # return JSONResponse(status_code=status.HTTP_200_OK, content="Deleted")
+            
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
             return{
@@ -3001,89 +2278,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info(f"Closed {report_details['database_type']} database connection")
 
-    # async def checkReport(self, report_details):
-    #     """
-    #     Checks the details of a report based on the provided report ID and database type.
-    #     Retrieves report information from the database and determines whether it is attached to other reports.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request with details: %s", report_details)
-
-    #     report_id = report_details.get("report_id")
-    #     database_type = report_details.get("database_type")
-    #     customer_id = report_details.get("customer_id")
-    #     logging.info(
-    #         "Received request to check report with report_id: %s, database_type: %s,\
-    #               customer_id: %s",
-    #         report_id,
-    #         database_type,
-    #         customer_id,
-    #     )
-    #     try:
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"SELECT * FROM {config['database_tables']['report_template']}\
-    #                           WHERE report_id = %s",
-    #                     (report_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 logging.info("Fetched report details: %s", result)
-
-    #                 if not result:
-    #                     return JSONResponse(
-    #                         status_code=status.HTTP_404_NOT_FOUND,
-    #                         content="Report not found",
-    #                     )
-
-    #                 report_name = result[0]["report_template_name"]
-    #                 report_type = result[0]["report_type"]
-    #                 reports = []
-
-    #                 drilldown_name_query = f"SELECT detailed_report_id, master_report,\
-    #                       drilldown_report FROM {config['database_tables']['detailed_report']} "
-
-    #                 if report_type.strip().lower() == "table":
-    #                     drilldown_query = (
-    #                         drilldown_name_query
-    #                         + "WHERE drilldown_report = %s AND customer_id = %s"
-    #                     )
-    #                     cursor.execute(drilldown_query, (report_name, customer_id))
-    #                     drilldown_reports = cursor.fetchall()
-
-    #                     if drilldown_reports:
-    #                         reports = [
-    #                             report["master_report"] for report in drilldown_reports
-    #                         ]
-
-    #                     content = {
-    #                         "message": "This report is attached to the following reports.",
-    #                         "Reports": reports,
-    #                     }
-    #                 elif report_type.strip().lower() in ["chart", "box"]:
-    #                     content = {
-    #                         "message": "Not attached to any reports.",
-    #                         "Reports": reports,
-    #                     }
-
-    #             logging.info("Returned report check results")
-    #             return JSONResponse(status_code=status.HTTP_200_OK, content=content)
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500, detail=f"Internal server error: {unexpected_exception}"
-    #         )
+    
 
     async def checkReport(self, report_details):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -3115,7 +2310,7 @@ class ReportManager:
             elif database_type == "postgres":
                 database_url = self.postgres_database_url
                 database_service = PostgreSQLServices(**database_url)
-                cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
                 logging.info("Using Postgres database service.")
             else:
                 logging.error(f"Unsupported database type: {database_type}")
@@ -3123,10 +2318,7 @@ class ReportManager:
                     "StatusCode":int(config['codes']['incorrect parameters']),
                     "Error":f"Unsupported database type: {database_type}",
                 }
-                # return JSONResponse(
-                #     status_code=status.HTTP_400_BAD_REQUEST,
-                #     content=f"Unsupported database type: {database_type}",
-                # )
+                
         except Exception as e:
             logging.error(f"Error connecting to database: {e}")
             return{
@@ -3136,10 +2328,7 @@ class ReportManager:
 
 
         try:
-            # if database_type == "mysql":
-            #     logging.info("Connected to MySQL database")
-
-            # with database_mysql.cursor(dictionary=True) as cursor:
+            
             try:
                     
                 cursor.execute(
@@ -3204,7 +2393,7 @@ class ReportManager:
                 "StatusCode":int(config['codes']['success']),
                 "data":content
             }
-            # return JSONResponse(status_code=status.HTTP_200_OK, content=content)
+            
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
             return{
@@ -3245,7 +2434,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -3259,39 +2448,8 @@ class ReportManager:
                     "StatusCode":int(config['codes']['database error']),
                     "Error":f"Database connection error: {e}",
                 }
-
-        # if database_type == "mysql":
-        #     mysql_database_url = {
-        #         "host": config["mysql"]["mysql_host"],
-        #         "port": config["mysql"]["mysql_port"],
-        #         "username": config["mysql"]["mysql_username"],
-        #         "password": config["mysql"]["mysql_password"],
-        #         "schema": config["mysql"]["mysql_new_schema"],
-        #     }
-        #     database_mysql = self.db_services.get_mysql_connection(
-        #         mysql_database_url
-        #     )
             logging.info(f"Connected to {report_details['database_type']} database")
-        # with database_mysql.cursor(dictionary=True) as cursor:
-            # cursor.execute(
-            #     "select customer_id from user_account where user_email_id = %s",
-            #     (email,),
-            # )
-            # result = cursor.fetchall()
-            # logging.info(
-            #     "Fetched customer_id for email: %s - %s", email, result
-            # )
-            # customer_id = result[0]["customer_id"]
-            # cursor.execute(
-            #     "select * from report_template where report_id = %s and customer_id = %s",
-            #     (report_id, customer_id),
-            # )
-            # result = cursor.fetchall()
-            # logging.info(
-            #     "Fetched report template details for report_id: %s - %s",
-            #     report_id,
-            #     result,
-            # )
+        
             try:
                     
                 columns = ["customer_id"]
@@ -3336,7 +2494,14 @@ class ReportManager:
             auto_update_interval = result[0]["auto_update_interval"]
             report_template_name = result[0]["report_template_name"]
             db_details_id = result[0]["db_details_id"]
-            logo_path = result[0]["upload_logo"]
+            
+            if database_type == "mysql":
+                logo_path = str(result[0]["upload_logo"])
+            else:
+                logo_path = result[0]["upload_logo"]
+                if isinstance(logo_path, memoryview):
+                    logo_path = logo_path.tobytes()
+
             background_colour = result[0]["background_colour"]
             chart_react_colour = result[0]["chart_react_colour"]
             font_size_title = result[0]["font_size_title"]
@@ -3346,20 +2511,10 @@ class ReportManager:
             if not enable_labels: enable_labels = "no"
             if report_type.lower()=="box":
                 box_customization_options = result[0]["box_customization_options"]
-            # here changed
+            
             if report_type.lower()=="chart":
                 chart_customizations_options = json.loads(result[0]["chart_customizations_options"]) if (result[0]["chart_customizations_options"] and result[0]["chart_customizations_options"]!=json.dumps({})) else {"chart_colours":json.dumps({}),"chart_subtitle":""}
-                #if result[0]["chart_customizations_options"]:
-                 #   chart_customizations_options = json.loads(result[0]["chart_customizations_options"])
-                #else:
-                 #   chart_customizations_options = {"chart_colours":json.dumps({}),"chart_subtitle":""}
-                 
-
-            # cursor.execute(
-            #     "SELECT * FROM database_details WHERE db_details_id = %s",
-            #     (db_details_id,),
-            # )
-            # result = cursor.fetchall()
+                
             try:
                     
                 columns = ["*"]
@@ -3415,12 +2570,12 @@ class ReportManager:
                     return{
                         "StatusCode":int(config['codes']['no records']),"message": "No Data Found","data":{}
                     }
-                    # return {"status":204,"message": "No Data Found","data":{}}
+                    
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
                         if chart_type.lower() in [
                             "3darea"
-                        ]:  # in ['line','bar','column','gause','area','radial']:
+                        ]:  
                             columns = list(result[0].keys())
                             temp = {}
                             for col in columns:
@@ -3430,7 +2585,7 @@ class ReportManager:
                                         continue
                                     else:
                                         temp[col].append(i[col])
-                                    # names = list(result[''].keys())
+                                    
                             series = []
                             for item in temp[columns[1]]:
                                 ele = {"data": [], "name": item}
@@ -3469,7 +2624,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data":json_data
                             }
-                            # return json_data
+                            
                         else:
                             columns = list(result[0].keys())
                             temp = {}
@@ -3500,7 +2655,7 @@ class ReportManager:
                                     columns[0]
                                 ]
                                 json_data["enable_labels"] = enable_labels
-                                # here changed
+                                
                                 if type(chart_customizations_options["chart_colours"])=="str":
                                     json_data["chart_colours"] = json.loads(chart_customizations_options["chart_colours"])
                                 else:
@@ -3514,7 +2669,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data":json_data
                             }
-                            # return json_data
+                            
 
             elif result[0]["rdbms_name"] in ['postgres','vertica']:
                 if result[0]['rdbms_name'] == 'postgres':
@@ -3541,7 +2696,7 @@ class ReportManager:
                         return{
                             "StatusCode":int(config['codes']['no records']),"message": "No Data Found","data":{}
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["data"]
                     column_types = secondary_data["column_types"]
                     total_records = secondary_data["total_records"]
@@ -3569,7 +2724,7 @@ class ReportManager:
                         return{
                             "StatusCode":int(config['codes']['no records']),"message": "No Data Found","data":{}
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["data"]
                     column_types = secondary_data["column_types"]
                     total_records = secondary_data["total_records"]
@@ -3578,12 +2733,12 @@ class ReportManager:
                     return{
                         "StatusCode":int(config['codes']['no records']),"message": "No Data Found","data":{}
                     }
-                    # return {"status":204,"message": "No Data Found","data":{}}
+                    
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
                         if chart_type.lower() in [
                             "3darea"
-                        ]:  # in ['line','bar','column','gause','area','radial']:
+                        ]: 
                             columns = list(result[0].keys())
                             temp = {}
                             for col in columns:
@@ -3631,7 +2786,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data":json_data
                             }
-                            # return json_data
+                            
                         else:
                             columns = list(result[0].keys())
                             temp = {}
@@ -3675,7 +2830,7 @@ class ReportManager:
                                 "StatusCode":int(config['codes']['success']),
                                 "data":json_data
                             }
-                            # return json_data
+                            
 
             if report_type.lower() == "chart":
                 if chart_type.lower():
@@ -3707,12 +2862,12 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data":json_data
                     }
-                    # return json_data
+                    
 
             elif report_type.lower() == "box":
                 report_key = next(iter(result[0]))
                 
-                if type(result[0]) == dict or type(result[0]) == psycopg2.extras.RealDictRow or type(result[0]) == psycopg2.extras.RealDictRow:
+                if type(result[0]) == dict or type(result[0]) == RealDictCursor or type(result[0]) == RealDictCursor:
                     report_value = result[0][report_key]
                 else:
                     report_value = result[0][0]
@@ -3731,7 +2886,7 @@ class ReportManager:
                 logging.info("Returning box data: %s", box_value_id)
 
                 return{
-                    "StatusCode":int(config['codes']['success']),
+                    "StatusCode":config['codes']['success'],
                     "data":box_value_id
                 }
                 
@@ -3750,7 +2905,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data":final_result
                     }
-                    # return final_result
+                    
                 elif db_type in ['postgres','vertica']:
                     column_names = list(result[0].keys())
                     final_result["column_names"] = column_names
@@ -3764,7 +2919,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['success']),
                         "data":final_result
                     }
-                    # return final_result
+                    
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
             return{
@@ -3797,7 +2952,8 @@ class ReportManager:
                 if user_details['database_type'] == "mysql":
                     database_url = self.mysql_database_url
                     database_service = MySQLServices(**database_url)
-                    cursor = database_service.connect().cursor(dictionary=True)
+                    connection = database_service.connect()
+                    cursor = connection.cursor(dictionary=True)
                     logging.info("Using MySQL database service.")
                 elif user_details['database_type'] == "oracle":
                     database_url = self.oracle_database_url
@@ -3807,7 +2963,8 @@ class ReportManager:
                 elif user_details['database_type'] == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    connection = database_service.connect()
+                    cursor = connection.cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {user_details['database_type']}")
@@ -3887,15 +3044,80 @@ class ReportManager:
                         try:
                                 
                             if key == "report_template_name":
-                                cursor.callproc(
-                                    "UpdateReportName",
-                                    (db_values[key], value, "", ""),
-                                )
+                                if user_details['database_type'] == "postgres":
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     (db_values[key], value, "", ""),
+                                    # )
+                                    # cursor.execute("CALL update_report_name(%s, %s, %s, %s)", ( db_values[key], value,"",""))
+                                    cursor.execute(
+                                        """
+                                        CALL update_report_name(
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar
+                                        )
+                                        """,
+                                        (db_values[key], value, "", "","","")
+                                    )
+                                else:
+                                    cursor.callproc(
+                                        "UpdateReportName",
+                                        (db_values[key], value, "", "","",""),
+                                    )
                             elif key == "report_type":
-                                cursor.callproc(
-                                    "UpdateReportName",
-                                    ("", "", db_values[key], value),
-                                )
+                                if user_details['database_type'] == "postgres":
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     ("", "", db_values[key], value),
+                                    # )
+                                    cursor.execute(
+                                        """
+                                        CALL update_report_name(
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar
+                                        )
+                                        """,
+                                        ("", "", db_values[key], value,"","")
+                                    )
+
+                                else:
+                                    cursor.callproc(
+                                        "UpdateReportName",
+                                        (db_values[key], value, "", "","",""),
+                                    )
+                            elif key == "chart_type":
+                                if user_details['database_type'] == "postgres":
+                                    # cursor.callproc(
+                                    #     "update_report_name",
+                                    #     ("", "", db_values[key], value),
+                                    # )
+                                    cursor.execute(
+                                        """
+                                        CALL update_report_name(
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar,
+                                            %s::varchar
+                                        )
+                                        """,
+                                        ("", "","","",db_values[key], value)
+                                    )
+
+                                else:
+                                    cursor.callproc(
+                                        "UpdateReportName",
+                                        ("","",db_values[key], value),
+                                    )
                             logging.info(
                                 "Called stored procedure UpdateReportName with \
                                     parameters %s and %s",
@@ -3903,7 +3125,7 @@ class ReportManager:
                                 value,
                             )
     
-                            database_service.commit()
+                            connection.commit()
                         except Exception as e:
                             logging.error(f"Error calling stored procedure: {e}")
                             return{
@@ -3917,7 +3139,7 @@ class ReportManager:
                             {config['database_tables']['report_template']} \
                                 SET upload_logo = %s WHERE report_id = {report_id}"
                         cursor.execute(update_query, (icon_path,))
-                        database_service.commit()
+                        connection.commit()
                     except Exception as e:
                         logging.error(f"Error updating upload_logo: {e}")
                         return{
@@ -3950,72 +3172,7 @@ class ReportManager:
                 database_service.close_connection()
                 logging.info("Database connection closed")
 
-    # async def getFeatures(self, details: dict):
-    #     """
-    #     This function connects to a MySQL database, fetches the customer ID using the given email,
-    #     and retrieves the features associated with that customer. 
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request with details: %s", details)
-    #     try:
-    #         database_type = details.get("database_type")
-    #         email = details.get("email")
-    #         if not all([database_type, email]):
-    #             logging.error(
-    #                 "Invalid request payload: Missing database_type or email"
-    #             )
-    #             raise HTTPException(status_code=400, detail="Invalid request payload")
-
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"select customer_id from {config['database_tables']['user_account']} \
-    #                         where user_email_id = %s",
-    #                     (email,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 if not result:
-    #                     logging.error("No customer found with email: %s", email)
-    #                     raise HTTPException(
-    #                         status_code=404, detail="Customer not found"
-    #                     )
-
-    #                 customer_id = result[0]["customer_id"]
-    #                 logging.info(
-    #                     "Found customer_id: %s for email: %s", customer_id, email
-    #                 )
-
-    #                 cursor.execute(
-    #                     f"select feature_id, featurename from \
-    #                         {config['database_tables']['features']} where customer_id = %s",
-    #                     (customer_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 logging.info(
-    #                     "Fetched features: %s for customer_id: %s", result, customer_id
-    #                 )
-
-    #             database_mysql.close()
-    #             logging.info("Database connection closed")
-    #             return result
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-
-    #         raise HTTPException(
-    #             status_code=500,
-    #             detail="Internal server error: {}".format(unexpected_exception),
-    #         )
+    
 
     async def getFeatures(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -4027,7 +3184,7 @@ class ReportManager:
             if database_type == "mysql":
                 database_url = self.mysql_database_url
                 database_service = MySQLServices(**database_url)
-                database_service.connect().cursor(dictionary=True)
+                database_service.connect()
                 logging.info("Using MySQL database service.")
             elif database_type == "oracle":
                 database_url = self.oracle_database_url
@@ -4037,7 +3194,7 @@ class ReportManager:
             elif database_type == "postgres":
                 database_url = self.postgres_database_url
                 database_service = PostgreSQLServices(**database_url)
-                database_service.connect().cursor(cursor_factory=DictCursor)
+                database_service.connect()
                 logging.info("Using Postgres database service.")
             else:
                 logging.error(f"Unsupported database type: {database_type}")
@@ -4064,16 +3221,9 @@ class ReportManager:
                     "StatusCode":int(config['codes']['invalid request']),
                 }
 
-        # if database_type == "mysql":
-        # with database_mysql.cursor(dictionary=True) as cursor:
-            # cursor.execute(
-            #     f"select customer_id from {config['database_tables']['user_account']} \
-            #         where user_email_id = %s",
-            #     (email,),
-            # )
-            # result = cursor.fetchall()
+        
             try:
-                    
+
                 columns = ["customer_id"]
                 result = database_service.read_records(
                     table=config['database_tables']['user_account'],
@@ -4086,10 +3236,7 @@ class ReportManager:
                     "StatusCode":int(config['codes']['database error']),
                     "Error":f"Customer ID error: {e}",
                 }
-            customer_id = result[0]["customer_id"]
-            logging.info(
-                "Found customer_id: %s for email: %s", customer_id, email
-            )
+
             if not result:
                 logging.error("No customer found with email: %s", email)
                 return{
@@ -4102,12 +3249,7 @@ class ReportManager:
                 "Found customer_id: %s for email: %s", customer_id, email
             )
 
-            # cursor.execute(
-            #     f"select feature_id, featurename from \
-            #         {config['database_tables']['features']} where customer_id = %s",
-            #     (customer_id,),
-            # )
-            # result = cursor.fetchall()
+            
             try:
                     
                 columns = ["feature_id", "featurename"]
@@ -4130,7 +3272,7 @@ class ReportManager:
                 "StatusCode":int(config['codes']['success']),
                 "data":result
             }
-            # return result
+            
 
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
@@ -4159,83 +3301,7 @@ class ReportManager:
             "StatusCode":int(config['codes']['success']),
             "data": is_allowed
         }
-        # return is_allowed
-
-    # async def upload_image(
-    #     self,
-    #     file: UploadFile = File(...),
-    #     feature_name: str = Form(...),
-    #     customer_id: str = Form(...),
-    #     database_type: str = Form(...),
-    # ):
-    #     """Method to upload an image file."""
-    #     upload_request = UploadImageRequest(
-    #         file=file,
-    #         feature_name=feature_name,
-    #         customer_id=customer_id,
-    #         database_type=database_type
-    #         )
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info(
-    #         "Received request to add feature: %s for customer ID: %s",
-    #         feature_name,
-    #         customer_id,
-    #     )
-
-    #     try:
-    #         base_dir = os.getcwd()
-    #         original_path = Path(base_dir)
-    #         parent_path = original_path.parent
-
-    #         icon_path = "/featureIcon"
-    #         full_path = os.path.join(parent_path, "hyphenview", icon_path)
-    #         uploads_directory = Path(full_path)
-    #         uploads_directory.mkdir(parents=True, exist_ok=True)
-    #         file_extension = guess_extension(file.content_type)
-    #         file_name = f"{customer_id}_{feature_name}{file_extension}"
-    #         icon_path += "/{}".format(file_name)
-    #         file_path = uploads_directory / file_name
-    #         with file_path.open("wb") as buffer:
-    #             buffer.write(await file.read())
-    #         logging.info("File uploaded to: %s", file_path)
-
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"INSERT INTO {config['database_tables']['features']} \
-    #                         (featurename, customer_id, created_at, feature_logo) \
-    #                             VALUES (%s, %s, %s, %s)",
-    #                     (feature_name, customer_id, datetime.now(), icon_path),
-    #                 )
-    #                 database_mysql.commit()
-    #                 logging.info(
-    #                     "Feature '%s' added to the database for customer ID: %s",
-    #                     feature_name,
-    #                     customer_id,
-    #                 )
-
-    #         return JSONResponse(
-    #             status_code=status.HTTP_201_CREATED,
-    #             content=f"Feature '{feature_name}' added for customer ID {customer_id}.",
-    #         )
-    #     except Exception as e:
-    #         logging.error("An error occurred: %s", e)
-    #         # return {"error": f"An error occurred: {str(e)}"}
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content="Internal server error: {}".format(e),
-    #         )
+        
 
     async def upload_image(
         self,
@@ -4245,7 +3311,7 @@ class ReportManager:
         database_type: str = Form(...),
     ):
         
-        print(database_type)
+        
         upload_request = UploadImageRequest(
             file=file,
             feature_name=feature_name,
@@ -4290,7 +3356,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -4307,25 +3373,10 @@ class ReportManager:
                 }
 
 
-        # if database_type == "mysql":
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
+        
             logging.info(f"Connected to {database_type} database")
 
-        # with database_mysql.cursor(dictionary=True) as cursor:
-            # cursor.execute(
-            #     f"INSERT INTO {config['database_tables']['features']} \
-            #         (featurename, customer_id, created_at, feature_logo) \
-            #             VALUES (%s, %s, %s, %s)",
-            #     (feature_name, customer_id, datetime.now(), icon_path),
-            # )
-            # database_mysql.commit()
+        
             data = {
                 "featurename": feature_name,
                 "customer_id": customer_id,
@@ -4355,7 +3406,7 @@ class ReportManager:
             }
         except Exception as e:
             logging.error("An error occurred: %s", e)
-            # return {"error": f"An error occurred: {str(e)}"}
+            
             return{
                 "StatusCode":int(config['codes']['internal error']),
                 "Error":f"Internal server error: {e}"
@@ -4364,89 +3415,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info(f"Closed {database_type} database connection")
 
-    # async def assignReports(self, details: dict):
-    #     """
-    #     Assigns reports to a specific group in the database. If an entry for the given group ID 
-    #     and report ID already exists, it updates the access mask and timestamp. Otherwise, it 
-    #     inserts a new entry. Supports MySQL database.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign reports: %s", details)
-    #     try:
-    #         database_type = details.get("database_type")
-    #         group_id = details.get("group_id")
-    #         report_ids = details.get("report_ids")
-    #         access_masks = details.get("access_masks")
-    #         date = datetime.now()
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 for report_id in report_ids:
-    #                     access_mask = access_masks[report_ids.index(report_id)]
-    #                     logging.info(
-    #                         "Assigning report ID: %s with access mask: %s to group ID: %s",
-    #                         report_id,
-    #                         access_mask,
-    #                         group_id,
-    #                     )
-
-    #                     select_query = f"SELECT * FROM\
-    #                           {config['database_tables']['group_report_map']} \
-    #                             WHERE group_id = %s AND report_id = %s"
-    #                     cursor.execute(select_query, (group_id, report_id))
-    #                     existing_entry = cursor.fetchone()
-
-    #                     if existing_entry:
-
-    #                         update_query = f"UPDATE {config['database_tables']['group_report_map']}\
-    #                               SET created_at = %s, access_mask = %s WHERE group_id = %s AND\
-    #                                   report_id = %s"
-    #                         cursor.execute(
-    #                             update_query, (date, access_mask, group_id, report_id)
-    #                         )
-    #                         logging.info(
-    #                             "Updated existing entry for report ID: %s and group ID: %s",
-    #                             report_id,
-    #                             group_id,
-    #                         )
-    #                     else:
-    #                         insert_query = f"INSERT INTO\
-    #                               {config['database_tables']['group_report_map']}\
-    #                                   (group_id, report_id, created_at, access_mask)\
-    #                                       VALUES (%s, %s, %s, %s)"
-    #                         cursor.execute(
-    #                             insert_query, (group_id, report_id, date, access_mask)
-    #                         )
-    #                         logging.info(
-    #                             "Inserted new entry for report ID: %s and group ID: %s",
-    #                             report_id,
-    #                             group_id,
-    #                         )
-    #             database_mysql.commit()
-    #             database_mysql.close()
-    #             logging.info("Database connection closed")
-
-    #             return JSONResponse(
-    #                 status_code=status.HTTP_200_OK,
-    #                 content="Report Assigned Successfully!",
-    #             )
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content="Internal server error: {}".format(unexpected_exception),
-    #         )
+   
 
     async def assignReports(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -4474,7 +3443,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -4490,17 +3459,7 @@ class ReportManager:
                 }
 
             
-        # if database_type == "mysql":
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
-            # logging.info("Connected to MySQL database")
-        # with database_mysql.cursor(dictionary=True) as cursor:
+       
             for report_id in report_ids:
                 access_mask = access_masks[report_ids.index(report_id)]
                 logging.info(
@@ -4510,11 +3469,7 @@ class ReportManager:
                     group_id,
                 )
 
-                # select_query = f"SELECT * FROM\
-                #       {config['database_tables']['group_report_map']} \
-                #         WHERE group_id = %s AND report_id = %s"
-                # cursor.execute(select_query, (group_id, report_id))
-                # existing_entry = cursor.fetchone()
+                
                 try:
                         
                     columns = ["*"]
@@ -4532,12 +3487,7 @@ class ReportManager:
                 existing_entry = existing_entry[0] if existing_entry else None
 
                 if existing_entry:
-                    # update_query = f"UPDATE {config['database_tables']['group_report_map']}\
-                    #       SET created_at = %s, access_mask = %s WHERE group_id = %s AND\
-                    #           report_id = %s"
-                    # cursor.execute(
-                    #     update_query, (date, access_mask, group_id, report_id)
-                    # )
+                    
                     try:
                             
                         database_service.update_record(
@@ -4559,13 +3509,7 @@ class ReportManager:
                     )
 
                 else:
-                    # insert_query = f"INSERT INTO\
-                    #       {config['database_tables']['group_report_map']}\
-                    #           (group_id, report_id, created_at, access_mask)\
-                    #               VALUES (%s, %s, %s, %s)"
-                    # cursor.execute(
-                    #     insert_query, (group_id, report_id, date, access_mask)
-                    # )
+                    
                     try:
                             
                         database_service.create_record(
@@ -4589,8 +3533,7 @@ class ReportManager:
                         group_id,
                     )
 
-            # database_mysql.commit()
-            # database_mysql.close()
+            
             return{
                 "StatusCode":int(config['codes']['success']),
                 "data":"Report Assigned Successfully!"
@@ -4606,117 +3549,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info(f"Closed {details['database_type']} database connection")
 
-    # async def assignFeatures(self, details: dict):
-    #     """
-    #     Assigns features to a specific group in the database.
-
-    #     This Method retrieves customer information based on the provided email, 
-    #     fetches feature IDs corresponding to the given feature names, and assigns 
-    #     them to a group with specified access masks. If an assignment already 
-    #     exists, it updates the access mask; otherwise, it inserts a new entry.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-
-    #     try:
-    #         database_type = details.get("database_type")
-    #         feature_names = details.get("feature_names")
-    #         group_id = details.get("group_id")
-    #         access_masks = details.get("access_masks")
-    #         date = datetime.now()
-    #         email = details.get("email")
-    #         if database_type == "mysql":
-    #             mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #             database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #             logging.info("Connected to MySQL database")
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"select customer_id from \
-    #                         {config['database_tables']['user_account']}\
-    #                               where user_email_id = %s",
-    #                     (email,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 customer_id = result[0]["customer_id"]
-    #                 logging.info(
-    #                     "Found customer_id: %s for email: %s", customer_id, email
-    #                 )
-
-    #                 for feature_name in feature_names:
-    #                     access_mask = access_masks[feature_names.index(feature_name)]
-    #                     cursor.execute(
-    #                         f"select feature_id from\
-    #                               {config['database_tables']['features']} \
-    #                                 where featurename = %s and customer_id = %s ",
-    #                         (feature_name, customer_id),
-    #                     )
-    #                     result = cursor.fetchone()
-    #                     feature_id = result["feature_id"]
-    #                     logging.info(
-    #                         "Assigning feature ID: %s with access mask: %s to group ID: %s",
-    #                         feature_id,
-    #                         access_mask,
-    #                         group_id,
-    #                     )
-
-    #                     select_query = f"SELECT * FROM\
-    #                           {config['database_tables']['group_accessrights']} \
-    #                             WHERE group_id = %s AND feature_id = %s"
-    #                     cursor.execute(select_query, (group_id, feature_id))
-    #                     existing_entry = cursor.fetchone()
-
-    #                     if existing_entry:
-
-    #                         update_query = f"UPDATE\
-    #                               {config['database_tables']['group_accessrights']}\
-    #                                   SET created_at = %s, accessmask = %s WHERE group_id = %s \
-    #                                     AND feature_id = %s"
-    #                         cursor.execute(
-    #                             update_query, (date, access_mask, group_id, feature_id)
-    #                         )
-    #                         logging.info(
-    #                             "Updated existing entry for feature ID: %s and group ID: %s",
-    #                             feature_id,
-    #                             group_id,
-    #                         )
-    #                     else:
-
-    #                         insert_query = f"INSERT INTO\
-    #                               {config['database_tables']['group_accessrights']}\
-    #                                   (group_id, feature_id, created_at, accessmask) \
-    #                                     VALUES (%s, %s, %s, %s)"
-    #                         cursor.execute(
-    #                             insert_query, (group_id, feature_id, date, access_mask)
-    #                         )
-    #                         logging.info(
-    #                             "Inserted new entry for feature ID: %s and group ID: %s",
-    #                             feature_id,
-    #                             group_id,
-    #                         )
-
-    #             database_mysql.commit()
-    #             database_mysql.close()
-    #             logging.info("Database connection closed")
-
-    #             return JSONResponse(
-    #                 status_code=status.HTTP_200_OK,
-    #                 content="Features Updated Successfully!",
-    #             )
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content="Internal server error: {}".format(unexpected_exception),
-    #         )
-
+    
     async def assignFeatures(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
         logging = cursor_logger.setup_logger()
@@ -4734,7 +3567,8 @@ class ReportManager:
                 if database_type == "mysql":
                     database_url = self.mysql_database_url
                     database_service = MySQLServices(**database_url)
-                    cursor = database_service.connect().cursor(dictionary=True)
+                    database_conn = database_service.connect()
+                    cursor = database_conn.cursor(dictionary=True)
                     logging.info("Using MySQL database service.")
                 elif database_type == "oracle":
                     database_url = self.oracle_database_url
@@ -4744,7 +3578,8 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    database_conn = database_service.connect()
+                    cursor = database_conn.cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -4752,10 +3587,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['incorrect parameters']),
                         "Error":f"Unsupported database type: {database_type}"
                     }
-                    # return JSONResponse(
-                    #     status_code=status.HTTP_400_BAD_REQUEST,
-                    #     content=f"Unsupported database type: {database_type}",
-                    # )
+                    
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -4763,15 +3595,7 @@ class ReportManager:
                     "Error":f"Database connection error: {e}",
                 }
 
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
-            # with database_mysql.cursor(dictionary=True) as cursor:
+            
             try:
                     
                 cursor.execute(
@@ -4803,7 +3627,7 @@ class ReportManager:
                         (feature_name, customer_id),
                     )
                     result = cursor.fetchone()
-                    print(result)
+                    
                     feature_id = result["feature_id"]
                     logging.info(
                         "Assigning feature ID: %s with access mask: %s to group ID: %s",
@@ -4867,7 +3691,7 @@ class ReportManager:
                         group_id,
                     )
 
-            database_service.commit()
+            database_conn.commit()
             logging.info("Database connection closed")
 
             return{
@@ -4883,65 +3707,6 @@ class ReportManager:
         finally:
             database_service.close_connection()
             logging.info(f"Closed {details['database_type']} database connection")
-
-    # async def accessmask(self, details: dict):
-    #     """
-    #     Retrieves access mask details for a given group ID from the MySQL database.
-    #     It checks if the group ID exists in the user group mapping and fetches 
-    #     feature access details from the respective database table.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-
-    #     try:
-    #         group_id = details.get("group_id")
-
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-    #         with database_mysql.cursor(dictionary=True) as cursor:
-    #             cursor.execute("select distinct group_id from user_group_map")
-    #             res = cursor.fetchall()
-    #             group_ids = [i["group_id"] for i in res]
-    #             if group_id in group_ids:
-    #                 cursor.execute(
-    #                     f"select featurename, accessmask from\
-    #                           {config['database_tables']['view_user_access_group']} \
-    #                             where group_id=%s and accessmask != 'null'",
-    #                     (group_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #             else:
-    #                 cursor.execute(
-    #                     f"SELECT featurename, accessmask FROM \
-    #                         {config['database_tables']['group_accessrights']} join\
-    #                               {config['database_tables']['features']} on \
-    #                                 {config['database_tables']['group_accessrights']}.feature_id \
-    #                                     = {config['database_tables']['features']}.feature_id where\
-    #                                           group_id=%s and accessmask != 'null'",
-    #                     (group_id,),
-    #                 )
-    #                 result = cursor.fetchall()
-    #             logging.info("Query executed successfully")
-    #         database_mysql.close()
-    #         logging.info("Database connection closed")
-
-    #         return JSONResponse(status_code=status.HTTP_200_OK, content=result)
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content="Internal server error: {}".format(unexpected_exception),
-    #         )
 
     async def accessmask(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -4964,7 +3729,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
                     logging.info("Using Postgres database service.")
                 else:
                     logging.error(f"Unsupported database type: {database_type}")
@@ -4980,9 +3745,9 @@ class ReportManager:
                 }
 
             group_id = details.get("group_id")
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
+            
             logging.info(f"Connected to {details['database_type']} database")
-            # with database_mysql.cursor(dictionary=True) as cursor:
+            
             try:                    
                 cursor.execute("select distinct group_id from user_group_map")
                 res = cursor.fetchall()
@@ -5045,168 +3810,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info(f"Closed {details['database_type']} database connection")
 
-    # async def gettags(self, details: dict):
-    #     """
-    #     Retrieves database column names based on the provided details and connection type.
-
-    #     This function establishes a connection with a MySQL database to fetch connection 
-    #     details for a secondary database (MySQL or PostgreSQL). It then executes a given 
-    #     query on the secondary database and retrieves the column names from the result set. 
-    #     The function handles two cases: 
-    #     1. Direct query execution for a master report.
-    #     2. Query execution based on a predefined report template.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-    #     try:
-    #         customer_id = details.get("customer_id")
-    #         connection_type = details.get("connection_type")
-    #         schema_name = details.get("schema")
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-    #         for_master_report = details.get("for_master_report")
-    #         if for_master_report == "yes":
-    #             query = details.get("query")
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"select rdbms_name,domain_name,db_port,db_user_name,\
-    #                         db_password,db_schema_name from \
-    #                             {config['database_tables']['database_details']} \
-    #                                 where customer_id = %s and db_schema_name = %s and\
-    #                                       rdbms_name = %s",
-    #                     (customer_id, schema_name, connection_type),
-    #                 )
-                    
-    #                 result = cursor.fetchall()
-    #                 secondary_host = result[0]["domain_name"]
-    #                 secondary_port = result[0]["db_port"]
-    #                 secondary_username = result[0]["db_user_name"]
-    #                 secondary_password = result[0]["db_password"]
-    #                 schema_name = result[0]["db_schema_name"]
-    #                 connection_type = result[0]["rdbms_name"]
-    #                 secondary_database_url = {
-    #                     "host": secondary_host,
-    #                     "port": secondary_port,
-    #                     "username": secondary_username,
-    #                     "password": secondary_password,
-    #                     "schema": schema_name,
-    #                 }
-    #                 logging.info("Secondary database connection details retrieved")
-    #                 if connection_type == "mysql":
-    #                     secondary_database = db_services.get_mysql_connection(
-    #                         secondary_database_url
-    #                     )
-    #                     with secondary_database.cursor(dictionary=True) as cursor:
-    #                         cursor.execute(query)
-    #                         result = cursor.description
-    #                         column_names = [column[0] for column in result]
-    #                         logging.info(
-    #                             "Query executed on secondary MySQL database: %s",
-    #                             column_names,
-    #                         )
-    #                         secondary_database.close()
-    #                 elif connection_type == "postgres":
-    #                     secondary_database = db_services.get_postgres_connection(
-    #                         secondary_database_url
-    #                     )
-    #                     with secondary_database.cursor() as cursor:
-    #                         cursor.execute(query)
-    #                         result = cursor.description
-    #                         column_names = [column.name for column in result]
-    #                         logging.info(
-    #                             "Query executed on secondary Postgres database: %s",
-    #                             column_names,
-    #                         )
-    #                         secondary_database.close()
-
-    #             filtered_columns = [column_names[0], column_names[1]]
-    #         elif for_master_report == "no":
-    #             report_title = details.get("report_title")
-    #             with database_mysql.cursor(dictionary=True) as cursor:
-    #                 cursor.execute(
-    #                     f"select defined_query,db_details_id from\
-    #                           {config['database_tables']['report_template']} \
-    #                             where report_template_name = %s and customer_id = %s",
-    #                     (report_title, customer_id),
-    #                 )
-    #                 result = cursor.fetchone()
-    #                 query = result["defined_query"]
-    #                 db_details_id = result["db_details_id"]
-    #                 cursor.execute(
-    #                     f"select rdbms_name,domain_name,db_port,db_user_name,db_password,\
-    #                         db_schema_name from {config['database_tables']['database_details']}\
-    #                               where customer_id = %s and db_details_id = %s",
-    #                     (customer_id, db_details_id),
-    #                 )
-    #                 result = cursor.fetchall()
-    #                 secondary_host = result[0]["domain_name"]
-    #                 secondary_port = result[0]["db_port"]
-    #                 secondary_username = result[0]["db_user_name"]
-    #                 secondary_password = result[0]["db_password"]
-    #                 schema_name = result[0]["db_schema_name"]
-    #                 connection_type = result[0]["rdbms_name"]
-    #                 secondary_database_url = {
-    #                     "host": secondary_host,
-    #                     "port": secondary_port,
-    #                     "username": secondary_username,
-    #                     "password": secondary_password,
-    #                     "schema": schema_name,
-    #                 }
-    #                 logging.info("Secondary database connection details retrieved")
-    #                 if connection_type == "mysql":
-    #                     secondary_database = db_services.get_mysql_connection(
-    #                         secondary_database_url
-    #                     )
-    #                     with secondary_database.cursor(dictionary=True) as cursor:
-    #                         cursor.execute(query)
-    #                         result = cursor.description
-    #                         column_names = [column[0] for column in result]
-    #                         logging.info(
-    #                             "Query executed on secondary MySQL database: %s",
-    #                             column_names,
-    #                         )
-    #                         secondary_database.close()
-    #                 elif connection_type == "postgres":
-    #                     secondary_database = db_services.get_postgres_connection(
-    #                         secondary_database_url
-    #                     )
-    #                     with secondary_database.cursor() as cursor:
-    #                         cursor.execute(query)
-    #                         result = cursor.description
-    #                         column_names = [column.name for column in result]
-    #                         logging.info(
-    #                             "Query executed on secondary Postgres database: %s",
-    #                             column_names,
-    #                         )
-    #                         secondary_database.close()
-    #             filtered_columns = column_names
-    #             logging.info(
-    #                 "Filtered columns for report title '%s': %s",
-    #                 report_title,
-    #                 filtered_columns,
-    #             )
-
-    #         database_mysql.close()
-    #         logging.info("Database connection closed")
-
-    #         return JSONResponse(
-    #             status_code=status.HTTP_200_OK, content=filtered_columns
-    #         )
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         return JSONResponse(
-    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #             content="Internal server error: {}".format(unexpected_exception),
-    #         )
+    
 
     async def gettags(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -5233,7 +3837,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -5241,27 +3845,12 @@ class ReportManager:
                     "Error":f"Database connection error: {e}",
                 }
 
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
-            # logging.info("Connected to MySQL database")
+            
             for_master_report = details.get("for_master_report")
             if for_master_report == "yes":
                 query = details.get("query")
-                # with database_mysql.cursor(dictionary=True) as cursor:
-                # cursor.execute(
-                #     f"select rdbms_name,domain_name,db_port,db_user_name,\
-                #         db_password,db_schema_name from \
-                #             {config['database_tables']['database_details']} \
-                #                 where customer_id = %s and db_schema_name = %s and\
-                #                       rdbms_name = %s",
-                #     (customer_id, schema_name, connection_type),
-                # )
+                
+                
                 try:
                         
                     columns = ["rdbms_name", "domain_name", "db_port", "db_user_name", "db_password", "db_schema_name"]
@@ -5276,7 +3865,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['database error']),
                         "Error":f"Fetch error: {e}",
                     }
-                # result = cursor.fetchall()
+                
                 secondary_host = result[0]["domain_name"]
                 secondary_port = result[0]["db_port"]
                 secondary_username = result[0]["db_user_name"]
@@ -5291,46 +3880,21 @@ class ReportManager:
                     "database": schema_name,
                 }
                 logging.info("Secondary database connection details retrieved")
-                # if connection_type == "mysql":
-                #     secondary_database = db_services.get_mysql_connection(
-                #         secondary_database_url
-                #     )
-                #     with secondary_database.cursor(dictionary=True) as cursor:
-                #         cursor.execute(query)
-                #         result = cursor.description
-                #         column_names = [column[0] for column in result]
-                #         logging.info(
-                #             "Query executed on secondary MySQL database: %s",
-                #             column_names,
-                #         )
-                #         secondary_database.close()
-                # elif connection_type == "postgres":
-                #     secondary_database = db_services.get_postgres_connection(
-                #         secondary_database_url
-                #     )
-                #     with secondary_database.cursor() as cursor:
-                #         cursor.execute(query)
-                #         result = cursor.description
-                #         column_names = [column.name for column in result]
-                #         logging.info(
-                #             "Query executed on secondary Postgres database: %s",
-                #             column_names,
-                #         )
-                #         secondary_database.close()
+                
                 try:
                     if connection_type == "mysql":
                         secondary_database_service = MySQLServices(**secondary_database_url)
                         cursor = secondary_database_service.connect().cursor(dictionary=True)
                         cursor.execute(query)
                         column_names = [column[0] for column in cursor.description]
-                        # cursor.close()
+                        
                         
                     elif connection_type == "postgres":
                         secondary_database_service = PostgreSQLServices(**secondary_database_url)
-                        cursor = secondary_database_service.connect().cursor(cursor_factory=DictCursor)
+                        cursor = secondary_database_service.connect().cursor(cursor_factory=RealDictCursor)
                         cursor.execute(query)
                         column_names = [column.name for column in cursor.description]
-                        # cursor.close()
+                       
 
                     logging.info(f"Query executed on {connection_type} database.")
 
@@ -5345,13 +3909,7 @@ class ReportManager:
                 filtered_columns = [column_names[0], column_names[1]]
             elif for_master_report == "no":
                 report_title = details.get("report_title")
-                # with database_mysql.cursor(dictionary=True) as cursor:
-                #     # cursor.execute(
-                #     #     f"select defined_query,db_details_id from\
-                #     #           {config['database_tables']['report_template']} \
-                #     #             where report_template_name = %s and customer_id = %s",
-                #     #     (report_title, customer_id),
-                #     # )
+                
                 try:
                         
                     columns = ["defined_query", "db_details_id"]
@@ -5367,15 +3925,10 @@ class ReportManager:
                         "Error":f"Fetch error: {e}",
                     }
 
-                #     # result = cursor.fetchone()
-                query = result["defined_query"]
-                db_details_id = result["db_details_id"]
-                #     # cursor.execute(
-                #     #     f"select rdbms_name,domain_name,db_port,db_user_name,db_password,\
-                #     #         db_schema_name from {config['database_tables']['database_details']}\
-                #     #               where customer_id = %s and db_details_id = %s",
-                #     #     (customer_id, db_details_id),
-                #     # )
+                
+                query = result[0]["defined_query"]
+                db_details_id = result[0]["db_details_id"]
+                
                 try:
                         
                     columns = ["rdbms_name", "domain_name", "db_port", "db_user_name", "db_password", "db_schema_name"]
@@ -5390,7 +3943,7 @@ class ReportManager:
                         "StatusCode":int(config['codes']['database error']),
                         "Error":f"Fetch error: {e}",
                     }
-                # result = cursor.fetchall()
+                
                 secondary_host = result[0]["domain_name"]
                 secondary_port = result[0]["db_port"]
                 secondary_username = result[0]["db_user_name"]
@@ -5407,32 +3960,7 @@ class ReportManager:
                 logging.info("Secondary database connection details retrieved")
 
 
-                # if connection_type == "mysql":
-                #     secondary_database = db_services.get_mysql_connection(
-                #         secondary_database_url
-                #     )
-                #     with secondary_database.cursor(dictionary=True) as cursor:
-                #         cursor.execute(query)
-                #         result = cursor.description
-                #         column_names = [column[0] for column in result]
-                #         logging.info(
-                #             "Query executed on secondary MySQL database: %s",
-                #             column_names,
-                #         )
-                #         secondary_database.close()
-                # elif connection_type == "postgres":
-                #     secondary_database = db_services.get_postgres_connection(
-                #         secondary_database_url
-                #     )
-                #     with secondary_database.cursor() as cursor:
-                #         cursor.execute(query)
-                #         result = cursor.description
-                #         column_names = [column.name for column in result]
-                #         logging.info(
-                #             "Query executed on secondary Postgres database: %s",
-                #             column_names,
-                #         )
-                #         secondary_database.close()
+                
                 try:
                     if connection_type == "mysql":
                         secondary_database_service = MySQLServices(**secondary_database_url)
@@ -5443,7 +3971,7 @@ class ReportManager:
                         
                     elif connection_type == "postgres":
                         secondary_database_service = PostgreSQLServices(**secondary_database_url)
-                        cursor = secondary_database_service.connect().cursor(cursor_factory=DictCursor)
+                        cursor = secondary_database_service.connect().cursor(cursor_factory=RealDictCursor)
                         cursor.execute(query)
                         column_names = [column.name for column in cursor.description]
                         cursor.close()
@@ -5465,7 +3993,7 @@ class ReportManager:
                 filtered_columns,
             )
 
-            # database_mysql.close()
+            
             logging.info("Database connection closed")
             return{
                 "StatusCode":int(config['codes']['success']),
@@ -5543,12 +4071,12 @@ class ReportManager:
                 logging.warning(
                     "No group by clause. Drilldown response: %s", response
                 )
-            # return response
+            
             return{
                 "StatusCode":int(config['codes']['success']),
                 "data":response
             }
-            # return JSONResponse(status_code=status.HTTP_200_OK, content=response)
+            
 
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
@@ -5558,98 +4086,7 @@ class ReportManager:
             }
         
 
-    # async def save_drill(self, details: dict):
-    #     """
-    #     Saves drill-down report details into the MySQL database if the combination 
-    #     of master report, drilldown report, master column, drilldown column, and 
-    #     customer ID does not already exist. If the combination exists, it returns 
-    #     a response indicating duplication.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-    #     try:
-    #         customer_id = details.get("customer_id")
-    #         master_report = details.get("master_report")
-    #         drilldown_report = details.get("drilldown_report")
-    #         master_column = str(details.get("Master_Column"))
-    #         drilldown_column = str(details.get("DrillDown_Column"))
-    #         logging.info(
-    #             "Saving drill down report for master report: %s and drilldown report: %s",
-    #             master_report,
-    #             drilldown_report,
-    #         )
-
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-    #         with database_mysql.cursor(dictionary=True) as cursor:
-
-    #             cursor.execute(
-    #                 f"SELECT COUNT(*) as count FROM \
-    #                     {config['database_tables']['detailed_report']} \
-    #                         WHERE master_report = %s AND drilldown_report = %s\
-    #                               AND master_column = %s AND drilldown_column = %s \
-    #                                 AND customer_id = %s",
-    #                 (
-    #                     master_report,
-    #                     drilldown_report,
-    #                     master_column,
-    #                     drilldown_column,
-    #                     customer_id,
-    #                 ),
-    #             )
-    #             result = cursor.fetchone()
-    #             logging.info(
-    #                 "Checked existing records in detailed_report table: %s", result
-    #             )
-
-    #             if result["count"] == 0:
-    #                 cursor.execute(
-    #                     f"INSERT INTO {config['database_tables']['detailed_report']}\
-    #                         (master_report, drilldown_report, master_column,\
-    #                               drilldown_column, customer_id) VALUES (%s, %s, %s, %s, %s)",
-    #                     (
-    #                         master_report,
-    #                         drilldown_report,
-    #                         master_column,
-    #                         drilldown_column,
-    #                         customer_id,
-    #                     ),
-    #                 )
-    #                 database_mysql.commit()
-    #                 logging.info("Drill down report saved successfully")
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_201_CREATED,
-    #                     content="Saved successfully",
-    #                 )
-
-    #             else:
-    #                 logging.info("Combination already exists")
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_208_ALREADY_REPORTED,
-    #                     content="Combination already exists",
-    #                 )
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500,
-    #             detail="Internal server error: {}".format(unexpected_exception),
-    #         )
-
-    #     finally:
-    #         if "cursor" in locals() and cursor:
-    #             cursor.close()
-    #         if "database_mysql" in locals() and database_mysql:
-    #             database_mysql.close()
-    #         logging.info("Database connection closed")
+    
 
     async def save_drill(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -5677,7 +4114,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -5690,22 +4127,7 @@ class ReportManager:
                 drilldown_report,
             )
 
-            # with database_mysql.cursor(dictionary=True) as cursor:
-
-            # cursor.execute(
-            #     f"SELECT COUNT(*) as count FROM \
-            #         {config['database_tables']['detailed_report']} \
-            #             WHERE master_report = %s AND drilldown_report = %s\
-            #                   AND master_column = %s AND drilldown_column = %s \
-            #                     AND customer_id = %s",
-            #     (
-            #         master_report,
-            #         drilldown_report,
-            #         master_column,
-            #         drilldown_column,
-            #         customer_id,
-            #     ),
-            # )
+            
             try:
                     
                 columns = ["COUNT(*) as count"]
@@ -5732,18 +4154,7 @@ class ReportManager:
             )
 
             if result["count"] == 0:
-                # cursor.execute(
-                #     f"INSERT INTO {config['database_tables']['detailed_report']}\
-                #         (master_report, drilldown_report, master_column,\
-                #               drilldown_column, customer_id) VALUES (%s, %s, %s, %s, %s)",
-                #     (
-                #         master_report,
-                #         drilldown_report,
-                #         master_column,
-                #         drilldown_column,
-                #         customer_id,
-                #     ),
-                # )
+                
                 data = {
                     "master_report": master_report,
                     "drilldown_report": drilldown_report,
@@ -5815,7 +4226,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -5856,6 +4267,7 @@ class ReportManager:
                 }
 
             drilldown_report = result["drilldown_report"]
+            logging.info("drilldown_column",result["drilldown_column"])
             drilldown_column = ast.literal_eval(result["drilldown_column"])
             logging.info(
                 "Fetching report template for drilldown_report: %s and customer_id: %s",
@@ -5891,7 +4303,14 @@ class ReportManager:
             query = result[0]["defined_query"]
             chart_type = result[0]["chart_type"]
             db_details_id = result[0]["db_details_id"]
-            logo_path = result[0]["upload_logo"]
+            
+            if database_type == "mysql":
+                logo_path = str(result[0]["upload_logo"])
+            else:
+                logo_path = result[0]["upload_logo"]
+                if isinstance(logo_path, memoryview):
+                    logo_path = logo_path.tobytes()
+            
             backgroung_color = result[0]["background_colour"]
             chart_react_color = result[0]["chart_react_colour"]
             logging.info(
@@ -5971,7 +4390,7 @@ class ReportManager:
                 logging.info("Closed connection to secondary MySQL database")
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
-                        # in ['line','bar','column','gause','area','radial']:
+                        
                         if chart_type.lower():
                             columns = list(result[0].keys())
                             temp = {}
@@ -6087,7 +4506,7 @@ class ReportManager:
                         return{
                             "StatusCode": int(config['codes']['no records']), "message": "No Data Found","data":{}  
                         }
-                        # return {"status":204,"message": "No Data Found","data":{}}
+                        
                     result = secondary_data["data"]
                     column_types = secondary_data["column_types"]
                     total_records = secondary_data["total_records"]                            
@@ -6097,10 +4516,10 @@ class ReportManager:
                     return{
                         "StatusCode": int(config['codes']['no records']), "message": "No Data Found","data":{}
                     }
-                    # return {"status_code": 404, "message": "No Data Found","data":{}}
+                    
                 if len(result[0]) == 3:
                     if report_type.lower() == "chart":
-                        # in ['line','bar','column','gause','area','radial']:
+                        
                         if chart_type.lower():
                             columns = list(result[0].keys())
                             temp = {}
@@ -6111,7 +4530,7 @@ class ReportManager:
                                         continue
                                     else:
                                         temp[col].append(i[col])
-                                    # names = list(result[''].keys())
+                                   
                             series = []
                             for item in temp[columns[1]]:
                                 ele = {"data": [], "name": item}
@@ -6135,7 +4554,7 @@ class ReportManager:
                             return{
                                 "StatusCode": int(config['codes']['success']), "data": json_data
                             }
-                            # return json_data
+                            
             if report_type.lower() == "chart":
                 if chart_type.lower():
                     names = list(result[0].keys())
@@ -6157,10 +4576,10 @@ class ReportManager:
                     return{
                         "StatusCode": int(config['codes']['success']), "data": json_data
                     }
-                    # return json_data
+                    
             elif report_type.lower() == "box":
                 report_key = next(iter(result[0]))
-                # report_value = result[0][report_key]
+                
                 box_value = {
                     "box_value": report_key,
                     "backgroung_color": backgroung_color,
@@ -6173,7 +4592,7 @@ class ReportManager:
                 return{
                     "StatusCode": int(config['codes']['success']), "data": box_value
                 }
-                # return box_value
+                
             elif report_type.lower() == "table":
                 final_result = {}
                 if db_type == "mysql":
@@ -6188,7 +4607,7 @@ class ReportManager:
                     return{
                         "StatusCode": int(config['codes']['success']), "data": final_result
                     }
-                    # return final_result
+                    
                 elif db_type in ['postgres','vertica']:
                     column_names = list(result[0].keys())
                     final_result["column_names"] = column_names
@@ -6201,7 +4620,7 @@ class ReportManager:
                     return{
                         "StatusCode": int(config['codes']['success']), "data": final_result
                     }
-                    # return final_result
+                    
         except Exception as unexpected_exception:
             logging.error("Unexpected error: %s", unexpected_exception)
             return{
@@ -6212,104 +4631,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info("Closed database connection")
 
-    # async def save_update_drill(self, details: dict):
-    #     """
-    #     Saves or updates the drill-down report details in the database.
-
-    #     This function checks whether a record for the given master report and customer ID 
-    #     already exists in the `detailed_report` table. If it exists, the drill-down report 
-    #     details are updated; otherwise, a new record is inserted.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-    #     try:
-    #         customer_id = details.get("customer_id")
-    #         master_report = details.get("master_report")
-    #         drilldown_report = details.get("drilldown_report")
-    #         master_column = str(details.get("Master_Column"))
-    #         drilldown_column = str(details.get("DrillDown_Column"))
-    #         logging.info(
-    #             "Updating drill down report for master report: %s and drilldown report: %s",
-    #             master_report,
-    #             drilldown_report,
-    #         )
-
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-    #         with database_mysql.cursor(dictionary=True) as cursor:
-
-    #             cursor.execute(
-    #                 f"SELECT COUNT(*) as count FROM {config['database_tables']['detailed_report']}\
-    #                       WHERE master_report = %s AND customer_id = %s",
-    #                 (master_report, customer_id),
-    #             )
-    #             result = cursor.fetchone()
-    #             logging.info(
-    #                 "Checked existing records in detailed_report table: %s", result
-    #             )
-
-    #             if result["count"] != 0:
-    #                 cursor.execute(
-    #                     f"UPDATE {config['database_tables']['detailed_report']} SET\
-    #                           drilldown_report = %s, master_column = %s, drilldown_column = \
-    #                             %s WHERE master_report = %s AND customer_id = %s",
-    #                     (
-    #                         drilldown_report,
-    #                         master_column,
-    #                         drilldown_column,
-    #                         master_report,
-    #                         customer_id,
-    #                     ),
-    #                 )
-    #                 database_mysql.commit()
-    #                 logging.info("Drill down report updated successfully")
-
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_201_CREATED,
-    #                     content="Saved successfully",
-    #                 )
-
-    #             else:
-    #                 cursor.execute(
-    #                     f"INSERT INTO {config['database_tables']['detailed_report']} \
-    #                         (master_report, drilldown_report, master_column, \
-    #                             drilldown_column, customer_id) VALUES (%s, %s, %s, %s, %s)",
-    #                     (
-    #                         master_report,
-    #                         drilldown_report,
-    #                         master_column,
-    #                         drilldown_column,
-    #                         customer_id,
-    #                     ),
-    #                 )
-    #                 database_mysql.commit()
-    #                 logging.info("Drildown Saved Successfully.")
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_201_CREATED,
-    #                     content="Drildown Saved Successfully.",
-    #                 )
-
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500,
-    #             detail="Internal server error: {}".format(unexpected_exception),
-    #         )
-
-    #     finally:
-    #         if "cursor" in locals() and cursor:
-    #             cursor.close()
-    #         if "database_mysql" in locals() and database_mysql:
-    #             database_mysql.close()
-    #         logging.info("Database connection closed")
+    
 
     async def save_update_drill(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -6337,7 +4659,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -6351,13 +4673,7 @@ class ReportManager:
                 drilldown_report,
             )
 
-        # with database_mysql.cursor(dictionary=True) as cursor:
-
-            # cursor.execute(
-            #     f"SELECT COUNT(*) as count FROM {config['database_tables']['detailed_report']}\
-            #           WHERE master_report = %s AND customer_id = %s",
-            #     (master_report, customer_id),
-            # )
+        
             try:
                     
                 columns = ["COUNT(*) as count"]
@@ -6378,18 +4694,7 @@ class ReportManager:
             )
 
             if result["count"] != 0:
-                # cursor.execute(
-                #     f"UPDATE {config['database_tables']['detailed_report']} SET\
-                #           drilldown_report = %s, master_column = %s, drilldown_column = \
-                #             %s WHERE master_report = %s AND customer_id = %s",
-                #     (
-                #         drilldown_report,
-                #         master_column,
-                #         drilldown_column,
-                #         master_report,
-                #         customer_id,
-                #     ),
-                # )
+                
                 try:
                         
                     database_service.update_record(
@@ -6407,29 +4712,15 @@ class ReportManager:
                         "StatusCode":int(config['codes']['database error']),
                         "Error":f"Update error: {e}"
                     }
-                # database_mysql.commit()
+                
                 logging.info("Drill down report updated successfully")
                 return{
                     "StatusCode": int(config['codes']['success']), "message": "Saved successfully"
                 }
-                # return JSONResponse(
-                #     status_code=status.HTTP_201_CREATED,
-                #     content="Saved successfully",
-                # )
+                
 
             else:
-                # cursor.execute(
-                #     f"INSERT INTO {config['database_tables']['detailed_report']} \
-                #         (master_report, drilldown_report, master_column, \
-                #             drilldown_column, customer_id) VALUES (%s, %s, %s, %s, %s)",
-                #     (
-                #         master_report,
-                #         drilldown_report,
-                #         master_column,
-                #         drilldown_column,
-                #         customer_id,
-                #     ),
-                # )
+                
                 data = {
                     "master_report": master_report,
                     "drilldown_report": drilldown_report,
@@ -6454,134 +4745,11 @@ class ReportManager:
             }
 
         finally:
-            # if "cursor" in locals() and cursor:
-            #     cursor.close()
-            # if "database_mysql" in locals() and database_mysql:
-            #     database_mysql.close()
+            
             database_service.close_connection()
             logging.info("Database connection closed")
 
-    # async def save_get_drill(self, details: dict):
-    #     """
-    #     Processes a request to determine if drilldown functionality can be applied 
-    #     to a given query based on the chart type and the presence of a 'GROUP BY' clause.
-    #     It also checks and retrieves existing drilldown details from the database or saves new details.
-    #     """
-    #     cursor_logger = LOGGINGS.CustomLogger()
-    #     logging = cursor_logger.setup_logger()
-    #     logging.info("Received request to assign features: %s", details)
-
-    #     try:
-    #         query = details.get("query")
-    #         chart_type = details.get("type")
-    #         db_type = details.get("db_type")
-    #         schema_name = details.get("schema_name")
-    #         customer_id = details.get("customer_id")
-    #         logging.info("Processing query for chart type: %s", chart_type)
-
-    #         if chart_type.lower() == "box":
-    #             response = {"drilldown": "yes", "column_mapping": 1}
-    #             logging.info(
-    #                 "Box chart type detected. Drilldown response: %s", response
-    #             )
-    #         elif "group by" in query or "GROUP BY" in query:
-    #             res = db_services.count_group_by_columns(
-    #                 query, db_type, schema_name, customer_id
-    #             )
-    #             if res != 0:
-    #                 count_of_group_by_columns = int(res["length"])
-    #                 if count_of_group_by_columns < 3:
-    #                     response = {
-    #                         "drilldown": "yes",
-    #                         "column_mapping": count_of_group_by_columns,
-    #                     }
-    #                     logging.info(
-    #                         "Valid group by query with count: %d. Drilldown response: %s",
-    #                         count_of_group_by_columns,
-    #                         response,
-    #                     )
-    #                 else:
-    #                     response = {
-    #                         "drilldown": "no",
-    #                         "message": "Invalid Query for DrillDown : Count of columns in \
-    #                             'GROUP BY' clause should not be more than 2 for drilldown.",
-    #                     }
-    #                     logging.warning(
-    #                         "Invalid group by query. Drilldown response: %s", response
-    #                     )
-    #             else:
-    #                 response = {"drilldown": "no", "message": "Invalid Query"}
-    #                 logging.warning(
-    #                     "Invalid query detected. Drilldown response: %s", response
-    #                 )
-    #         else:
-    #             response = {
-    #                 "drilldown": "no",
-    #                 "message": "Invalid Query for DrillDown : 'GROUP BY' clause having upto \
-    #                     2 columns is required for drilldown.",
-    #             }
-    #             logging.warning(
-    #                 "No group by clause. Drilldown response: %s", response
-    #             )
-
-    #         customer_id = details.get("customer_id")
-    #         master_report = details.get("master_report")
-    #         mysql_database_url = {
-    #             "host": config["mysql"]["mysql_host"],
-    #             "port": config["mysql"]["mysql_port"],
-    #             "username": config["mysql"]["mysql_username"],
-    #             "password": config["mysql"]["mysql_password"],
-    #             "schema": config["mysql"]["mysql_new_schema"],
-    #         }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         logging.info("Connected to MySQL database")
-    #         with database_mysql.cursor(dictionary=True) as cursor:
-    #             # Check if the combination already exists
-    #             cursor.execute(
-    #                 f"SELECT COUNT(*) as count FROM \
-    #                     {config['database_tables']['detailed_report']}\
-    #                           WHERE master_report = %s AND customer_id = %s",
-    #                 (master_report, customer_id),
-    #             )
-    #             result = cursor.fetchone()
-    #             logging.info(
-    #                 "Checked existing records in detailed_report table: %s", result
-    #             )
-
-    #             if result["count"] != 0:
-    #                 cursor.execute(
-    #                     f"SELECT master_report,drilldown_report, master_column,\
-    #                           drilldown_column from \
-    #                             {config['database_tables']['detailed_report']}\
-    #                                   where master_report = %s and customer_id = %s",
-    #                     (master_report, customer_id),
-    #                 )
-    #                 data = cursor.fetchone()
-    #                 logging.info("Drill down report updated successfully")
-    #                 response["drilldown_data"] = data
-
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_200_OK, content=response
-    #                 )
-
-    #             else:
-    #                 logging.info("Drildown Saved Successfully.")
-    #                 return JSONResponse(
-    #                     status_code=status.HTTP_204_NO_CONTENT,
-    #                     content="Drildown Details Not Available.",
-    #                 )
-    #     except Exception as unexpected_exception:
-    #         logging.error("Unexpected error: %s", unexpected_exception)
-    #         raise HTTPException(
-    #             status_code=500,
-    #             detail="Internal server error: {}".format(unexpected_exception),
-    #         )
-    #     finally:
-    #         if "cursor" in locals() and cursor:
-    #             cursor.close()
-    #         if "database_mysql" in locals() and database_mysql:
-    #             database_mysql.close()
-    #         logging.info("Database connection closed")
+    
 
     async def save_get_drill(self, details: dict):
         cursor_logger = LOGGINGS.CustomLogger()
@@ -6610,7 +4778,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -6624,9 +4792,11 @@ class ReportManager:
                     "Box chart type detected. Drilldown response: %s", response
                 )
             elif "group by" in query or "GROUP BY" in query:
+                logging.info("checking count_group_by_columns")
                 res = db_services.count_group_by_columns(
                     query, database_type, schema_name, customer_id
                 )
+                logging.info("response from count_group_by_columns",res)
                 if res != 0:
                     count_of_group_by_columns = int(res["length"])
                     if count_of_group_by_columns < 3:
@@ -6665,24 +4835,7 @@ class ReportManager:
 
             customer_id = details.get("customer_id")
             master_report = details.get("master_report")
-            # mysql_database_url = {
-            #     "host": config["mysql"]["mysql_host"],
-            #     "port": config["mysql"]["mysql_port"],
-            #     "username": config["mysql"]["mysql_username"],
-            #     "password": config["mysql"]["mysql_password"],
-            #     "schema": config["mysql"]["mysql_new_schema"],
-            # }
-            # database_mysql = db_services.get_mysql_connection(mysql_database_url)
-            # logging.info("Connected to MySQL database")
-        # with database_mysql.cursor(dictionary=True) as cursor:
-            # Check if the combination already exists
-            # cursor.execute(
-            #     f"SELECT COUNT(*) as count FROM \
-            #         {config['database_tables']['detailed_report']}\
-            #               WHERE master_report = %s AND customer_id = %s",
-            #     (master_report, customer_id),
-            # )
-            # result = cursor.fetchone()
+            
             try:
                     
                 columns = ["COUNT(*) as count"]
@@ -6703,14 +4856,7 @@ class ReportManager:
             )
 
             if result["count"] != 0:
-                # cursor.execute(
-                #     f"SELECT master_report,drilldown_report, master_column,\
-                #           drilldown_column from \
-                #             {config['database_tables']['detailed_report']}\
-                #                   where master_report = %s and customer_id = %s",
-                #     (master_report, customer_id),
-                # )
-                # data = cursor.fetchone()
+                
                 columns = ["master_report", "drilldown_report", "master_column", "drilldown_column"]
                 data = database_service.read_records(
                     table=config['database_tables']['detailed_report'],
@@ -6723,6 +4869,7 @@ class ReportManager:
                 
                 return{
                     "StatusCode": int(config['codes']['success']), "message": "Drilldown data fetched successfully",
+                    "content":response
                 }
 
             else:
@@ -6740,49 +4887,7 @@ class ReportManager:
             database_service.close_connection()
             logging.info("Database connection closed")
 
-    # async def get_schema_name(self, details:dict):
-    #     """
-    #     Retrieves schema details for a given customer ID, group ID, and connection type.
-
-    #     This function connects to a MySQL database, executes a query to fetch database schema 
-    #     details based on the provided customer and group information, and returns the results. 
-    #     If no matching records are found, it returns an appropriate message.
-    #     """
-    #     try:
-    #         cursor_logger = LOGGINGS.CustomLogger()
-    #         logging = cursor_logger.setup_logger()
-    #         logging.info("Get Schema details with : %s", details)
-    #         customer_id = details["customer_id"]
-    #         group_id = details["group_id"] 
-    #         connection_type = details["connection_type"]
-    #         mysql_database_url = {
-    #                 "host": config["mysql"]["mysql_host"],
-    #                 "port": config["mysql"]["mysql_port"],
-    #                 "username": config["mysql"]["mysql_username"],
-    #                 "password": config["mysql"]["mysql_password"],
-    #                 "schema": config["mysql"]["mysql_new_schema"],
-    #             }
-    #         database_mysql = db_services.get_mysql_connection(mysql_database_url)
-    #         with database_mysql.cursor(dictionary=True, buffered=True) as cursor:
-    #             cursor.execute(f"SELECT db_details_id, group_id, rdbms_name"
-    #                             f", db_schema_name FROM {config['database_tables']['view_db_group']} WHERE customer_id = %s and group_id = %s and rdbms_name = %s", (customer_id,group_id,connection_type))
-    #             db_results = cursor.fetchall()
-    #             if len(db_results) > 0:
-    #                 # result = {}
-    #                 # for record in db_results:
-    #                 #     db_id = record['db_details_id']
-    #                 #     group_id = record['group_id']
-    #                 #     if db_id not in result:
-    #                 #         result[db_id] = {**record, 'group_id': [group_id]}
-    #                 #     else:
-    #                 #         result[db_id]['group_id'].append(group_id)
-    #                 # output = list(result.values())
-    #                 logging.info("DB Names fetched successfully for customer_id: %s", customer_id)
-    #                 return {"status": "success", "message": "DB Names fetched Successfully.","result":db_results}
-    #             return {"status": "success", "message": f"No Database found for customer_id: {customer_id}"}
-    #     except Exception as exception:
-    #         logging.error("Error assigning group: %s", exception)
-    #         return {"status": "failed", "message": f"Failed to fetch database details due to {exception}"}
+    
 
     async def get_schema_name(self, details:dict):
         '''
@@ -6811,11 +4916,11 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
-                    "StatusCode":int(config['codes']['database error']),
+                    "statusCode":int(config['codes']['database error']),
                     "Error":f"Database connection error: {e}",
                 }
 
@@ -6830,26 +4935,18 @@ class ReportManager:
             except Exception as e:
                 logging.error(f"Error fetching existing records: {e}")
                 return{
-                    "StatusCode":int(config['codes']['database error']),
+                    "statusCode":int(config['codes']['database error']),
                     "Error":f"Fetch error: {e}",
                 }
             if len(db_results) > 0:
-                # result = {}
-                # for record in db_results:
-                #     db_id = record['db_details_id']
-                #     group_id = record['group_id']
-                #     if db_id not in result:
-                #         result[db_id] = {**record, 'group_id': [group_id]}
-                #     else:
-                #         result[db_id]['group_id'].append(group_id)
-                # output = list(result.values())
+                
                 logging.info("DB Names fetched successfully for customer_id: %s", customer_id)
-                return {"status": "success","StatusCode":int(config['codes']['success']), "message": "DB Names fetched Successfully.","result":db_results}
-            return {"status": "success","StatusCode":int(config['codes']['success']), "message": f"No Database found for customer_id: {customer_id}"}
+                return {"status": "success","statusCode":int(config['codes']['success']), "message": "DB Names fetched Successfully.","result":db_results}
+            return {"status": "success","statusCode":int(config['codes']['success']), "message": f"No Database found for customer_id: {customer_id}"}
         except Exception as exception:
             logging.error("Error assigning group: %s", exception)
             return{
-                "StatusCode":int(config['codes']['internal error']),
+                "statusCode":int(config['codes']['internal error']),
                 "Error":f"Failed to fetch database details due to {exception}"
             }
         finally:
@@ -6908,7 +5005,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -7125,17 +5222,7 @@ class ReportManager:
                         )
                     query += order_by_clause
                     logging.info(f"Constructed ORDER BY clause: {order_by_clause}")
-                # Construct ORDER BY clause based on sorting options
-                # if sorting_options:
-                #     if db_config["rdbms_name"] == 'oracle':
-                #         order_by_clause = " ORDER BY " + ", ".join(
-                #             [f'"{sort["id"]}" {"DESC" if sort["desc"] else "ASC"}' for sort in sorting_options])
-                #     else:
-                #         order_by_clause = " ORDER BY " + ", ".join(
-                #             [f"`{sort['id']}` {'DESC' if sort['desc'] else 'ASC'}" for sort in sorting_options]
-                #         )
-                #     query += order_by_clause
-                #     logging.info(f"Constructed ORDER BY clause: {order_by_clause}")
+                
                
             except Exception as construct_query_error:
                 logging.error(
@@ -7245,7 +5332,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
 
@@ -7436,7 +5523,7 @@ class ReportManager:
  
                 if db_config["rdbms_name"] == "oracle":
                     query = f"SELECT DISTINCT {column_name} FROM ({query}) MAIN"
-                    # query = "SELECT DISTINCT id FROM (SELECT * FROM username) MAIN"
+                   
                 else:
                     query = f"SELECT DISTINCT {quoted_column} FROM ({query}) AS MAIN"
  
@@ -7514,7 +5601,7 @@ class ReportManager:
                         "message":"Data fetched successfully.",
                         "data":[row[0] for row in data],
                     }
-                    # return [row[0] for row in data]
+                    
                 # oracle changes
                 elif db_config["rdbms_name"].lower() == "oracle":
                     if data and isinstance(data[0], tuple):
@@ -7523,7 +5610,7 @@ class ReportManager:
                             "message":"Data fetched successfully.",
                             "data":[row[0] for row in data]
                         }
-                        # return [row[0] for row in data]
+                        
                     else:
                         logging.warning(f"Unexpected data format for Oracle: {data}")
                         return{
@@ -7531,10 +5618,10 @@ class ReportManager:
                             "message":"Data fetched successfully.",
                             "data":[row for row in data] if isinstance(data, list) else []
                         }
-                        # return [row for row in data] if isinstance(data, list) else []
+                        
                 elif db_config["rdbms_name"].lower() == "mysql":
                     values = []
-                    print(data,"data")
+                    
                     for dictionary in data:
                         for value in dictionary.values():
                             values.append(value)
@@ -7543,7 +5630,7 @@ class ReportManager:
                         "message":"Data fetched successfully.",
                         "data":values
                     }
-                    # return values
+                    
            
             except Exception as fetch_data_error:
                 logging.error(
@@ -7617,7 +5704,7 @@ class ReportManager:
                 elif database_type == "postgres":
                     database_url = self.postgres_database_url
                     database_service = PostgreSQLServices(**database_url)
-                    cursor = database_service.connect().cursor(cursor_factory=DictCursor)
+                    cursor = database_service.connect().cursor(cursor_factory=RealDictCursor)
             except Exception as e:
                 logging.error(f"Error connecting to database: {e}")
                 return{
@@ -7769,7 +5856,18 @@ class ReportManager:
                                 condition = f" WHERE \"{drilldown_column[0]}\" = '{filter_value}'\
                                     AND \"{drilldown_column[1]}\" = '{selectedSeriesName}'"
                             query = f"Select * from ({query}) mains" + condition
-
+                    elif db_config["rdbms_name"] == "vertica":
+                        if filter_value == "":
+                            query = query
+                        else:
+                            filter_value = filter_value.replace("'","''")
+                            selectedSeriesName = selectedSeriesName.replace("'","''")
+                            if len(drilldown_column) == 1:
+                                condition = f" WHERE \"{drilldown_column[0]}\" = '{filter_value}'"
+                            elif len(drilldown_column) == 2:
+                                condition = f" WHERE \"{drilldown_column[0]}\" = '{filter_value}'\
+                                    AND \"{drilldown_column[1]}\" = '{selectedSeriesName}'"
+                            query = f"Select * from ({query}) mains" + condition
 
                 if filter_operations and filter_options:
                     if db_config["rdbms_name"] == 'mysql':
@@ -7779,7 +5877,7 @@ class ReportManager:
                             query = f'SELECT {joined_column_names} FROM ({query}) AS MAIN WHERE {where_clause}'
                         else:
                             query = f'SELECT * FROM ({query}) AS MAIN WHERE {where_clause}'
-                        print(query)
+                        # print(query)
                     elif db_config["rdbms_name"] == 'postgres':
                         where_clause = generate_where_clause_postgres(filter_options, filter_operations)
                         if column_names and len(column_names) > 0:
@@ -7791,11 +5889,12 @@ class ReportManager:
                         where_clause = generate_where_clause_vertica(filter_options, filter_operations)
                         if column_names and len(column_names) > 0:
                             joined_column_names = ", ".join([f'"{col}"' for col in column_names])
-                            query = f'SELECT {joined_column_names} FROM ({query}) AS MAIN WHERE {where_clause}'
+                            query = f'SELECT {joined_column_names} FROM ({query}) AS MAIN WHERE {where_clause}'   
                         else:
-                            query = f'SELECT * FROM ({query}) AS MAIN WHERE {where_clause}'                    
+                            query = f'SELECT * FROM ({query}) AS MAIN WHERE {where_clause}'
+                                                   
                 elif column_names and len(column_names) > 0:
-                    if db_config["rdbms_name"] == 'postgres':
+                    if db_config["rdbms_name"] in ['postgres', 'vertica']:
                         joined_column_names = ", ".join([f'"{col}"' for col in column_names])
                     else:
                         joined_column_names = ", ".join([f"`{col}`" for col in column_names])
@@ -7818,6 +5917,8 @@ class ReportManager:
                         order_by_clause = " ORDER BY " + ", ".join(
                             [f'"{sort["id"]}" {"DESC" if sort["desc"] else "ASC"}' for sort in sorting_options]
                         )
+                    elif db_config["rdbms_name"] == 'vertica':
+                        order_by_clause = " ORDER BY " + ", ".join([f'"{sort["id"]}" {"DESC" if sort["desc"] else "ASC"}' for sort in sorting_options])                        
                     query += order_by_clause
                     logging.info(f"Constructed ORDER BY clause: {order_by_clause}")
 
@@ -7830,39 +5931,7 @@ class ReportManager:
                     "StatusCode":int(config['codes']['internal error']),
                     "Error":f"Error constructing query: {construct_query_error}",
                 }
-            # return query
-            # # Fetch data using secondary database
-            # try:
-            #     data = await self.database_chunk_processor.process_chunks(
-            #         db_type=db_config["rdbms_name"],
-            #         query=query,
-            #         hostname=db_config["domain_name"],
-            #         port=db_config["db_port"],
-            #         db_name=db_config["db_schema_name"],
-            #         db_user=db_config["db_user_name"],
-            #         password=db_config["db_password"],
-            #         page_no=None,
-            #         page_size=None
-            #     )
-
-            #     if not data:
-            #         logging.info("No data found for the provided query.")
-            #         return JSONResponse(
-            #             status_code=status.HTTP_404_NOT_FOUND,
-            #             content="No data found for the query.",
-            #         )
-                
-            #     logging.info(f"Fetched data successfully:")
-
-            #     data = data["data"]
-            # except Exception as fetch_data_error:
-            #     logging.error(
-            #         f"Error fetching data from secondary database: {fetch_data_error}", exc_info=True
-            #     )
-            #     return JSONResponse(
-            #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            #         content=f"Error fetching data: {fetch_data_error}",
-            #     )
+            
             try:
                 
                 if file_format == "pdf":
@@ -7889,7 +5958,7 @@ class ReportManager:
                         }
                         # return {"error": "Failed to fetch file from external API"}
                     valid_filename = new_data['file']
-                    print(valid_filename)
+                    # print(valid_filename)
                     logging.info(f"Fetched data successfully:{valid_filename}")
                     with open(valid_filename, 'rb') as file:
                         file_data = file.read()

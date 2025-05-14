@@ -238,7 +238,7 @@ class CommonDatabaseServices:
                 self.logging.error(f"Vertica database connection error: {e}")
                 raise HTTPException(status_code=500, detail="Vertica database connection is not valid.")
 
-    def count_group_by_columns(self, sql_query, db_type, db_schema_name, customer_id):
+    def count_group_by_columns(self, sql_query, db_type, db_schema_name, customer_id,connection_type):
         """
         Executes a SQL query and returns the number of columns used in the GROUP BY clause.
         The function handles both MySQL and PostgreSQL connections using MySQLServices and
@@ -283,7 +283,7 @@ class CommonDatabaseServices:
  
         # Query to retrieve client database details
         db_query = f"SELECT * FROM {config['database_tables']['database_details']} " \
-                f"WHERE rdbms_name='{db_type}' AND db_schema_name='{db_schema_name}' AND " \
+                f"WHERE rdbms_name='{connection_type}' AND db_schema_name='{db_schema_name}' AND " \
                 f"customer_id='{customer_id}'"
         # print(db_query)
  

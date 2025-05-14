@@ -140,7 +140,7 @@ class getaccessaccordingtogroupid_input(BaseModelWithHTMLValidation):
     database_type: str
     _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class getTags_input(BaseModelWithHTMLValidation):
+class getTags_input(BaseModel):
   """Pydantic model for getting report tags."""
   customer_id: int
   schema: str
@@ -152,13 +152,14 @@ class getTags_input(BaseModelWithHTMLValidation):
   _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 
-class checkDrillDown_input(BaseModelWithHTMLValidation):
+class checkDrillDown_input(BaseModel):
   """Pydantic model for checking report drilldown."""
   query: str
   type: str
   schema_name: Optional[str] = None
   customer_id: Optional[int] = None
   database_type: str
+  db_type: Optional[str] = None
   _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class saveDrillDownReport_input(BaseModelWithHTMLValidation):
@@ -192,7 +193,7 @@ class updateDrillDownReport_input(BaseModelWithHTMLValidation):
   database_type: str
   _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
-class getUpdateDrillDown_input(BaseModelWithHTMLValidation):
+class getUpdateDrillDown_input(BaseModel):
   """Pydantic model for getting updated drilldown report."""
   type: str
   schema_name: str
@@ -200,6 +201,7 @@ class getUpdateDrillDown_input(BaseModelWithHTMLValidation):
   query: str
   customer_id: int
   database_type: str
+  db_type: Optional[str] = None
   _validate_database_type = validator('database_type', allow_reuse=True)(validate_database_type)
 
 class insert_data_input(BaseModelWithHTMLValidation):

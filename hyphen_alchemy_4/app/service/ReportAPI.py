@@ -3887,6 +3887,8 @@ class ReportManager:
                         cursor = secondary_database_service.connect().cursor(dictionary=True)
                         cursor.execute(query)
                         column_names = [column[0] for column in cursor.description]
+                        if cursor.description:  # Check if the query returns a result set
+                            cursor.fetchall()
                         
                         
                     elif connection_type == "postgres":
@@ -3894,6 +3896,8 @@ class ReportManager:
                         cursor = secondary_database_service.connect().cursor(cursor_factory=RealDictCursor)
                         cursor.execute(query)
                         column_names = [column.name for column in cursor.description]
+                        if cursor.description:
+                            cursor.fetchall()  # Consume result set  
                        
 
                     logging.info(f"Query executed on {connection_type} database.")
@@ -3967,6 +3971,8 @@ class ReportManager:
                         cursor = secondary_database_service.connect().cursor(dictionary=True)
                         cursor.execute(query)
                         column_names = [column[0] for column in cursor.description]
+                        if cursor.description:  # Check if the query returns a result set
+                            cursor.fetchall()
                         cursor.close()
                         
                     elif connection_type == "postgres":
@@ -3974,6 +3980,8 @@ class ReportManager:
                         cursor = secondary_database_service.connect().cursor(cursor_factory=RealDictCursor)
                         cursor.execute(query)
                         column_names = [column.name for column in cursor.description]
+                        if cursor.description:
+                            cursor.fetchall()  # Consume result set  
                         cursor.close()
 
                     logging.info(f"Query executed on {connection_type} database.")
@@ -4022,6 +4030,7 @@ class ReportManager:
             query = details.get("query")
             chart_type = details.get("type")
             db_type = details.get("database_type")
+            connection_type = details.get("db_type") 
             schema_name = details.get("schema_name")
             customer_id = details.get("customer_id")
             logging.info("Processing query for chart type: %s", chart_type)
@@ -4033,7 +4042,7 @@ class ReportManager:
                 )
             elif "group by" in query or "GROUP BY" in query:
                 res = db_services.count_group_by_columns(
-                    query, db_type, schema_name, customer_id
+                    query, db_type, schema_name, customer_id,connection_type
                 )
                 if res != 0:
                     count_of_group_by_columns = int(res["length"])
@@ -4762,6 +4771,7 @@ class ReportManager:
             database_type = details.get("database_type")
             schema_name = details.get("schema_name")
             customer_id = details.get("customer_id")
+            connection_type=details.get("db_type")
             logging.info("Processing query for chart type: %s", chart_type)
 
             try:                        
@@ -4794,7 +4804,7 @@ class ReportManager:
             elif "group by" in query or "GROUP BY" in query:
                 logging.info("checking count_group_by_columns")
                 res = db_services.count_group_by_columns(
-                    query, database_type, schema_name, customer_id
+                    query, database_type, schema_name, customer_id,connection_type
                 )
                 logging.info("response from count_group_by_columns",res)
                 if res != 0:
