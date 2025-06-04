@@ -7,7 +7,7 @@ const cors = require('cors');
 
 const app = express();
 const port = 3005; // Change if needed
-const host = '0.0.0.0'; // Bind to all available network interfaces
+const host = 'hyphenview.in'; // Bind to all available network interfaces
 
 app.use(cors());
 app.use(express.json());
@@ -66,13 +66,16 @@ app.post('/log', (req, res) => {
   
   try {
     const logger = getLogger(userId);
+
+    // Convert status_code to number if it comes as string
     const status = Number(status_code);
- 
+
     if (status === 200) {
       logger.info({ status_code: status, message });
     } else {
       logger.error({ status_code: status, message });
     }
+
     res.send('Log recorded');
   } catch (error) {
     console.error('Error logging message:', error);
@@ -83,5 +86,5 @@ app.post('/log', (req, res) => {
 // Create an HTTPS server with the SSL certificate
 const server = https.createServer(sslOptions, app);
 server.listen(port, host, () => {
-  console.log('HTTPS Server running at https://${host}:${port}');
+  console.log(`HTTPS Server running at http://${host}:${port}`);
 });
