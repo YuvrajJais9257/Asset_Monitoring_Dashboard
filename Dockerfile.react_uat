@@ -1,0 +1,36 @@
+# Stage 1: Build the React app
+FROM node:20.5.0 as build
+
+# Set the working directory for the React app
+WORKDIR /app/HyphenView
+
+#new
+COPY HyphenviewReactcode/package*.json ./
+
+# Copy the React app source code
+
+# Install dependencies for the React app
+RUN npm install
+COPY HyphenviewReactcode /app/HyphenView
+
+# Build the React app
+RUN npm run build
+
+
+FROM nginx:alpine
+
+# Copy the built React app to the Nginx html directory
+COPY --from=build /app/HyphenView/build /usr/share/nginx/html
+
+
+# Copy Nginx configuration file
+COPY conf.d/nginx_uat.conf /etc/nginx/conf.d/default.conf
+COPY conf.d/ssl/certificates/reissue/hyphenview.in.crt /etc/nginx/hyphenview.in.crt
+COPY conf.d/ssl/certificates/reissue/hyphenview.in_key.txt /etc/nginx/hyphenview.in_key.txt
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
