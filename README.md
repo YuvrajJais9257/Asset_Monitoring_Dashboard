@@ -131,7 +131,7 @@ npm start
 ### 🧪 Default Login Credentials
 
 ```txt
-Username: superadmin@erasmith.com
+Username: test@erasmith.com
 Password: 12345
 ```
 
