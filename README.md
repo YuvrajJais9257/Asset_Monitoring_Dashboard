@@ -1,5 +1,7 @@
 # 🚀 Asset Monitoring Dashboard – Full Stack App (React + FastAPI)
 
+[![Live Demo](https://img.shields.io/badge/🌐%20Live-Demo-blue?style=flat-square&logo=google-chrome)](https://hyphenview.in/)
+
 A scalable, full-stack solution for managing organizational reports, users, dashboards, and schedulers. Built with a **React.js frontend** and a **FastAPI backend**, it empowers both admins and end-users with rich features, dynamic layouts, and automated alerts.
 
 ---
@@ -101,13 +103,14 @@ A scalable, full-stack solution for managing organizational reports, users, dash
 ## 🛠️ Setup
 
 ### Backend
+
 ```bash
 cd backend
 pip install -r requirements.txt
 python main.py
 ````
 
-> Encrypt DB password using `encryption.py` before updating `config.ini`.
+> 🔐 Encrypt DB password using `encryption.py` before updating `config.ini`.
 
 ### Frontend
 
@@ -123,7 +126,16 @@ npm start
 
 1. Call `POST /validate-login` with user credentials
 2. Copy the `access_token` from the response
-3. Use it as `Authorization: Bearer <token>` for all secure endpoints
+3. Use it as `Authorization: Bearer <token>` in all secure endpoints
+
+### 🧪 Default Login Credentials
+
+```txt
+Username: superadmin@erasmith.com
+Password: 12345
+```
+
+> ⚠️ For production, replace or disable test credentials.
 
 ---
 
@@ -133,5 +145,4 @@ npm start
 * `/saveUser`, `/deleteUser`, `/authorization`
 * `/saveFrame`, `/updateFrame`, `/listDashboard`
 * `/saveScheduler`, `/listScheduler`, `/deleteScheduler`
-
 
