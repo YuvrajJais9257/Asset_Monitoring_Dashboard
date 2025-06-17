@@ -1,14 +1,13 @@
 /* ResponsiveTable.css */
 .responsive-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-    border-radius: 10px;
-    /* overflow: hidden; */
-    /* margin: 0px 20px 20px 20px; */
-    overflow-x: auto;
-    /* padding: 0 80px; */
-    margin: 0 auto;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 0 auto;
+  background-color: var(--bg-main);
+  color: var(--text-main);
 }
 
 .responsive-table th,
@@ -21,7 +20,7 @@
 }
 
 .responsive-table .table-header {
-    background: linear-gradient(45deg, #579ada, #fbfcfe); /* Header gradient */
+    background: linear-gradient(45deg, #579ada, #fbfcfe);
     color: white;
     font-weight: bold;
     text-transform: uppercase;
@@ -30,10 +29,8 @@
     border-top-right-radius: 10px;
 }
 
-/* Remove hover effect from table header */
 .responsive-table th:hover {
-    background-color: transparent; /* Ensure no background change */
-    /*color: inherit;  Keep the original text color */
+    background-color: transparent; 
 }
 
 
@@ -43,13 +40,12 @@
     border-radius: 8px;
 }
 
-/* Lightened color for odd and even rows based on header gradient */
 tr:nth-child(odd) {
-    background-color: #b1d4f354; /* Light blue based on header gradient */
+    background-color: #b1d4f354; 
 }
 
 tr:nth-child(even) {
-    background-color: #eaf4fe91; /* Very light blue, close to white */
+    background-color: #eaf4fe91;
 }
 
 table tr {
@@ -57,16 +53,15 @@ table tr {
 }
 
 table tr td:first-child {
-    border-top-left-radius: 10px; /* Top-left corner of the first cell */
-    border-bottom-left-radius: 10px; /* Bottom-left corner of the first cell */
+    border-top-left-radius: 10px; 
+    border-bottom-left-radius: 10px;
 }
 
 table tr td:last-child {
-    border-top-right-radius: 10px; /* Top-right corner of the last cell */
-    border-bottom-right-radius: 10px; /* Bottom-right corner of the last cell */
+    border-top-right-radius: 10px; 
+    border-bottom-right-radius: 10px; 
 }
 
-/* Hover effect for odd and even rows */
 tr:nth-child(odd):hover {
     background-color: #b1d4f3;
 }
@@ -75,7 +70,6 @@ tr:nth-child(even):hover {
     background-color: #eaf4fe;
 }
 
-/* Responsive design for small screens */
 @media (max-width: 768px) {
     .responsive-table {
         font-size: 12px;
@@ -87,7 +81,6 @@ tr:nth-child(even):hover {
     }
 }
 
-/* Make sure the table is scrollable on small devices */
 @media (max-width: 480px) {
     .responsive-table {
         display: block;
@@ -105,44 +98,40 @@ table th:last-child {
 }
 
 .responsive-table .table-row td:first-child {
-    border-radius: 20px 0 0 20px; /* Round left corners */
+    border-radius: 20px 0 0 20px; 
 }
 
 .responsive-table .table-row td:last-child {
-    border-radius: 0 20px 20px 0 !important; /* Round right corners */
+    border-radius: 0 20px 20px 0 !important; 
 }
 
-/* Style for action icons (without display flex) */
 .action-icons {
     gap: 10px;
 }
 
-/* Edit and Delete buttons as inline-blocks */
 .edit-button,
 .delete-button,
 .hide-button,
 .download-button {
-    width: 36px; /* Circular width */
-    height: 36px; /* Circular height */
-    border: none;
-    border-radius: 50%; /* Make buttons circular */
-    display: inline-block !important; /* Align buttons horizontally */
-    text-align: center;
-    line-height: 36px; /* Vertically center the icons */
-    cursor: pointer;
-    font-size: 16px;
-    color: white;
-    margin-right: 5px; /* Optional, to add space between buttons */
+  width: 36px; 
+  height: 36px; 
+  border: none;
+  border-radius: 50%; 
+  display: inline-block !important; 
+  text-align: center;
+  line-height: 36px; 
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  margin-right: 5px; 
 }
 
-/* Edit button styling */
 .edit-button {
-    background-color: #4caf50; /* Green */
+    background-color: #4caf50;
 }
 
-/* Delete button styling */
 .delete-button {
-    background-color: #f44336; /* Red */
+    background-color: #f44336; 
 }
 
 .hide-button {
@@ -161,7 +150,6 @@ table th:last-child {
     background-color: #bb8435;
 }
 
-/* Add hover effect for buttons */
 .edit-button:hover {
     background-color: #45a049;
 }
@@ -169,4 +157,185 @@ table th:last-child {
 .delete-button:hover {
     background-color: #d32f2f;
 }
+
+/*today changes*/
+
+.table-header {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+
+.Page-Header {
+  margin-top: 15px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  display: flex;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  margin-left: 60px;
+  width: calc(100vw - 130px);
+}
+
+.theme-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.theme-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-button.light {
+  background-color: #3c0891; /* primary purple */
+  box-shadow: 0 2px 6px rgba(230, 238, 249, 0.3); /* soft glow using light bg */
+}
+
+.theme-button.light:hover {
+  background-color: #1874e4;
+  box-shadow: 0 4px 10px rgba(230, 238, 249, 0.4);
+}
+
+.theme-button.dark {
+  background-color: #e6eef9; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.theme-button.dark:hover {
+  background-color: #d0dce8; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.toggle-theme-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-theme-button:hover {
+  transform: scale(1.1);
+}
+
+
+.theme-icon {
+  width: 24px;
+  height: 24px;
+}
+
+
+.sun-theme-icon {
+  color: #3c0891; 
+}
+
+.moon-theme-icon {
+  color: #e6eef9; 
+}
+
+.list_management_header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.download-container {
+  display: flex;
+  align-items: center;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #0d6efd;
+  background-color: #0d6efd;
+  color: white;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px); /* Subtle lift effect */
+  background-color: #0b5ed7; /* Slightly darker on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+.download-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.download-text {
+  font-size: 16px;
+}
+
+/* Search Box */
+.search-container {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 15px; /* Rounded corners */
+  max-width: 300px;
+  width: 100%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.search-container:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  transform: scale(1.02); /* Slight scale-up effect */
+}
+
+.search-box {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  flex: 1; /* Take available space */
+  transition: background-color 0.3s ease;
+}
+
+.search-box:focus {
+  background-color: #f9f9f9; /* Slight color change on focus */
+}
+
+.search-icon {
+  margin-right: 15px; /* Spacing */
+  font-size: 18px;
+  color: #0d6efd;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.search-icon:hover {
+  transform: rotate(15deg); /* Rotate effect on hover */
+  color: #0056b3; /* Slightly darker blue */
+}
+
+body.dark .responsive-table {
+  background-color: #1a1a1a; /* Dark background */
+  color: #e0e0e0; /* Light text */
+}
+body.dark .responsive-table,
+body.dark .responsive-table td body.dark table, body.dark td {
+  color: #e0e0e0; /* Light text for table cells */
+}
+
 

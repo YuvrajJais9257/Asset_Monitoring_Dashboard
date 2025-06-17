@@ -19,7 +19,6 @@ function ShowBoxchart() {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
 
-
   const user = (() => {
     const encryptedData = localStorage.getItem("profile");
     return encryptedData ? decryptData(encryptedData) : null;
@@ -33,14 +32,15 @@ function ShowBoxchart() {
   const generatboxreportdetail =
     apiData?.reportmanagement.getboxtypeofreportdetail;
 
-
-
   const generatboxreportdetailBoxCustomizationOptions =
     generatboxreportdetail?.box_customization_options
       ? JSON.parse(generatboxreportdetail?.box_customization_options)
       : {};
 
-
+  console.log(
+    "generatboxreportdetailBoxCustomizationOptions",
+    generatboxreportdetailBoxCustomizationOptions
+  );
 
   const [imageUrl, setImageUrl] = useState("");
   const [imageSrc, setImageSrc] = useState("");
@@ -93,7 +93,6 @@ function ShowBoxchart() {
     };
 
     fetchData();
-
   }, [report_id]);
 
   return (
@@ -102,7 +101,14 @@ function ShowBoxchart() {
         <Header />
       </div>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "300px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "300px",
+          }}
+        >
           <CircularProgress />
         </Box>
       ) : (
@@ -121,6 +127,10 @@ function ShowBoxchart() {
                     : generatboxreportdetail?.box_value_id
                 }
                 Icon={imageSrc}
+                imageSize={
+                  generatboxreportdetailBoxCustomizationOptions?.image_size ||
+                  ""
+                }
                 titleSize={
                   generatboxreportdetailBoxCustomizationOptions?.font_size_title ||
                   "16px"
@@ -175,6 +185,10 @@ function ShowBoxchart() {
                     : generatboxreportdetail?.box_value_id
                 }
                 Icon={imageSrc}
+                imageSize={
+                  generatboxreportdetailBoxCustomizationOptions?.image_size ||
+                  ""
+                }
                 titleSize={
                   generatboxreportdetailBoxCustomizationOptions?.font_size_title ||
                   "16px"
@@ -210,7 +224,8 @@ function ShowBoxchart() {
               />
             )}
           </div>
-        ))}
+        )
+      )}
 
       <div
         style={{

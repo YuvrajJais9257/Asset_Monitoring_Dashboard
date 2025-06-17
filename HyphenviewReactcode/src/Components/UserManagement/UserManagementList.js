@@ -14,6 +14,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import ShowAlert from "../../actions/ShowAlert";
 import { decryptData } from '../utils/EncriptionStore';
 import { exportExcel } from '../utils/ExportExcel';
+//today change
+import { toggleTheme } from "../../actions/new_dashboard";
+import { Sun, Moon } from "lucide-react";
 
 function UserManagementList() {
   const history = useNavigate();
@@ -53,7 +56,7 @@ function UserManagementList() {
     history("/Dashboard");
   };
   useEffect(() => {
-    setCurrentPage(1); // Reset to the first page when search term changes
+    setCurrentPage(1); 
   }, [search]);
 
   const handelclickAddNewReport = () => {
@@ -69,9 +72,9 @@ function UserManagementList() {
 
   const listofalluser =
     Array.isArray(apiData?.allUserDetail) && apiData?.allUserDetail.length > 0
-      ? apiData?.allUserDetail.some((item) => item.groupname === "SuperAdmin" && user.groupname === "SuperAdmin") // Check if any item matches user.groupname
-        ? apiData?.allUserDetail // If a match is found, leave the array unchanged
-        : apiData?.allUserDetail.filter((item) => item.groupname !== "SuperAdmin") // Otherwise, filter out items with groupname "SuperAdmin"
+      ? apiData?.allUserDetail.some((item) => item.groupname === "SuperAdmin" && user.groupname === "SuperAdmin")
+        ? apiData?.allUserDetail 
+        : apiData?.allUserDetail.filter((item) => item.groupname !== "SuperAdmin")
       : [];
 
   let PageSize = 5;
@@ -139,87 +142,115 @@ function UserManagementList() {
     exportExcel(listofalluser,"ListofUsers");
   };
 
+  //today change
+    const app_theme = useSelector((state) => state.theme);
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
+
+
   return (
     <div>
       <div className="side-nav">
         <Header />
       </div>
       <div className="user_management_page">
-        <div className="Page-Header">
-          <span
-            class="fas fa-house-user"
-            aria-hidden="true"
-            onClick={handelclickgotoDashboard}
-          ></span>
-          <span>/</span>
-          <span> User Management </span>
-          {requiredValues.every((value) =>
-            reportsManagementObject.accessmask.includes(value)
-          ) ? (
-            <div class="dropdown">
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{
-                    border: "none",
-                    backgroundColor: "rgb(13 110 253)",
-                    marginLeft: "5px",
-                  }}
-                  id="dropdown-basic"
-                >
-                  User Action
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {requiredValues.every((value) =>
-                    reportsManagementObject.accessmask.includes(value)
-                  ) ? (
-                    <Dropdown.Item
-                      onClick={handelclicktoAssignation}
-                      id="accessFeatureId"
-                      href="#"
-                    >
-                      Access Features
-                    </Dropdown.Item>
-                  ) : null}
-                  {requiredValues.every((value) =>
-                    reportsManagementObject.accessmask.includes(value)
-                  ) ? (
-                    <Dropdown.Item
-                      onClick={handelclickAddNewReport}
-                      id="newUserId"
-                      href="#"
-                    >
-                      Add New User
-                    </Dropdown.Item>
-                  ) : null}
-                  {requiredValues.every((value) =>
-                    reportsManagementObject.accessmask.includes(value)
-                  ) ? (
-                    <Dropdown.Item
-                      onClick={handelclickGroupupdate}
-                      id="groupAssignationId"
-                      href="#"
-                    >
-                      Group Assignation
-                    </Dropdown.Item>
-                  ) : null}
-                  {requiredValues.every((value) =>
-                    reportsManagementObject.accessmask.includes(value)
-                  ) ? (
-                    <Dropdown.Item
-                      onClick={handelclickGroupManagement}
-                      id="groupManagementId"
-                      href="#"
-                    >
-                      Group Management
-                    </Dropdown.Item>
-                  ) : null}
-                  {requiredValues.every(value => reportsManagementObject.accessmask.includes(value)) && (user.groupname === "SuperAdmin")
-                    ? <Dropdown.Item onClick={handelclickGroupSourceManagement} id="datasourceaccess" href="#" >Source Management</Dropdown.Item> : null}
+        {/*today change */}
+        <div className="list_management_header">
+          <div className="Page-Header">
+            <span
+              className="fas fa-house-user"
+              aria-hidden="true"
+              onClick={handelclickgotoDashboard}
+            ></span>
+            <span>/</span>
+            <span>User Management</span>
+            {requiredValues.every((value) =>
+              reportsManagementObject.accessmask.includes(value)
+            ) && (
+              <div className="dropdown">
+                <Dropdown>
+                  <Dropdown.Toggle
+                    style={{
+                      border: "none",
+                      backgroundColor: "var(--dropdown-hover)",
+                      marginLeft: "5px",
+                      color: "var(--text-main)",
+                    }}
+                    id="dropdown-basic"
+                  >
+                    User Action
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {requiredValues.every((value) =>
+                      reportsManagementObject.accessmask.includes(value)
+                    ) && (
+                      <>
+                        <Dropdown.Item
+                          onClick={handelclicktoAssignation}
+                          id="accessFeatureId"
+                          href="#"
+                        >
+                          Access Features
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={handelclickAddNewReport}
+                          id="newUserId"
+                          href="#"
+                        >
+                          Add New User
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={handelclickGroupupdate}
+                          id="groupAssignationId"
+                          href="#"
+                        >
+                          Group Assignation
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={handelclickGroupManagement}
+                          id="groupManagementId"
+                          href="#"
+                        >
+                          Group Management
+                        </Dropdown.Item>
+                        {user.groupname === "SuperAdmin" && (
+                          <Dropdown.Item
+                            onClick={handelclickGroupSourceManagement}
+                            id="datasourceaccess"
+                            href="#"
+                          >
+                            Source Management
+                          </Dropdown.Item>
+                        )}
+                      </>
+                    )}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            )}
+          </div>
 
-                </Dropdown.Menu>
-              </Dropdown>
+          <div className="theme-button-container">
+            <div
+              className={`theme-button ${
+                app_theme === "dark" ? "dark" : "light"
+              }`}
+            >
+              <button
+                onClick={handleThemeToggle}
+                className="toggle-theme-button"
+                aria-label="Toggle theme"
+              >
+                {app_theme === "dark" ? (
+                  <Sun className="theme-icon sun-theme-icon" />
+                ) : (
+                  <Moon className="theme-icon moon-theme-icon" />
+                )}
+              </button>
             </div>
-          ) : null}
+          </div>
         </div>
         <div className='user_management_table_container' style={{ margin: "0 auto" }}>
 

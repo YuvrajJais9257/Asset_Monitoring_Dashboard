@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useMemo, useState } from "react";
 import styles from "../globalCSS/previewhighcharts/NewBox.module.css";
 const BoxTemplate = ({
   onClick,
@@ -9,6 +9,7 @@ const BoxTemplate = ({
   title,
   value,
   Icon,
+  imageSize,
   titleSize,
   contentSize,
   fontColor,
@@ -18,73 +19,128 @@ const BoxTemplate = ({
   subtitleSize,
   subtitleColor,
 }) => {
+  const numericHeight = parseInt(height, 10);
+  const newHeight = numericHeight + 12;
+
+  const boxRef = useRef(null);
+  const [responsiveScale, setResponsiveScale] = useState(1);
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+
+        // Scale based on width — you can tweak the divisor for different sensitivity
+        const scale = Math.max(0.5, Math.min(2, width / 300));
+        setResponsiveScale(scale);
+      }
+    });
+
+    if (boxRef.current) {
+      resizeObserver.observe(boxRef.current);
+    }
+
+    return () => {
+      if (boxRef.current) {
+        resizeObserver.unobserve(boxRef.current);
+      }
+    };
+  }, []);
+
+  const scaleSize = (sizeStr, scale, unit = "rem") => {
+    if (!sizeStr) return null;
+
+    const match = sizeStr.match(/^(\d+(?:\.\d+)?)(px|rem)?$/);
+    if (!match) return null;
+
+    const [, numberStr, unitFromProp] = match;
+    const number = parseFloat(numberStr);
+    const finalUnit = unitFromProp || unit;
+
+    return `${number * scale}${finalUnit}`;
+  };
+
   return (
-    <>
+    <div>
       {layout && (
         <div
           onClick={onClick}
-          id="boxTemplate"
+          // id="boxTemplate"
           className={`${styles.card} ${styles[`layout${layoutValue}`]}`}
-          style={{ height: height }}
+          style={{ height: newHeight }}
+          ref={boxRef}
         >
-          <div
-            className={styles.content}
-            style={{ display: "flex", position: "relative" }}
-          >
+          <div className={styles.preview_content_wrapper}>
             {Icon && (
-              <div className={styles.iconContainer}>
+              <div
+                className={styles.preview_image_container}
+                style={{
+                  width: scaleSize(imageSize || "40px", responsiveScale, "px"),
+                  height: scaleSize(imageSize || "40px", responsiveScale, "px"),
+                  marginBottom: "8px",
+                }}
+              >
                 <img
                   src={Icon}
-                  className={styles.logo}
                   alt="logo"
-                  width="50px"
-                  height="50px"
+                  className={styles.preview_image}
+                  style={{ width: "100%", height: "100%" }}
                 />
               </div>
             )}
-            <div
-            style={{wordWrap: "break-word", overflowWrap: "break-word"}}
-              className={styles.details}
-              // style={{ textAlign: textAlignment }}
-            >
-              <p
-                className={styles.title}
+
+            <div className={styles.preview_text_container}>
+              <h2
+                className={styles.preview_title}
                 style={{
-                  fontSize: titleSize,
-                  fontWeight: "800",
                   color: fontColor,
+                  fontSize: scaleSize(
+                    titleSize || "1.2rem",
+                    responsiveScale,
+                    "rem"
+                  ),
+                  margin: 0,
                 }}
               >
                 {title}
-              </p>
+              </h2>
+
               {subtitle && (
                 <p
-                  className={styles.status}
+                  className={styles.preview_subtitle}
                   style={{
-                    fontSize: subtitleSize,
-                    fontWeight: "800",
                     color: subtitleColor,
-                    opacity: 0.8,
+                    fontSize: scaleSize(
+                      subtitleSize || "1rem",
+                      responsiveScale,
+                      "rem"
+                    ),
+                    margin: 0,
                   }}
                 >
                   {subtitleText}
                 </p>
               )}
-              <p
-                className={styles.value}
-                style={{
-                  fontSize: contentSize,
-                  fontWeight: "800",
-                  color: fontColor,
-                }}
-              >
-                {value}
-              </p>
+            </div>
+          </div>
+          <div className={styles.preview_value_wrapper}>
+            <div
+              className={styles.preview_value}
+              style={{
+                color: fontColor,
+                fontSize: scaleSize(
+                  contentSize || "1.4rem",
+                  responsiveScale,
+                  "rem"
+                ),
+              }}
+            >
+              {value}
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

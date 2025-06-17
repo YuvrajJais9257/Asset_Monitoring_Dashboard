@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import {toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import DefaultBox from "../PreviewHighchart/DefaultBox";
 import BoxTemplate from "../PreviewHighchart/BoxTemplate";
 
-function BoxPreview({ Boxdata, height, width,flagvalue }) {
+function BoxPreview({ Boxdata, height, width, flagvalue }) {
   const BoxdataBoxCustomizationOptions = Boxdata?.box_customization_options
     ? JSON.parse(Boxdata?.box_customization_options)
     : {};
-  const [imageSrc, setImageSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState("");
   const [widthNeeded, setWidthNeeded] = useState(null);
 
   const convertBase64ToImageSrc = (base64) => {
@@ -16,23 +16,30 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
 
   useEffect(() => {
     if (Boxdata?.logo_path) {
-      const febase64data = convertBase64ToImageSrc(Boxdata.logo_path)
+      const febase64data = convertBase64ToImageSrc(Boxdata.logo_path);
       fetch(febase64data)
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
           const file = new File([blob], "logo.png", { type: "image/png" });
-          setImageSrc(URL.createObjectURL(file))
+          setImageSrc(URL.createObjectURL(file));
         });
     }
   }, [Boxdata]);
 
-
   const handleClick = () => {
-    if (Boxdata?.drilldown === 'yes') {
+    if (Boxdata?.drilldown === "yes") {
       const databox = { report_title: Boxdata?.report_title };
       openNewWindow(databox);
     } else {
-      toast.success("drilldown is not enabled !", {position: "top-right",autoClose: 5000,hideProgressBar: false,closeOnClick: true,pauseOnHover: true,draggable: true,theme: "light",});
+      toast.success("drilldown is not enabled !", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 
@@ -46,7 +53,7 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
       drilldownWindow.location.href = url;
       drilldownWindow.focus();
     } else {
-      drilldownWindow = window.open(url, '_blank', 'width=600,height=400');
+      drilldownWindow = window.open(url, "_blank", "width=600,height=400");
     }
   };
 
@@ -55,8 +62,6 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
     const widthRequired = percentageWidthComing / 4 + "%"; // Divide by 4 and append '%'
     setWidthNeeded(widthRequired); // Set the width as "100%"
   }, [width]);
-
-  
 
   return Boxdata ? (
     BoxdataBoxCustomizationOptions?.layout ? (
@@ -68,8 +73,8 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
         layoutValue={BoxdataBoxCustomizationOptions?.layout_value}
         title={Boxdata?.report_title || "Default Title"}
         value={Boxdata?.box_value == null ? "N/A" : Boxdata?.box_value}
-
         Icon={imageSrc}
+        imageSize={BoxdataBoxCustomizationOptions?.image_size || ""}
         titleSize={BoxdataBoxCustomizationOptions?.font_size_title || "16px"}
         contentSize={BoxdataBoxCustomizationOptions?.font_size_value || "24px"}
         fontColor={BoxdataBoxCustomizationOptions?.chart_react_colour || "#fff"}
@@ -80,7 +85,9 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
           BoxdataBoxCustomizationOptions?.subtitle || "Default Subtitle"
         }
         subtitleText={BoxdataBoxCustomizationOptions?.subtitle_text || ""}
-        subtitleColor={BoxdataBoxCustomizationOptions?.subtitle_color || "#000000"}
+        subtitleColor={
+          BoxdataBoxCustomizationOptions?.subtitle_color || "#000000"
+        }
         subtitleSize={BoxdataBoxCustomizationOptions?.subtitle_size || "16px"}
       />
     ) : (
@@ -95,8 +102,8 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
         layout={BoxdataBoxCustomizationOptions?.layout || "default"}
         title={Boxdata?.report_title || "Default Title"}
         value={Boxdata?.box_value == null ? "N/A" : Boxdata?.box_value}
-
         Icon={imageSrc}
+        imageSize={BoxdataBoxCustomizationOptions?.image_size || ""}
         titleSize={BoxdataBoxCustomizationOptions?.font_size_title || "16px"}
         contentSize={BoxdataBoxCustomizationOptions?.font_size_value || "24px"}
         fontColor={BoxdataBoxCustomizationOptions?.chart_react_colour || "#fff"}
@@ -107,10 +114,12 @@ function BoxPreview({ Boxdata, height, width,flagvalue }) {
           BoxdataBoxCustomizationOptions?.subtitle || "Default Subtitle"
         }
         subtitleText={BoxdataBoxCustomizationOptions?.subtitle_text || ""}
-        subtitleColor={BoxdataBoxCustomizationOptions?.subtitle_color || "#000000"}
+        subtitleColor={
+          BoxdataBoxCustomizationOptions?.subtitle_color || "#000000"
+        }
         subtitleSize={BoxdataBoxCustomizationOptions?.subtitle_size || "16px"}
       />
     )
   ) : null;
 }
-export default BoxPreview
+export default BoxPreview;

@@ -369,13 +369,30 @@ const ModifiedCanvasPage = () => {
 
   };
 
+  /*today change */
   const handleResize = (layout, oldItem, newItem, placeholder, e, element) => {
-    // Check if the resizable item contains a "box" type of report
+    const toastId = "box-resize-warning";
 
-    const resizableItem = widgetframeData.find(item => item.i === newItem.i && item.reportType === "Box");
-    if (resizableItem) {
-      newItem.h = oldItem.h;
+    toast.info("Box widgets cannot be resized below width 2", {
+      toastId, // <- prevents duplicates
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+
+    const resizableItem = widgetframeData.find(
+      (item) => item.i === newItem.i && item.reportType === "Box"
+    );
+
+    if (resizableItem && newItem.w < 2) {
+      newItem.w = 2;
     }
+
+    console.log("resize function Triggered");
   };
 
   // Update state with the new layout when it changes
@@ -491,7 +508,7 @@ const ModifiedCanvasPage = () => {
                   data-report-name={element.report_name}
                   data-report-type={element.report_type}
                   data-chart-type={element.chart_type}
-                  style={{ border: isDragging ? '1px solid black' : '' }}
+                  style={{ border: isDragging ? '1px solid black' : '1px solid rgba(128, 128, 128, 0.2)' }}
                 >
                   {element.report_name}
                   <p style={{ margin: "1px", fontSize: "9px" }}>

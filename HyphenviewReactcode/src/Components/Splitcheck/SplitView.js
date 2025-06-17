@@ -40,11 +40,28 @@ const SplitView = () => {
 
 
   const handleResize = (layout, oldItem, newItem, placeholder, e, element) => {
-    // Check if the resizable item contains a "box" type of report
-    const resizableItem = widgetData.find(item => item.i === newItem.i && item.reportType === "Box");
-    if (resizableItem) {
-      newItem.h = oldItem.h;
+    const toastId = "box-resize-warning";
+
+    toast.info("Box widgets cannot be resized below width 2", {
+      toastId, // <- prevents duplicates
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+
+    const resizableItem = widgetData.find(
+      (item) => item.i === newItem.i && item.reportType === "Box"
+    );
+
+    if (resizableItem && newItem.w < 2) {
+      newItem.w = 2;
     }
+
+    console.log("resize function Triggered");
   };
 
   // Handle user group change
@@ -398,7 +415,7 @@ const SplitView = () => {
                   data-report-type={element.report_type}
                   data-chart-type={element.chart_type}
 
-                  style={{ border: isDragging ? '1px solid black' : '' }}
+                  style={{ border: isDragging ? '1px solid black' : '1px solid rgba(128, 128, 128, 0.2)' }}
                 >
                   {element.report_name}
                   <p style={{ margin: "2px", fontSize: "9px" }}>

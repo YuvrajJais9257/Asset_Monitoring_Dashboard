@@ -4,8 +4,8 @@ import Header from "../header";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./../globalCSS/dashboardmanagement/listofdashboardcanvas.css";
-import "./../globalCSS/dashboardmanagement/ListTable.css"
-import "./../globalCSS/dashboardmanagement/DownloadButton.css"
+import "./../globalCSS/dashboardmanagement/ListTable.css";
+import "./../globalCSS/dashboardmanagement/DownloadButton.css";
 import {
   listofdashboardframename,
   deletecanvashframe,
@@ -16,8 +16,11 @@ import Pagination from "./../Pagination/Pagination";
 import { Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ShowAlert from "../../actions/ShowAlert";
-import { decryptData } from '../utils/EncriptionStore';
-import { exportExcel } from '../utils/ExportExcel';
+import { decryptData } from "../utils/EncriptionStore";
+import { exportExcel } from "../utils/ExportExcel";
+//today change
+import { Sun, Moon } from "lucide-react";
+import { toggleTheme } from "../../actions/new_dashboard";
 
 // Auther:- ASHISH KUMAR
 function ListOfDashboardCanvas() {
@@ -129,12 +132,19 @@ function ListOfDashboardCanvas() {
 
   // Function to export table to Excel
   const handleExport = () => {
-    exportExcel(listofdashboardsname,"ListofDashboards");
+    exportExcel(listofdashboardsname, "ListofDashboards");
   };
 
   useEffect(() => {
     setCurrentPage(1); // Reset to the first page when search term changes
   }, [search]);
+
+  //today change
+  const app_theme = useSelector((state) => state.theme);
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   return (
     <div>
@@ -142,187 +152,206 @@ function ListOfDashboardCanvas() {
         <Header />
       </div>
       <div className="Dashboard_Management_List">
-        <div className='Page-Header'>
-        <span
-          class="fas fa-house-user"
-          aria-hidden="true"
-          onClick={handelclickgotoDashboard}
-        ></span>
-        <span>/</span>Dashboard Management
-
-        
-        {requiredValues.every((value) =>
-          reportsManagementObject.accessmask.includes(value)
-        ) ? (
-          <div class="dropdown hyphenview_manage_users_dropdown">
-            <Dropdown>
-              <Dropdown.Toggle
-                  style={{
-                    border: "none",
-                    fontSize: "0.875rem !important",
-                    marginLeft: "5px",
-                  }}
-                id="dropdown-basic"
+        {/*today change */}
+        <div className="list_management_header">
+          <div className="Page-Header">
+            <span
+              class="fas fa-house-user"
+              aria-hidden="true"
+              onClick={handelclickgotoDashboard}
+            ></span>
+            <span>/</span>Dashboard Management
+            {requiredValues.every((value) =>
+              reportsManagementObject.accessmask.includes(value)
+            ) ? (
+              <div class="dropdown hyphenview_manage_users_dropdown">
+                <Dropdown>
+                  <Dropdown.Toggle
+                    style={{
+                      border: "none",
+                      fontSize: "0.875rem !important",
+                      marginLeft: "5px",
+                    }}
+                    id="dropdown-basic"
+                  >
+                    Canvas
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={handelclickCreateCanvash}
+                      id="createbutton"
+                      href="#"
+                    >
+                      Create
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            ) : null}
+          </div>
+          <div className="theme-button-container">
+            <div
+              className={`theme-button ${
+                app_theme === "dark" ? "dark" : "light"
+              }`}
+            >
+              <button
+                onClick={handleThemeToggle}
+                className="toggle-theme-button"
+                aria-label="Toggle theme"
               >
-                Canvas
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={handelclickCreateCanvash}
-                  id="createbutton"
-                  href="#"
+                {app_theme === "dark" ? (
+                  <Sun className="theme-icon sun-theme-icon" />
+                ) : (
+                  <Moon className="theme-icon moon-theme-icon" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style={{ width: "calc(100vw - 120px)" }}>
+          <div className="table-top">
+            <div className="right-side-elements hyphenview_download_and_search_container">
+              <div className="download-container hyphenview_download_button_container">
+                <button
+                  className="download-btn hyphenview_download-button"
+                  onClick={handleExport}
                 >
-                  Create
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        ) : null}
- 
- </div>
-      <div style={{ width: 'calc(100vw - 120px)' }}>
-        <div className='table-top'>
-        <div className="right-side-elements hyphenview_download_and_search_container">
-          <div className="download-container hyphenview_download_button_container">
-            <button
-              className="download-btn hyphenview_download-button"
-              onClick={handleExport}
-            >
-              <i className="fas fa-download"></i>
-              <span className="download-text"></span>
-            </button>
-          </div>
+                  <i className="fas fa-download"></i>
+                  <span className="download-text"></span>
+                </button>
+              </div>
 
-          <div className="search-container hyphenview_search">
-            <input
-              type="text"
-              placeholder="Search"
-              value={search}
-              maxLength={120}
-              onChange={(e) => setSearch(e.target.value)}
-              className="search-box"
-            />
-            <svg
-              className="search-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              width="16"
-              height="16"
+              <div className="search-container hyphenview_search">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  maxLength={120}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="search-box"
+                />
+                <svg
+                  className="search-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  width="16"
+                  height="16"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="dashboard-management-List_table_sub_container hyphenview_features_table_container">
+            <table
+              id="table-to-excel"
+              // className='table table-striped table-bordered table-hover'
+              className="responsive-table"
             >
-              <circle
-                cx="11"
-                cy="11"
-                r="8"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <line
-                x1="16"
-                y1="16"
-                x2="21"
-                y2="21"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-            </svg>
+              <thead>
+                <tr className="table-header">
+                  <th>Dashboard Name</th>
+                  <th>Group Name</th>
+                  <th>Dashboard Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedData &&
+                  paginatedData?.map((reportdata, index) => (
+                    <tr key={index}>
+                      <td>{reportdata.dashboard_report_name}</td>
+                      <td>{reportdata.groupname}</td>
+                      <td>{reportdata.dashboard_description}</td>
+                      <td>
+                        {
+                          <span>
+                            <i
+                              style={{
+                                marginLeft: "5px",
+                                cursor: "pointer",
+                                pointerEvents: ["d"].every((value) =>
+                                  reportsManagementObject.accessmask.includes(
+                                    value
+                                  )
+                                )
+                                  ? "auto"
+                                  : "none",
+                                backgroundColor: ["d"].every((value) =>
+                                  reportsManagementObject.accessmask.includes(
+                                    value
+                                  )
+                                )
+                                  ? "#f44336 !important"
+                                  : "grey",
+                              }}
+                              onClick={() =>
+                                handelremoveDashboardframe(
+                                  reportdata.dashboard_report_name,
+                                  reportdata.group_id,
+                                  reportdata.groupname
+                                )
+                              }
+                              className="fa-solid fa-trash-can delete-button"
+                            ></i>
+                            <span
+                              style={{ fontSize: "15px", marginLeft: "3px" }}
+                            ></span>
+                            <Link
+                              id={`dashboardframemovefy${reportdata.group_id}`}
+                              to={`/ModifiedCanvasPage?group_id=${reportdata.group_id}&dashboardreportname=${reportdata.dashboard_report_name}&groupname=${reportdata.groupname}&dashboard_description=${reportdata.dashboard_description} `}
+                              style={{
+                                fontWeight: "20px",
+                                pointerEvents: ["w"].every((value) =>
+                                  [...reportdata.access].includes(value)
+                                )
+                                  ? "auto"
+                                  : "none",
+                                backgroundColor: ["w"].every((value) =>
+                                  [...reportdata.access].includes(value)
+                                )
+                                  ? "#45a049 !important"
+                                  : "grey",
+                              }}
+                              className="fa-solid fa-pen-to-square 
+                            edit-button"
+                            ></Link>
+                          </span>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <Pagination
+              className="pagination-bar"
+              currentPage={currentPage}
+              totalCount={filteredData ? filteredData.length : 1}
+              pageSize={PageSize}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
           </div>
         </div>
-        </div>
-        <div className="dashboard-management-List_table_sub_container hyphenview_features_table_container">
-          <table
-            id="table-to-excel"
-            // className='table table-striped table-bordered table-hover'
-            className="responsive-table"
-          >
-            <thead>
-              <tr className="table-header">
-                <th>Dashboard Name</th>
-                <th>Group Name</th>
-                <th>Dashboard Description</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData &&
-                paginatedData?.map((reportdata, index) => (
-                  <tr key={index}>
-                    <td>{reportdata.dashboard_report_name}</td>
-                    <td>{reportdata.groupname}</td>
-                    <td>{reportdata.dashboard_description}</td>
-                    <td>
-                      {
-                        <span>
-                          <i
-                            style={{
-                              marginLeft: "5px",
-                              cursor: "pointer",
-                              pointerEvents: ["d"].every((value) =>
-                                reportsManagementObject.accessmask.includes(
-                                  value
-                                )
-                              )
-                                ? "auto"
-                                : "none",
-                              backgroundColor: ["d"].every((value) =>
-                                reportsManagementObject.accessmask.includes(
-                                  value
-                                )
-                              )
-                                ? "#f44336 !important"
-                                : "grey",
-                            }}
-                            onClick={() =>
-                              handelremoveDashboardframe(
-                                reportdata.dashboard_report_name,
-                                reportdata.group_id,
-                                reportdata.groupname
-                              )
-                            }
-                            className="fa-solid fa-trash-can delete-button"
-                          ></i>
-                          <span
-                            style={{ fontSize: "15px", marginLeft: "3px" }}
-                          ></span>
-                          <Link
-                            id={`dashboardframemovefy${reportdata.group_id}`}
-                            to={`/ModifiedCanvasPage?group_id=${reportdata.group_id}&dashboardreportname=${reportdata.dashboard_report_name}&groupname=${reportdata.groupname}&dashboard_description=${reportdata.dashboard_description} `}
-                            style={{
-                              fontWeight: "20px",
-                              pointerEvents: ["w"].every((value) =>
-                                [...reportdata.access].includes(value)
-                              )
-                                ? "auto"
-                                : "none",
-                              backgroundColor: ["w"].every((value) =>
-                                [...reportdata.access].includes(value)
-                              )
-                                ? "#45a049 !important"
-                                : "grey",
-                            }}
-                            className="fa-solid fa-pen-to-square 
-                            edit-button"
-                          ></Link>
-                        </span>
-                      }
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <Pagination
-            className="pagination-bar"
-            currentPage={currentPage}
-            totalCount={filteredData ? filteredData.length : 1}
-            pageSize={PageSize}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </div>
-      </div>
       </div>
     </div>
   );

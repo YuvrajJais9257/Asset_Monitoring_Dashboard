@@ -1,33 +1,89 @@
 .highcharts-background {
-    fill:#fff;
+  fill: #fff;
 }
 .highcharts-grid-line {
-    stroke:transparent
+  stroke: transparent;
 }
-:root{
-    --highcharts-background-color:#fff;
-}
-
-.report_header_container{
-    display: flex;
-    justify-content: center;
+:root {
+  --highcharts-background-color: #fff;
 }
 
-.data-check-message{
-    text-align: center;
-    position: absolute;
-    top: 43%;
-    left: 42%;
-    font-size: 20px;
-    font-weight: 700;
+.report_header_container {
+  display: flex;
+  justify-content: center;
 }
 
-.report-name-show{
-    text-align: center !important;
-    position: absolute;
-    /* left: 40%; */
-    font-size: 20px;
-    margin: 5px;
-    font-weight: 600;
+.data-check-message {
+  text-align: center;
+  position: absolute;
+  top: 43%;
+  left: 42%;
+  font-size: 20px;
+  font-weight: 700;
 }
- 
+
+.report-name-show {
+  text-align: center !important;
+  position: absolute;
+  /* left: 40%; */
+  font-size: 20px;
+  margin: 5px;
+  font-weight: 600;
+}
+
+.Highcharts_container {
+  width: 104%;
+  height: 100%;
+}
+
+/* === DARK THEME === */
+body.dark .highcharts-background {
+  fill: #020817; /* background for charts */
+}
+
+body.dark .highcharts-title,
+body.dark .highcharts-axis-title,
+body.dark .highcharts-yaxis-labels text,
+body.dark .highcharts-xaxis-labels text {
+  fill: #f8fafc !important; /* text color in charts */
+}
+
+body.dark .highcharts-grid-line {
+  stroke: #1e293b; /* subtle grid lines */
+}
+
+body.dark .report-name-show {
+  color: #f8fafc;
+}
+
+body.dark .data-check-message {
+  color: #f8fafc;
+}
+
+body.dark .Highcharts_container {
+  background-color: #020817;
+}
+body.dark .highcharts-legend-item>text{
+  fill: #f8fafc !important; /* legend text color */
+} 
+
+.Highcharts_container_inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.highcharts-report-type-container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body.dark .report_header_container {
+  background-color: #020817;
+  color: #f8fafc;
+  padding: 10px;
+  border-radius: 5px;
+}

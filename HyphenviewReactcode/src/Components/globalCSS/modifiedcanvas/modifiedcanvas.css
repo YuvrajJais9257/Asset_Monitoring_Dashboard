@@ -151,3 +151,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+body.dark .chart_type,body.dark .widget-data-info,body.dark .modified_chart_type{
+  background: #020817;
+  color: #f8fafc;
+  border: 1px solid #1e293b;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -1,3 +1,4 @@
+/*today change*/
 .List_Dashboard_table_export_rearch {
   display: flex;
   justify-content: space-between;
@@ -64,17 +65,6 @@
   color: #aaa;
 }
 
-/* .Header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px 20px;
-  } */
-
 .sidebar {
   margin-bottom: 20px;
   background-color: #f5f5f5;
@@ -95,14 +85,6 @@
   margin-bottom: 20px;
 }
 
-/* .sidebar {
-    flex: 1;
-    margin-right: 20px;
-    background-color: #f5f5f5;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  } */
 
 .table-top {
   flex: 2;
@@ -114,50 +96,36 @@
   margin-right: 15px;
 }
 
-.search-container {
-  display: flex;
-  align-items: center;
-}
+
 
 
 .dashboard-management-List_table_sub_container {
-
-  /* width: 100%;
-      overflow-x: auto;
-      padding: 0 80px;
-      margin-left: 35px; */
 }
 
 @media (max-width: 1200px) {
   .dashboard-management-List_table_sub_container {
     padding: 0 10px;
-    /* Adjust padding for medium screens */
   }
 }
 
 @media (max-width: 992px) {
   .dashboard-management-List_table_sub_container {
     padding: 0 5px;
-    /* Reduce padding for smaller screens */
   }
 }
 
 @media (max-width: 768px) {
   .dashboard-management-List_table_sub_container {
     padding: 0 3px;
-    /* Further reduce padding for mobile screens */
   }
 }
 
 @media (max-width: 576px) {
   .dashboard-management-List_table_sub_container {
     padding: 0 2px;
-    /* Minimal padding for very small screens */
   }
 
-  /* Optionally, you can adjust the table layout here */
   table {
     font-size: 14px;
-    /* Reduce font size for mobile devices */
   }
 }

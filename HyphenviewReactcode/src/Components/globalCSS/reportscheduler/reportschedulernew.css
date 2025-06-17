@@ -268,3 +268,9 @@ display: flex;
 .email-input-container [data-tag] {
   margin-bottom: 4px;
 }
+
+body.dark .schedule_report_container {
+    background: linear-gradient(to right, #1a1b5a, #82259e);
+    /* background-color: #1a1b5a; */
+    color: white;
+}

@@ -6,7 +6,7 @@
 
 .sidebarcnt {
   width: 95px;
-  height: 100%;
+  height: 100vh;
   color: #fff;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
@@ -173,4 +173,57 @@
 .dropdown-item.selectedGroupOption .sidebar-dropdown-icon {
 
   filter: none;
+}
+
+/* === DARK THEME STYLES === */
+body.dark .sidebarcnt {
+  background: linear-gradient(135deg, #0f172a, #1e293b); /* dark navy blue gradient */
+  color: #f8fafc; /* text color */
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .New_SideBar_item {
+  color: #f8fafc;
+}
+
+body.dark .New_SideBar_item:hover {
+  background-color: #334155; /* slate-700 */
+}
+
+body.dark .dashboard_sidebar_icons {
+  border: 1px solid #475569; /* slate-600 */
+}
+
+body.dark .dashboard_sidebar_icons:hover {
+  background: linear-gradient(159deg, rgba(37, 99, 235, 1) 0%, rgba(14, 165, 233, 1) 100%);
+  border: none;
+  box-shadow: 0 6px 8px rgba(255, 255, 255, 0.2);
+}
+
+body.dark .custom-tooltip-feature {
+  background: rgba(30, 41, 59, 0.95); /* slate-800 */
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark .custom-tooltip-feature::before {
+  border-right: 6px solid rgba(30, 41, 59, 0.95);
+}
+
+body.dark .user-profile-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark .menu-item a,
+body.dark .menu-item div {
+  color: #f8fafc;
+}
+
+body.dark .sidebar-dropdown-icon {
+  filter: brightness(0) invert(1) grayscale(100%);
+}
+
+body.dark .dropdown-item.highlightedGroupOption .sidebar-dropdown-icon,
+body.dark .dropdown-item.selectedGroupOption .sidebar-dropdown-icon {
+  filter: brightness(1) invert(0);
 }

@@ -62,6 +62,7 @@ export default function UpdateReportPage(props) {
     time_period: "",
     report_id: "",
     upload_logo: "",
+    image_size: "",
     background_colour: "",
     chart_react_colour: "",
     font_size_title: "",
@@ -71,7 +72,7 @@ export default function UpdateReportPage(props) {
     gradient_mode: "",
     subtitle: "",
     subtitle_size: "",
-    subtitle_color:"",
+    subtitle_color: "",
     text_alignment: "",
     chart_colours: "",
     enable_drilldown: "no",
@@ -189,6 +190,7 @@ export default function UpdateReportPage(props) {
           id={chart.id}
           name="chart_type"
           value={chart.value}
+          checked={formdata.chart_type === chart.value}
           onChange={handleRadioChange}
           title={chart.title}
         />
@@ -397,7 +399,13 @@ export default function UpdateReportPage(props) {
     const reportdetailBoxCustomizationOptions = JSON.parse(
       reortdata?.box_customization_options || "{}"
     );
-    localStorage.setItem("SelectedSchema", JSON.stringify({ selectedSchema: reortdata?.schema_name, databasename: reortdata?.rdbms_name }));
+    localStorage.setItem(
+      "SelectedSchema",
+      JSON.stringify({
+        selectedSchema: reortdata?.schema_name,
+        databasename: reortdata?.rdbms_name,
+      })
+    );
 
     if (
       report_id === reortdata?.report_id.toString() &&
@@ -457,7 +465,7 @@ export default function UpdateReportPage(props) {
         subtitle_text: reportdetailBoxCustomizationOptions?.subtitle_text,
 
         subtitle_size: reportdetailBoxCustomizationOptions?.subtitle_size,
-        subtitle_color:reportdetailBoxCustomizationOptions?.subtitle_color,
+        subtitle_color: reportdetailBoxCustomizationOptions?.subtitle_color,
 
         text_alignment: reportdetailBoxCustomizationOptions?.text_alignment,
         enable_drilldown: reortdata?.enable_drilldown,
@@ -465,6 +473,7 @@ export default function UpdateReportPage(props) {
         connection_type: reortdata?.rdbms_name,
         schema: reortdata?.schema_name,
         upload_logo: reortdata?.upload_logo,
+        image_size: reportdetailBoxCustomizationOptions?.image_size,
       }));
       // setformdata(editdata);
     } else if (
@@ -530,7 +539,7 @@ export default function UpdateReportPage(props) {
   const blurOnQueryTextArea = () => {
     setMessageShown(!messageShown);
   };
-  useEffect(() => { }, [isTyping]);
+  useEffect(() => {}, [isTyping]);
 
   useEffect(() => {
     const fetchQuery = async () => {
@@ -541,7 +550,7 @@ export default function UpdateReportPage(props) {
         formdata.query // Ensure the query is not empty
       ) {
         try {
-          setLoading(true)
+          setLoading(true);
           await dispatch(
             testquryonCustompage({
               query: formdata.query,
@@ -552,14 +561,13 @@ export default function UpdateReportPage(props) {
             })
           );
         } catch (error) {
-          console.log(`Somthing wrong with Api ${error}`)
+          console.log(`Somthing wrong with Api ${error}`);
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       }
-
-    }
-    fetchQuery()
+    };
+    fetchQuery();
   }, [reportdetail, formdata.query, user.user_email_id, isTyping]);
 
   useEffect(() => {
@@ -584,11 +592,9 @@ export default function UpdateReportPage(props) {
   useEffect(() => {
     if (getDrilldowndataforupdated !== "null") {
       if (getDrilldowndataforupdated?.drilldown === "yes") {
-        const ColumnCount =
-          getDrilldowndataforupdated?.column_mapping || 0;
+        const ColumnCount = getDrilldowndataforupdated?.column_mapping || 0;
         const drilldownreportname =
-          getDrilldowndataforupdated?.drilldown_data.drilldown_report ||
-          "";
+          getDrilldowndataforupdated?.drilldown_data.drilldown_report || "";
         setcolumnCount(ColumnCount);
         setSelectReportTitleDrilldown(drilldownreportname);
         const drilldownColumns = JSON.parse(
@@ -698,9 +704,8 @@ export default function UpdateReportPage(props) {
       "3d Pie Chart": "3Dpie",
       "3d Donut Chart": "3D Donut",
       "3d Area Chart": "3Darea",
-      "speedometer": "speedometer",
-      "drillcolumn": "drillcolumn",
-
+      speedometer: "speedometer",
+      drillcolumn: "drillcolumn",
     };
 
     const selectedChartType = chartTypes[event.target.value];
@@ -888,14 +893,36 @@ export default function UpdateReportPage(props) {
     setShow((prev) => !prev);
   }
   const handleChange = (e) => {
-    if (e.target.name === "query") {
+    const { name, value } = e.target;
+    const lowerType = formdata?.type?.toString?.().toLowerCase();
+
+    const shouldLimit =
+      ["title", "name", "report_template_name"].includes(name) &&
+      lowerType === "box";
+
+    if (shouldLimit) {
+      console.log("Box type detected, checking length...");
+      if (value.length > 45) {
+        toast.warn("Title cannot exceed 45 characters for Box type", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        return; // prevent update
+      }
+    }
+
+    // Proceed normally
+    if (name === "query") {
       dispatch(resettestquryonCustompage());
-      setformdata({ ...formdata, [e.target.name]: e.target.value });
-    } else if (e.target.name === "update_interval") {
-      const interval = updateintervalset(e.target.value);
-      setformdata({ ...formdata, [e.target.name]: interval });
+      setformdata((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "title") {
+      setformdata((prev) => ({ ...prev, [name]: value }));
+      setDrillDownMessage("");
+    } else if (name === "update_interval") {
+      const interval = updateintervalset(value);
+      setformdata((prev) => ({ ...prev, [name]: interval }));
     } else {
-      setformdata({ ...formdata, [e.target.name]: e.target.value });
+      setformdata((prev) => ({ ...prev, [name]: value }));
     }
   };
   const handleChangechart = (event) => {
@@ -906,8 +933,8 @@ export default function UpdateReportPage(props) {
     const selectedValues = Array.isArray(selectedOptions)
       ? selectedOptions.map((option) => option.value)
       : selectedOptions
-        ? [selectedOptions.value]
-        : [];
+      ? [selectedOptions.value]
+      : [];
 
     setSelectColumnForDrill((prevState) => {
       const updatedColumns = [...prevState];
@@ -926,8 +953,8 @@ export default function UpdateReportPage(props) {
         ? [currentDrillDownColumn] // Wrap string into an array
         : Array.isArray(currentDrillDownColumn) &&
           currentDrillDownColumn.length > 0
-          ? currentDrillDownColumn
-          : [];
+        ? currentDrillDownColumn
+        : [];
 
     return drillDownColumn.map((value) => ({ value, label: value }));
   };
@@ -947,7 +974,6 @@ export default function UpdateReportPage(props) {
     setEnableDrilldown(enableDrilldownValue);
     if (enableDrilldownValue === "yes") {
       setSelectColumnForDrill({ Master_Column: "", DrillDown_Column: "" });
-
 
       dispatch(
         checkdrilldown({
@@ -1031,10 +1057,10 @@ export default function UpdateReportPage(props) {
       ),
       DrillDown_Column: Array.isArray(selectColumnForDrill)
         ? selectColumnForDrill.map((val) =>
-          typeof val.DrillDown_Column === "string"
-            ? val.DrillDown_Column
-            : val.DrillDown_Column?.[0] || ""
-        )
+            typeof val.DrillDown_Column === "string"
+              ? val.DrillDown_Column
+              : val.DrillDown_Column?.[0] || ""
+          )
         : [],
     };
 
@@ -1067,15 +1093,15 @@ export default function UpdateReportPage(props) {
 
   const options = reportdetaillist?.length
     ? reportdetaillist
-      .filter((item) =>
-        formdata?.chart_type !== 'drillcolumn'
-          ? item.report_type === "Table"
-          : item.report_type === "Chart"
-      )
-      .map((report) => ({
-        value: report.report_name,
-        label: report.report_name,
-      }))
+        .filter((item) =>
+          formdata?.chart_type !== "drillcolumn"
+            ? item.report_type === "Table"
+            : item.report_type === "Chart"
+        )
+        .map((report) => ({
+          value: report.report_name,
+          label: report.report_name,
+        }))
     : [];
 
   return (
@@ -1136,11 +1162,12 @@ export default function UpdateReportPage(props) {
                     <span class="input-group-text" id="addon-wrapping">
                       <i class="fas fa-heading"></i>
                     </span>
+                    {/*today change */}
                     <input
                       name="title"
                       placeholder="e.g. Incident Severity"
                       className="form-control"
-                      maxLength={38}
+                      maxLength={60}
                       minLength={5}
                       type="text"
                       value={formdata.title}
@@ -1219,21 +1246,15 @@ export default function UpdateReportPage(props) {
                   Remove Date Parameter
                 </Button>
 
-                <Button type="button" onClick={handleTestQuery} >
-                  {loading ? (
-                    <span>
-                      Testing...
-                    </span>
-                  ) : (
-                    "Test Query"
-                  )}
+                <Button type="button" onClick={handleTestQuery}>
+                  {loading ? <span>Testing...</span> : "Test Query"}
                 </Button>
               </div>
               {/* </div> */}
               <div style={{ textAlign: "center" }}>
                 {!isTyping &&
-                  validationQuery &&
-                  validationQuery?.detail === "Valid Query" ? (
+                validationQuery &&
+                validationQuery?.detail === "Valid Query" ? (
                   <p>
                     <i
                       style={{
@@ -1395,9 +1416,7 @@ export default function UpdateReportPage(props) {
                         required={
                           formdata.type !== "Table" && formdata.type !== "Box"
                         }
-                        disabled={
-                          formdata.type !== "Chart"
-                        }
+                        disabled={formdata.type !== "Chart"}
                         style={{
                           height: "34px",
                           resize: true,
@@ -1468,9 +1487,7 @@ export default function UpdateReportPage(props) {
                     ) : null}
                     <div className="sampledrilldownquery-well form-horizon">
                       <div className="custome-container-column">
-                        <Form.Group
-                          controlId="formBasicEmail"
-                        >
+                        <Form.Group controlId="formBasicEmail">
                           <Form.Control
                             type="text"
                             value={formdata.title}
@@ -1484,7 +1501,9 @@ export default function UpdateReportPage(props) {
                             className="ReportNameForMapping columnSelectCustomQuery"
                             value={{
                               value: selectReportTitleDrilldown || "",
-                              label: selectReportTitleDrilldown || "Select report name",
+                              label:
+                                selectReportTitleDrilldown ||
+                                "Select report name",
                             }}
                             onChange={handleSelectReportforlist}
                             options={options}
@@ -1508,20 +1527,18 @@ export default function UpdateReportPage(props) {
                       {formdata.type !== "Box" &&
                         Array.from({ length: columnCount }, (v, i) => (
                           <div className="custome-container-column" key={i}>
-                            <Form.Group
-                              controlId="formBasicEmail"
-                            >
+                            <Form.Group controlId="formBasicEmail">
                               <Form.Control
                                 type="text"
                                 value={
-                                  getDrilldowndataforupdated
-                                    ?.drilldown_data?.master_column
+                                  getDrilldowndataforupdated?.drilldown_data
+                                    ?.master_column
                                     ? JSON.parse(
-                                      getDrilldowndataforupdated?.drilldown_data.master_column.replace(
-                                        /'/g,
-                                        '"'
-                                      )
-                                    )[i]
+                                        getDrilldowndataforupdated?.drilldown_data.master_column.replace(
+                                          /'/g,
+                                          '"'
+                                        )
+                                      )[i]
                                     : columndetailfirst && columndetailfirst[i]
                                 }
                                 disabled

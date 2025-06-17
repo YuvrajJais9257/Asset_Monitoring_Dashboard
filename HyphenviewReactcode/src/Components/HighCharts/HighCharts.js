@@ -2341,7 +2341,7 @@ function HighCharts({ height, width, charttype, key, reportType, flag }) {
     <div>
       <div style={{ width: { width }, height: { height } }}>
         {DataNotFount?.status === 404 ? (
-          <div className="report_header_container">
+          <div className="report_header_container" style={{ height: height }}>
             <div className="report-name-show">{DataNotFount?.Report_name}</div>
             <div className="data-check-message">{DataNotFount?.message}</div>
           </div>

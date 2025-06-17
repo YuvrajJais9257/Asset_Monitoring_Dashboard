@@ -34,9 +34,22 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
     updateCustomizationOptions({ subtitle_text: e.target.value });
   };
 
-  const handleSubtitleColor = (e) =>{
+  /*today cahnge */
+  const imageSizeOptions = [
+    { label: "very small (32x32)", value: "32px" },
+    { label: "small (40x40)", value: "40px" },
+    { label: "medium (48x48)", value: "48px" },
+    { label: "large (56x56)", value: "56px" },
+    { label: "extra large (64x64)", value: "64px" },
+  ];
+
+  const handleChangeImageSize = (selectedSize) => {
+    updateCustomizationOptions({ image_size: selectedSize });
+  };
+
+  const handleSubtitleColor = (e) => {
     updateCustomizationOptions({ subtitle_color: e.target.value });
-  }
+  };
 
   const CustomeDetailOfReport = JSON.parse(
     localStorage.getItem("customeDetailOfReport")
@@ -47,8 +60,17 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
   const [imageSrc, setImageSrc] = useState("");
 
   const listOfTextSize = ["5px", "10px", "15px", "20px"];
-  const listOfValueSize = ["5px", "10px", "15px", "20px", "25px", "30px"];
-
+  const listOfValueSize = [
+    "5px",
+    "10px",
+    "15px",
+    "20px",
+    "25px",
+    "30px",
+    "35px",
+    "40px",
+    "45px",
+  ];
 
   const fontAlignments = ["left", "center", "right", "justify"];
 
@@ -114,6 +136,7 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
 
         subtitle_color: CustomeDetailOfReport?.subtitle_color || "#000000",
 
+        image_size: CustomeDetailOfReport?.image_size || "",
       };
 
       setCustomizationOptionsPreview((prev) => ({
@@ -203,6 +226,7 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
   return (
     <div className="customizer-container">
       <div className="preview-section">
+        {/*today change */}
         <div className="preview-subSection">
           {PreviewchartData ? (
             customizationOptionsPreview?.layout ? (
@@ -212,6 +236,7 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
                 title={CustomeDetailOfReport?.title}
                 value={PreviewchartData?.box_value}
                 Icon={imageSrc}
+                imageSize={customizationOptionsPreview?.image_size}
                 titleSize={customizationOptionsPreview?.font_size_title}
                 contentSize={customizationOptionsPreview?.font_size_value}
                 fontColor={customizationOptionsPreview?.chart_react_colour}
@@ -231,6 +256,7 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
                 title={CustomeDetailOfReport?.title}
                 value={PreviewchartData?.box_value}
                 Icon={imageSrc}
+                imageSize={customizationOptionsPreview?.image_size}
                 titleSize={customizationOptionsPreview?.font_size_title}
                 contentSize={customizationOptionsPreview?.font_size_value}
                 fontColor={customizationOptionsPreview?.chart_react_colour}
@@ -258,26 +284,65 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
           </label>
         </div>
 
+        {/*today change */}
         {customizationOptionsPreview?.layout ? (
-          <div className="settings-section">
-            <h3 className="settings-heading">Layout Options</h3>
-            <div className="layout-options">
-              {layoutValueOptions.map((num) => (
-                <button
-                  key={num}
-                  onClick={() => handleChangeLayoutValue(num)}
-                  className="layout-option"
-                >
-                  <img
-                    src={require(`../../assets/images/BoxLayoutIcons/box${num}.png`)}
-                    alt={`Layout ${num}`}
-                  />
-                </button>
-              ))}
+          <>
+            <div className="settings-section">
+              <h3 className="settings-heading">Layout Options</h3>
+              <div className="layout-options">
+                {layoutValueOptions.map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => handleChangeLayoutValue(num)}
+                    className="layout-option"
+                  >
+                    <img
+                      src={require(`../../assets/images/BoxLayoutIcons/box${num}.png`)}
+                      alt={`Layout ${num}`}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="settings-section">
+              <h3 className="settings-heading">Image Size</h3>
+              <select
+                className="settings-select"
+                value={customizationOptionsPreview?.image_size || ""}
+                onChange={(e) => {
+                  const selectedSize = e.target.value;
+                  handleChangeImageSize(selectedSize);
+                }}
+              >
+                <option value="">Set Image Size</option>
+                {imageSizeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         ) : (
           <>
+            <div className="settings-section">
+              <h3 className="settings-heading">Image Size</h3>
+              <select
+                className="settings-select"
+                value={customizationOptionsPreview?.image_size || ""}
+                onChange={(e) => {
+                  const selectedSize = e.target.value;
+                  handleChangeImageSize(selectedSize);
+                }}
+              >
+                <option value="">Set Image Size</option>
+                {imageSizeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="settings-section">
               <h3 className="settings-heading">Background Style</h3>
               <select
@@ -384,9 +449,10 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
             <span>Show Subtitle</span>
           </label>
 
+          {/*today change */}
           {customizationOptionsPreview?.subtitle && (
             <input
-              maxLength={20}
+              maxLength={45}
               type="text"
               className="settings-input"
               placeholder="Enter Subtitle"
@@ -414,15 +480,16 @@ function Box({ customizationOptionsPreview, setCustomizationOptionsPreview }) {
               </select>
             )}
 
-          {customizationOptionsPreview?.subtitle && customizationOptionsPreview?.subtitle_color && (
-            <input
-              maxLength={20}
-              type="color"
-               className="color-picker"
-              value={customizationOptionsPreview?.subtitle_color}
-              onChange={handleSubtitleColor}
-            />
-          )}
+          {customizationOptionsPreview?.subtitle &&
+            customizationOptionsPreview?.subtitle_color && (
+              <input
+                maxLength={20}
+                type="color"
+                className="color-picker"
+                value={customizationOptionsPreview?.subtitle_color}
+                onChange={handleSubtitleColor}
+              />
+            )}
         </div>
       </div>
     </div>

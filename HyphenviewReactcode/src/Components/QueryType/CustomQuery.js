@@ -44,7 +44,7 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import ChatBotModal from "./ChatBotModal";
 import Select from "react-select";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { decryptData } from "../utils/EncriptionStore";
 
 export default function ReportPage(props) {
@@ -168,20 +168,26 @@ export default function ReportPage(props) {
     setShowModal(true);
   };
 
-
   const [isHovered, setIsHovered] = useState(false);
 
   const [isClicked, setIsClicked] = useState(false);
 
   const renderCharts = (chartList) =>
     chartList.map((chart) => (
-      <div key={chart.id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleChartClick} style={{ cursor: "pointer" }}>
+      <div
+        key={chart.id}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleChartClick}
+        style={{ cursor: "pointer" }}
+      >
         <input
           className="radBut"
           type="radio"
           id={chart.id}
           name="chart_type"
           value={chart.value}
+          checked={formdata.chart_type === chart.value}
           onChange={handleRadioChange}
           title={chart.title}
         />
@@ -216,7 +222,6 @@ export default function ReportPage(props) {
   });
   const [drilldownmessage, setDrillDownMessage] = useState("");
   const [columnCount, setcolumnCount] = useState();
-
 
   const user = (() => {
     const encryptedData = localStorage.getItem("profile");
@@ -254,8 +259,6 @@ export default function ReportPage(props) {
     }
   }, []);
 
-
-
   useEffect(() => {
     if (BuildQuery) {
       setformdata({ ...formdata, query: BuildQuery });
@@ -289,7 +292,15 @@ export default function ReportPage(props) {
         })
       );
     } else {
-      toast.success("Please provide Report Title", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
+      toast.success("Please provide Report Title", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       setDrillDownMessage("Please provide Report Title");
     }
   };
@@ -298,8 +309,16 @@ export default function ReportPage(props) {
     e.preventDefault();
     setMapBtnClicked((prev) => !prev); // Toggle map button state
 
-    if (formdata.enable_drilldown == 'yes' && !tagBtnClciked) {
-      toast.success("Please click on the tag button to select the column", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
+    if (formdata.enable_drilldown == "yes" && !tagBtnClciked) {
+      toast.success("Please click on the tag button to select the column", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return; // Exit function if the condition is not met
     }
     const payloadvalue = {
@@ -310,8 +329,10 @@ export default function ReportPage(props) {
       // DrillDown_Column: selectColumnForDrill?.map((item) => item.DrillDown_Column[0]) || [],
       DrillDown_Column: Array.isArray(selectColumnForDrill)
         ? selectColumnForDrill.map((item) =>
-          Array.isArray(item.DrillDown_Column) ? item.DrillDown_Column[0] || "" : item.DrillDown_Column || ""
-        )
+            Array.isArray(item.DrillDown_Column)
+              ? item.DrillDown_Column[0] || ""
+              : item.DrillDown_Column || ""
+          )
         : [],
     };
     const newobject = {
@@ -343,15 +364,15 @@ export default function ReportPage(props) {
   const reportdetail = apiData?.reportmanagement?.allReportDetail;
   const reportdetailForMapping = reportdetail?.length
     ? reportdetail
-      .filter((item) =>
-        formdata?.chart_type !== 'drillcolumn'
-          ? item.report_type === "Table"
-          : item.report_type === "Chart"
-      )
-      .map((report) => ({
-        value: report.report_name,
-        label: report.report_name,
-      }))
+        .filter((item) =>
+          formdata?.chart_type !== "drillcolumn"
+            ? item.report_type === "Table"
+            : item.report_type === "Chart"
+        )
+        .map((report) => ({
+          value: report.report_name,
+          label: report.report_name,
+        }))
     : [];
   const columndetailfirst = apiData?.reportmanagement?.getlistofcolumfirst;
   const columndetailsecond = apiData?.reportmanagement?.getlistofcolumsecond;
@@ -405,8 +426,10 @@ export default function ReportPage(props) {
     // Ensure selectedOptions is an array
 
     const selectedValues = Array.isArray(selectedOptions)
-      ? selectedOptions.map(option => option.value)
-      : selectedOptions ? [selectedOptions.value] : [];
+      ? selectedOptions.map((option) => option.value)
+      : selectedOptions
+      ? [selectedOptions.value]
+      : [];
 
     setSelectColumnForDrill((prevState) => {
       const updatedColumns = [...prevState];
@@ -421,9 +444,9 @@ export default function ReportPage(props) {
   const columnOptions =
     columndetailsecond?.length > 0
       ? columndetailsecond.map((column) => ({
-        value: column,
-        label: column,
-      }))
+          value: column,
+          label: column,
+        }))
       : [];
 
   useEffect(() => {
@@ -504,14 +527,13 @@ export default function ReportPage(props) {
       "3d Pie Chart": "3Dpie",
       "3d Donut Chart": "3D Donut",
       "3d Area Chart": "3Darea",
-      "speedometer": "speedometer",
-      "drillcolumn": "drillcolumn",
+      speedometer: "speedometer",
+      drillcolumn: "drillcolumn",
     };
 
     const selectedChartType = chartTypes[event.target.value];
 
     if (selectedChartType) {
-
       setformdata({ ...formdata, [event.target.name]: selectedChartType });
       setShow(false);
       setIsChartSelected(true);
@@ -520,13 +542,19 @@ export default function ReportPage(props) {
 
   const handleSubmit = (e) => {
     dispatch(resetbacktocustomquerypagewithdata());
-    if (formdata.enable_drilldown == 'no')
-      setMappingTab(false);
-    else
-      setMappingTab(true);
+    if (formdata.enable_drilldown == "no") setMappingTab(false);
+    else setMappingTab(true);
     e.preventDefault(formdata, "formdata");
-    if (formdata.enable_drilldown == 'yes' && !mapBtnClicked) {
-      toast.success("Please click on the map button to map the column", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
+    if (formdata.enable_drilldown == "yes" && !mapBtnClicked) {
+      toast.success("Please click on the map button to map the column", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
       return;
     }
 
@@ -534,7 +562,15 @@ export default function ReportPage(props) {
       localStorage.setItem("customeDetailOfReport", JSON.stringify(formdata));
       history("/PreviewPage");
     } else {
-      toast.success("Please fill the missing field value", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
+      toast.success("Please fill the missing field value", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 
@@ -542,11 +578,18 @@ export default function ReportPage(props) {
 
   const handlePreview = () => {
     if (!testbtnClicked) {
-      toast.success("Please Test the query before Preview", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
-
+      toast.success("Please Test the query before Preview", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
-  
+
   // Modified by Kashish
   const handleTestQuery = async (e) => {
     e.preventDefault();
@@ -599,7 +642,6 @@ export default function ReportPage(props) {
   }, []);
 
   const validationQuery = apiData?.auth.test_custom_query;
-
 
   const renderConditionalCharts = () => {
     if (
@@ -672,20 +714,36 @@ export default function ReportPage(props) {
   }
 
   const handleChange = (e) => {
-    if (e.target.name === "query") {
-      dispatch(resettestquryonCustompage());
-      dispatch(defaultcheckdrilldown());
-      setMappingTab(false);
-      setformdata({ ...formdata, [e.target.name]: e.target.value });
-    } else if (e.target.name === "title") {
-      setformdata({ ...formdata, [e.target.name]: e.target.value });
-      setDrillDownMessage("");
-    } else if (e.target.name === "update_interval") {
-      const interval = updateintervalset(e.target.value);
+    const { name, value } = e.target;
+    const lowerType = formdata?.type?.toString?.().toLowerCase();
 
-      setformdata({ ...formdata, [e.target.name]: interval });
+    const shouldLimit =
+      ["title", "name", "report_template_name"].includes(name) &&
+      lowerType === "box";
+
+    if (shouldLimit) {
+      console.log("Box type detected, checking length...");
+      if (value.length > 45) {
+        toast.warn("Title cannot exceed 45 characters for Box type", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        return; // prevent update
+      }
+    }
+
+    // Proceed normally
+    if (name === "query") {
+      dispatch(resettestquryonCustompage());
+      setformdata((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "title") {
+      setformdata((prev) => ({ ...prev, [name]: value }));
+      setDrillDownMessage("");
+    } else if (name === "update_interval") {
+      const interval = updateintervalset(value);
+      setformdata((prev) => ({ ...prev, [name]: interval }));
     } else {
-      setformdata({ ...formdata, [e.target.name]: e.target.value });
+      setformdata((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -752,7 +810,15 @@ export default function ReportPage(props) {
 
       // setformdata({ ...formdata, upload_logo: file });
     } else {
-      toast.success("Please select a PNG file with a maximum size of 1 MB.", { position: "top-right", autoClose: 2000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, theme: "light", });
+      toast.success("Please select a PNG file with a maximum size of 1 MB.", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 
@@ -764,20 +830,14 @@ export default function ReportPage(props) {
   };
 
   const handleClickGotoApexChart = () => {
-
     history("/ApexChart");
-
   };
 
   const handleFocus = () => {
-
     setIsHovered(true);
 
     setShow(true);
-
   };
-
-
 
   const handleBlur = () => {
     setIsHovered(false);
@@ -799,34 +859,28 @@ export default function ReportPage(props) {
         setShow(false);
       }
     }, 100);
-
   };
-
-
 
   // Handle click on chart div
 
   const handleChartClick = () => {
-
     setIsClicked(true);
 
     setTimeout(() => {
-
       setIsClicked(false);
-
     }, 2000); // Reset click state after 2 seconds
-
   };
   const getDrillDownColumns = (index) => {
-    const currentDrillDownColumn = selectColumnForDrill[index]?.DrillDown_Column;
-    const drillDownColumn = Array.isArray(currentDrillDownColumn) && currentDrillDownColumn.length > 0
-      ? currentDrillDownColumn
-      : [];
+    const currentDrillDownColumn =
+      selectColumnForDrill[index]?.DrillDown_Column;
+    const drillDownColumn =
+      Array.isArray(currentDrillDownColumn) && currentDrillDownColumn.length > 0
+        ? currentDrillDownColumn
+        : [];
     return Array.isArray(drillDownColumn)
-      ? drillDownColumn.map(value => ({ value, label: value }))
+      ? drillDownColumn.map((value) => ({ value, label: value }))
       : [];
   };
-
 
   return (
     <div style={{ overflow: "clip" }}>
@@ -888,11 +942,12 @@ export default function ReportPage(props) {
                     <span class="input-group-text" id="addon-wrapping">
                       <i class="fas fa-heading"></i>
                     </span>
+                    {/*today change */}
                     <input
                       name="title"
                       placeholder="e.g. Incident Severity"
                       className="form-control"
-                      maxLength={38}
+                      maxLength={60}
                       minLength={5}
                       type="text"
                       value={formdata.title}
@@ -944,7 +999,7 @@ export default function ReportPage(props) {
                   type="button"
                   disabled={
                     !(
-                      validationQuery?.statusCode=== 200 &&
+                      validationQuery?.statusCode === 200 &&
                       formdata.start_date !== "" &&
                       formdata.end_date !== ""
                     )
@@ -956,22 +1011,16 @@ export default function ReportPage(props) {
                 >
                   Remove Date Parameter
                 </Button>
-                
+
                 {/* Modified by Kashish */}
-                <Button type="button" onClick={handleTestQuery} >
-                  {loading ? (
-                    <span>
-                      Testing...
-                    </span>
-                  ) : (
-                    "Test Query"
-                  )}
+                <Button type="button" onClick={handleTestQuery}>
+                  {loading ? <span>Testing...</span> : "Test Query"}
                 </Button>
               </div>
               {/* </div> */}
               <div style={{ textAlign: "center" }}>
                 {validationQuery &&
-                  validationQuery?.detail === "Valid Query" ? (
+                validationQuery?.detail === "Valid Query" ? (
                   <p>
                     <i
                       style={{
@@ -985,7 +1034,8 @@ export default function ReportPage(props) {
                     ></i>
                     {validationQuery?.detail}
                   </p>
-                ) : validationQuery?.statusCode === 401 || validationQuery?.statusCode === 400 ? (
+                ) : validationQuery?.statusCode === 401 ||
+                  validationQuery?.statusCode === 400 ? (
                   validationQuery && (
                     <p>
                       <i
@@ -1121,13 +1171,10 @@ export default function ReportPage(props) {
                     <div style={{ minWidth: normalCustomQueryInputWidth - 56 }}>
                       <textarea
                         className="form-control textArea-chart-type"
-
                         onFocus={handleFocus}
-
                         onBlur={handleBlur}
                         name="chart_type"
                         value={formdata.chart_type}
-
                         onClick={handleChangecharttype}
                         placeholder="Chart Type"
                         required={
@@ -1210,9 +1257,7 @@ export default function ReportPage(props) {
                     ) : null}
                     <div className="sampledrilldownquery-well form-horizon">
                       <div className="custome-container-column">
-                        <Form.Group
-                          controlId="formBasicEmail"
-                        >
+                        <Form.Group controlId="formBasicEmail">
                           <Form.Control
                             type="text"
                             value={formdata.title}
@@ -1250,9 +1295,7 @@ export default function ReportPage(props) {
                       {formdata.type != "Box" &&
                         Array.from({ length: columnCount }, (v, i) => (
                           <div className="custome-container-column" key={i}>
-                            <Form.Group
-                              controlId="formBasicEmail"
-                            >
+                            <Form.Group controlId="formBasicEmail">
                               <Form.Control
                                 type="text"
                                 value={
@@ -1276,15 +1319,22 @@ export default function ReportPage(props) {
                               <Select
                                 className="adjustment-style"
                                 value={getDrillDownColumns(i)}
-                                onChange={handleSelectColumnForDrillDownSecond(i)}
-                                options={columndetailsecond?.map(column => ({ value: column, label: column })) || []}
+                                onChange={handleSelectColumnForDrillDownSecond(
+                                  i
+                                )}
+                                options={
+                                  columndetailsecond?.map((column) => ({
+                                    value: column,
+                                    label: column,
+                                  })) || []
+                                }
                                 isSearchable
                                 placeholder="Select DrillDown Column"
                                 styles={customStylesForSelect}
                                 menuPortalTarget={document.body} // Render menu in a portal
                                 menuPosition="fixed"
 
-                              // Allow multiple selections
+                                // Allow multiple selections
                               />
                             </div>
                           </div>

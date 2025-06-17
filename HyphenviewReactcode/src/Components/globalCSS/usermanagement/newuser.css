@@ -24,22 +24,6 @@ body .new-user-page {
     color: red;
 }
 
-/* .New_user_managemet_btn2 {
-    width: 180px;
-    height: 33px;
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    text-align: center !important;
-    font-size: 15px;
-    margin-left: 3px;
-} */
-
-/* .New_user_page {
-    margin: 20px;
-    max-width: 630px;
-} */
-
 .New_user_management_page {
     display: flex;
     flex-direction: row;
@@ -111,3 +95,9 @@ body .new-user-page {
     border-radius: 1.5rem;
     padding: 0.6rem;
 }
+
+body.dark .New_user_management_page{
+    background: linear-gradient(to right, #1a1b5a, #82259e);
+    /* background-color: #1a1b5a; */
+    color: white;
+} 

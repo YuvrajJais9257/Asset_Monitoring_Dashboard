@@ -61,6 +61,62 @@ font-size: 0.9rem;
   }
 }
 
+/*today change*/
+:root {
+  --bg-main: #ffffff;
+  --text-main: #000000;
+  --bg-secondary: #f8f9fa;
+  --border-color: #cccccc;
+  --btn-bg: #ffffff;
+  --btn-text: #000000;
+  --dropdown-bg: #f8f9fa;
+  --dropdown-hover: rgb(13, 110, 253);
+  --dashboard-bg: #ffffff;
+  --dashboard-text: #000000;
+  --table-border: #ddd;
+  --header-bg: #4694e8;
+  --header-text: #fff;
+  --button-bg: #ffffff;
+  --button-text: #000000;
+}
 
+:root.light {
+  --bg-color: white;
+  --text-color: black;
+}
 
+:root.dark {
+  --bg-color: #020817;
+  --text-color: #f8fafc;
+}
 
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+body.light {
+  background-color: white;
+  color: black;
+}
+
+body.dark {
+  background-color: #020817;
+  color: #f8fafc;
+  --bg-main: #0f172a;
+  --text-main: #f8fafc;
+  --bg-secondary: #1e293b;
+  --border-color: #334155;
+  --btn-bg: #1e293b;
+  --btn-text: #f8fafc;
+  --dropdown-bg: #1e293b;
+  --dropdown-hover: #2563eb;
+  --dashboard-bg: #1e293b;
+  --dashboard-text: #f8fafc;
+  --table-border: #334155;
+  --header-bg: #1d4ed8;
+  --header-text: #e2e8f0;
+  --button-bg: #0f172a;
+  --button-text: #f8fafc;
+}

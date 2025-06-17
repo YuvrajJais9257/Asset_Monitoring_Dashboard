@@ -1,4 +1,4 @@
-
+/*today change*/
 .rts___tabs {
   padding: 5px 0 !important;
   position: relative;
@@ -127,4 +127,244 @@ html{
 
 .layoutSuperContainer{
   width: 196%;
+}
+
+.popup-dashboard-header{
+  width: 101.5%;
+  margin: 0.5rem 1.8rem !important;
+  padding: 0 !important;
+}
+
+.popup-dashboard-header h2{
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  color:#1d5dfb !important;
+  margin: 1rem !important;
+  padding: 0 !important;
+}
+
+.popup-dashboard-layout{
+
+  padding: 0 !important;
+  width: 205% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 2rem 1rem;
+}
+
+.popup-dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 2px solid #e0e0e0;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.popup-dashboard-title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.popup-dashboard-utils {
+  position: absolute;
+  right: 20px;
+}
+
+.popup-dashboard-export {
+  background-color: #1d5dfb !important;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.popup-dashboard-export:hover {
+  background-color: #333;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.popup-dashboard-export:active {
+  transform: scale(0.95);
+  background-color: #004a99;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.popup-dashboard-export i {
+  display: flex;
+}
+
+.dashboard-widget {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  padding: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-widget:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+
+
+.popup-dashboard-header {
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(to right, #e3f2fd, #ffffff);
+}
+
+.popup-dashboard-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #004a99;
+}
+
+@media (max-width: 768px) {
+  .dashboard-widget {
+    padding: 6px;
+  }
+
+  .popup-dashboard-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Theme toggle container styling */
+.dashboard-theme-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+/* Wrapper for the button */
+.dashboard-theme-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Light Theme (dark background for button, bright icon) */
+.dashboard-theme-button.light {
+  background-color: #3c0891; /* primary purple */
+  box-shadow: 0 2px 6px rgba(230, 238, 249, 0.3); /* soft glow using light bg */
+}
+
+.dashboard-theme-button.light:hover {
+  background-color: #1874e4; /* accent blue */
+  box-shadow: 0 4px 10px rgba(230, 238, 249, 0.4);
+}
+
+/* Dark Theme (light background for button, dark icon) */
+.dashboard-theme-button.dark {
+  background-color: #e6eef9; /* light background */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-theme-button.dark:hover {
+  background-color: #d0dce8; /* slightly darker light bg */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Toggle Button Reset */
+.theme-toggle-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle-button:hover {
+  transform: scale(1.1);
+}
+
+/* Icon Styles */
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Icon colors based on theme */
+.sun-icon {
+  color: #3c0891; /* for dark background */
+}
+
+.moon-icon {
+  color: #e6eef9; /* for light background */
+}
+
+.tabs-and-theme-toggle-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* === DARK THEME OVERRIDES === */
+body.dark .rts___tabs___container {
+  background-color: #020817 !important;
+  box-shadow: 0 0 1px 0 rgba(248, 250, 252, 0.1), 0 6px 12px 0 rgba(248, 250, 252, 0.1);
+  border: 1px solid #1e293b;
+}
+
+body.dark .rts___tab {
+  color: #1e293b !important; /* inactive text (subdued) */
+}
+
+body.dark .rts___tab.rts___btn {
+  color: #f8fafc !important; /* active text */
+  background-color: transparent;
+}
+
+body.dark .rts___tab.rts___btn.rts___tab___selected {
+  background-color: #1e293b !important;
+  color: #1d4ed8 !important;
+  border-color: #1e293b;
+  box-shadow: 0 2px 5px rgba(248, 250, 252, 0.15);
+}
+
+body.dark .rts___tab:hover {
+  color: #f8fafc !important;
+  background-color: #1e293b;
+}
+
+body.dark .rts___tab___selected::after {
+  background-color: #1d4ed8 !important;
+}
+
+body.dark .rts___nav___btn___container {
+  background-color: #020817 !important;
+}
+
+body.dark .rts___nav___btn > svg {
+  stroke: #f8fafc !important;
+}
+
+body.dark .rts___nav___btn:hover > svg {
+  stroke: #1d4ed8 !important;
 }

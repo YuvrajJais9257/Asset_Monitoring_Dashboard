@@ -1,28 +1,23 @@
 .card {
-  border-radius: 0;
-  max-height: 100% !important;
-  max-width: 100% !important;
-  padding: 1rem !important;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* justify-content: center; */
+  width: 100%;
+  height: auto;
+  padding: 1rem;
   overflow: hidden;
-  cursor: pointer;
-  width: 100% !important;
-  align-items: center;
-  display: flex !important; /* Ensure flex display for responsiveness */
-  flex-direction: row !important; /* Stack items vertically */
+  box-sizing: border-box;
+  gap: 1rem;
+  text-align: center;
   position: relative;
-  justify-content: space-between;
-  min-height: 150px !important;
-  min-width: 300px !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* Layout 1 - Black & Gold */
+/* Layouts */
 .layout1 {
   background: #1a1a1a;
   color: #fff;
 }
-
 .layout1::after {
   content: "";
   position: absolute;
@@ -34,28 +29,21 @@
   transform: skewX(-20deg);
 }
 
-/* Layout 2 - Navy Angular */
 .layout2 {
   background: #1e2756;
   color: #fff;
+  padding: 1rem;
 }
-
 .layout2 .content {
   clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
   background: #2a3a7c;
   height: 100%;
 }
 
-.layout2 {
-  padding: 1rem;
-}
-
-/* Layout 3 - White & Gold Lines */
 .layout3 {
   background: #fff;
   color: #1a1a1a;
 }
-
 .layout3::before {
   content: "";
   position: absolute;
@@ -65,12 +53,10 @@
   opacity: 0.1;
 }
 
-/* Layout 4 - Dark with Red Accents */
 .layout4 {
   background: #1a1a1a;
   color: #fff;
 }
-
 .layout4::before {
   content: "";
   position: absolute;
@@ -81,12 +67,10 @@
   background: #ff0000;
 }
 
-/* Layout 5 - Dark with Cyan Glow */
 .layout5 {
   background: #1a1a1a;
   color: #fff;
 }
-
 .layout5::after {
   content: "";
   position: absolute;
@@ -98,12 +82,10 @@
   box-shadow: 0 0 15px #00ffff;
 }
 
-/* Layout 6 - Green Triangle */
 .layout6 {
   background: #006060;
   color: #fff;
 }
-
 .layout6::before {
   content: "";
   position: absolute;
@@ -114,12 +96,10 @@
   border-color: transparent #008080 transparent transparent;
 }
 
-/* Layout 7 - Blue Curve */
 .layout7 {
   background: linear-gradient(135deg, #0088cc, #005580);
   color: #fff;
 }
-
 .layout7::after {
   content: "";
   position: absolute;
@@ -131,63 +111,160 @@
   border-radius: 50%;
   opacity: 0.1;
 }
-.content {
-  margin: 1rem !important;
-  display: flex !important;
-  text-align: center;
-  flex-direction: row;
-  justify-content: space-between;
-  position: relative !important;
-  align-items: center;
-  padding: 1rem !important;
-  cursor: pointer;
-  height: 150px;
-  padding: 10px;
-  width: 100% !important;
+
+/* Icon Container */
+.iconContainer {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  /* width: 60px;
+  height: 60px; */
+  width: auto;
+  height: auto;
+  z-index: 2;
+}
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.8;
 }
 
+/* Header - title and subtitle block on top right */
 .header {
+  width: 100%;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
-
-.details {
+.titleBlock {
   display: flex;
   flex-direction: column;
-  position: relative;
-  text-align: center;
-  width: 80%;
+  align-items: flex-end;
+  max-width: calc(100% - 80px); /* reserves space for icon */
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
-.logo {
-  opacity: 0.8;
+/* Text Styles */
+.title,
+.status,
+.value {
+  position: relative;
+  z-index: 1000;
+  margin: 0;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.2;
 }
 
 .title {
-  margin:1rem;
-  line-height: 1.2;
-  font-weight: 700;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
+  font-size: 18px; /* or 1.125rem */
+  font-weight: 800;
+  margin: 0 0 0.25rem 0;
+  word-break: break-word;
+  white-space: normal;
+  text-align: right;
 }
 
 .status {
+  font-size: 16px;
+  font-weight: 600;
   opacity: 0.8;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
+  word-break: break-word;
+  white-space: normal;
+  text-align: right;
 }
 
-.value {
-  font-weight: 700;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-.iconContainer {
-  transform: translateX(-1rem) !important;
-  bottom: 45px;
+/* Value Section */
+.valueContainer {
+  flex-grow: 1;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+.value {
+  font-size: clamp(1rem, 5vw, 2.5rem);
+  font-weight: 800;
+}
+
+/* Optional content wrapper if needed */
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   position: relative;
-  width: 20%;
+}
+
+.preview_content_wrapper {
+  width: 100%;
+  flex-shrink: 0;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0rem 1rem;
+  gap: 1rem;
+}
+
+.preview_value_wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.preview_image_container {
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.preview_image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.preview_value {
+  position: relative;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  word-break: break-word;
+}
+.preview_title {
+  margin: 0;
+  font-weight: bold;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.preview_subtitle {
+  margin: 0;
+  opacity: 0.7;
+  word-break: break-word;
+}
+
+.preview_text_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: right;
 }

@@ -4,8 +4,8 @@ import Header from "../header";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./../globalCSS/reportmanagement/listofreports.css";
-import "./../globalCSS/dashboardmanagement/ListTable.css"
-import "./../globalCSS/dashboardmanagement/DownloadButton.css"
+import "./../globalCSS/dashboardmanagement/ListTable.css";
+import "./../globalCSS/dashboardmanagement/DownloadButton.css";
 import {
   getreporttitlefromondashbaord,
   removereport,
@@ -17,9 +17,12 @@ import Pagination from "./../Pagination/Pagination";
 import { Button } from "./../globalCSS/Button/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ShowAlert from "../../actions/ShowAlert";
-import { decryptData } from '../utils/EncriptionStore';
-import { exportExcel } from '../utils/ExportExcel';
+import { decryptData } from "../utils/EncriptionStore";
+import { exportExcel } from "../utils/ExportExcel";
 
+/*today change */
+import { Sun, Moon } from "lucide-react";
+import { toggleTheme } from "../../actions/new_dashboard";
 
 function ListOfReports() {
   const history = useNavigate();
@@ -28,7 +31,6 @@ function ListOfReports() {
   const apiData = useSelector((state) => state);
   const reportdetail = apiData?.reportmanagement?.allReportDetail;
 
-  // Get user access mask from localStorage
   const user = (() => {
     const encryptedData = localStorage.getItem("profile");
     return encryptedData ? decryptData(encryptedData) : null;
@@ -44,7 +46,6 @@ function ListOfReports() {
     selectaccessmask = [...useraccessmask[0].accessmask];
   }
 
-  // Hide or show "New Report" button based on user access mask
   useEffect(() => {
     const createreportproperty = document.getElementsByClassName(
       "newReport_create_access"
@@ -61,10 +62,9 @@ function ListOfReports() {
     });
   }, [selectaccessmask]);
 
-  // Fetch report titles on component mount
   useEffect(() => {
     dispatch(generateChartTypeReportbefore());
-    dispatch(defaultexport())
+    dispatch(defaultexport());
     dispatch(
       getreporttitlefromondashbaord({
         database_type: user.database_type,
@@ -76,9 +76,9 @@ function ListOfReports() {
   }, []);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to the first page when search term changes
+    setCurrentPage(1);
   }, [search]);
-  // Navigate to Dashboard
+
   const handelclickgotoDashboard = () => {
     history("/Dashboard");
   };
@@ -105,8 +105,6 @@ function ListOfReports() {
     const lastPageIndex = firstPageIndex + PageSize;
     return filteredData?.slice(firstPageIndex, lastPageIndex);
   }, [currentPage, filteredData, PageSize]);
-
-  // Remove report
 
   const handelremoveReport = async (event) => {
     try {
@@ -145,13 +143,13 @@ function ListOfReports() {
   };
 
   const handleExport = () => {
-    exportExcel(reportdetail,"Listofreports");
+    exportExcel(reportdetail, "Listofreports");
   };
 
   useEffect(() => {
     let sessionTimeout = setTimeout(() => {
-      history("/"); // Redirect to login on session expiration
-    }, 20 * 60 * 1000); // 5 minutes in milliseconds
+      history("/");
+    }, 20 * 60 * 1000);
 
     const resetTimer = () => {
       clearTimeout(sessionTimeout);
@@ -173,31 +171,74 @@ function ListOfReports() {
     };
   }, [history]);
 
+  /*today change */
+  const app_theme = useSelector((state) => state?.theme);
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
+
   return (
     <div>
-      <div className='side-nav'>
+      <div className="side-nav">
         <Header />
       </div>
-      <div className='Report_Management_List'>
-        <div className='Page-Header'>
-          <span class="fas fa-house-user" aria-hidden="true" onClick={handelclickgotoDashboard}></span><span>/</span>Report Management
-          <Button className='newReport_create_access' onClick={handelclickAddNewReport}>New Report</Button>
+      <div className="Report_Management_List">
+        {/*today change */}
+        <div className="list_management_header">
+          <div className="Page-Header">
+            <span
+              class="fas fa-house-user"
+              aria-hidden="true"
+              onClick={handelclickgotoDashboard}
+            ></span>
+            <span>/</span>Report Management
+            <Button
+              className="newReport_create_access"
+              onClick={handelclickAddNewReport}
+            >
+              New Report
+            </Button>
+          </div>
+          <div className="theme-button-container">
+            <div
+              className={`theme-button ${
+                app_theme === "dark" ? "dark" : "light"
+              }`}
+            >
+              <button
+                onClick={handleThemeToggle}
+                className="toggle-theme-button"
+                aria-label="Toggle theme"
+              >
+                {app_theme === "dark" ? (
+                  <Sun className="theme-icon sun-theme-icon" />
+                ) : (
+                  <Moon className="theme-icon moon-theme-icon" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
-        <div style={{ width: 'calc(100vw - 120px)' }}>
-          {/* Delete and Search button start here ... */}
+        <div style={{ width: "calc(100vw - 120px)" }}>
           <div className="table-top">
             <div className="right-side-elements">
               <div className="download-container">
-                <button className="download-btn"   onClick={handleExport}>
-                  <i className="fas fa-download download-icon" style={{ fontSize: '16px' }}></i>
-                  {/* <span className="download-text">Download</span> */}
+                <button className="download-btn" onClick={handleExport}>
+                  <i
+                    className="fas fa-download download-icon"
+                    style={{ fontSize: "16px" }}
+                  ></i>
                 </button>
               </div>
 
               <div className="search-container">
                 <input
                   type="text"
-                  placeholder="Search" value={search} maxLength={120} onChange={e => setSearch(e.target.value)}
+                  placeholder="Search"
+                  value={search}
+                  maxLength={120}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="search-box"
                 />
                 <svg
@@ -210,18 +251,28 @@ function ListOfReports() {
                   width="16"
                   height="16"
                 >
-                  <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" />
-                  <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" strokeWidth="2" />
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
                 </svg>
               </div>
             </div>
           </div>
 
           <div className="report-management-List_table_sub_container">
-            <table
-              id="table-to-excel"
-              className="responsive-table"
-            >
+            <table id="table-to-excel" className="responsive-table">
               <thead>
                 <tr className="table-header">
                   <th>Report Name</th>
@@ -238,15 +289,21 @@ function ListOfReports() {
                     <tr key={index}>
                       <td>{reportdata.report_name}</td>
                       <td>{reportdata.report_type}</td>
-                      <td> {reportdata.report_type === "Table" ? "table" : reportdata.report_type === "Box" ? "box" : reportdata.chart_type || "chart"}</td>
-                      <td>{reportdata.drilldown || 'no'}</td>
+                      <td>
+                        {" "}
+                        {reportdata.report_type === "Table"
+                          ? "table"
+                          : reportdata.report_type === "Box"
+                          ? "box"
+                          : reportdata.chart_type || "chart"}
+                      </td>
+                      <td>{reportdata.drilldown || "no"}</td>
                       <td>{reportdata.db_schema_name}</td>
-                       <td>
+                      <td>
                         {reportdata.report_type === "Table" ||
                         reportdata.report_type === "Merged" ? (
                           <span>
                             {" "}
-                       
                             <Link
                               id={`customeidwithtable${reportdata.report_id}`}
                               to={`/UpdateReportPage?report_id=${reportdata.report_id}`}
@@ -273,7 +330,6 @@ function ListOfReports() {
                                 style={{ fontSize: "15px", marginLeft: "3px" }}
                               ></span>
                             </Link>
-                   
                             <Link
                               to={`/GenerateReport?report_id=${reportdata.report_id}`}
                               id={`customeidgeneratewithtable${reportdata.report_id}`}
@@ -300,7 +356,6 @@ function ListOfReports() {
                                 style={{ fontSize: "13px", marginLeft: "3px" }}
                               ></span>
                             </Link>
-                     
                             <i
                               style={{
                                 cursor: reportdata.access_mask.includes("d")
@@ -323,7 +378,6 @@ function ListOfReports() {
                             ></i>
                           </span>
                         ) : (
-                       
                           <span>
                             {/* Edit Button (Controlled by "e") */}
                             <Link
@@ -349,7 +403,7 @@ function ListOfReports() {
                                 style={{ fontSize: "15px", marginLeft: "3px" }}
                               ></span>
                             </Link>
- 
+
                             {/* View Button (Controlled by "v" only) */}
                             {reportdata.report_type === "Chart" ? (
                               <Link
@@ -408,7 +462,7 @@ function ListOfReports() {
                                 ></span>
                               </Link>
                             )}
- 
+
                             {/* Delete Button (Controlled by "d") */}
                             <i
                               id={`customeidremovewithchart${reportdata.report_id}`}
@@ -432,7 +486,6 @@ function ListOfReports() {
                             ></i>
                           </span>
                         )}
-                     
                       </td>
                     </tr>
                   ))}

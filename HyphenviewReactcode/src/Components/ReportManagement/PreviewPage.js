@@ -35,7 +35,7 @@ function PreviewPage() {
     subtitle_size: "",
     subtitle: "",
     subtitle_text: "",
-    subtitle_color:"",
+    subtitle_color: "",
     text_alignment: "",
     chart_colours: "",
     email: "",
@@ -45,6 +45,7 @@ function PreviewPage() {
     display_order: 1,
     chart_subtitle: "",
     enable_labels: "",
+    image_size: "",
   };
 
   const [CustomDetail, setCustomDetail] = useState(insitialstateofcomp);
@@ -60,11 +61,12 @@ function PreviewPage() {
       subtitle_size: "",
       subtitle: "",
       subtitle_text: "",
-      subtitle_color:"",
+      subtitle_color: "",
       text_alignment: "center",
       chart_colours: {},
       chart_subtitle: "",
       enable_labels: "no",
+      image_size: "",
     });
 
   const [storedetailtoback, setStoredetailtoback] = useState();
@@ -80,6 +82,7 @@ function PreviewPage() {
   const CustomeDetailOfReport = JSON.parse(
     localStorage.getItem("customeDetailOfReport")
   ); // Custom detail from localStorage
+  console.log("CustomeDetailOfReport", CustomeDetailOfReport);
   const selectedShemasection = JSON.parse(
     localStorage.getItem("SelectedSchema")
   ); // Selected schema from localStorage
@@ -124,6 +127,7 @@ function PreviewPage() {
           subtitle_text: customizationOptionsPreview?.subtitle_text,
           subtitle_color: customizationOptionsPreview?.subtitle_color,
           text_alignment: customizationOptionsPreview?.text_alignment,
+          image_size: customizationOptionsPreview?.image_size,
         };
 
         const newObj = {
@@ -194,6 +198,7 @@ function PreviewPage() {
           subtitle: CustomeDetailOfReport?.subtitle,
           subtitle_text: CustomeDetailOfReport?.subtitle_text,
           text_alignment: CustomeDetailOfReport?.text_alignment,
+          image_size: CustomeDetailOfReport?.image_size,
         };
 
         const boxSettingsNewObj = {
@@ -209,6 +214,7 @@ function PreviewPage() {
           subtitle_text: customizationOptionsPreview?.subtitle_text,
           subtitle_color: customizationOptionsPreview?.subtitle_color,
           text_alignment: customizationOptionsPreview?.text_alignment,
+          image_size: customizationOptionsPreview?.image_size,
         };
 
         let localnewObj = {
@@ -337,6 +343,7 @@ function PreviewPage() {
           subtitle_color: customizationOptionsPreview?.subtitle_color,
 
           text_alignment: customizationOptionsPreview?.text_alignment,
+          image_size: customizationOptionsPreview?.image_size,
         };
 
         const newObj = {
@@ -385,6 +392,7 @@ function PreviewPage() {
           subtitle_text: customizationOptionsPreview?.subtitle_text,
           subtitle_color: customizationOptionsPreview?.subtitle_color,
           text_alignment: customizationOptionsPreview?.text_alignment,
+          image_size: customizationOptionsPreview?.image_size,
         };
         const newobj = {
           ...newstateofcomp,

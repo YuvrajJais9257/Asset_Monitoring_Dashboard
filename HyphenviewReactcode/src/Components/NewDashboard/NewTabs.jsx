@@ -13,14 +13,16 @@ import "./../globalCSS/NewDashboard/NewTabs.css";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { decryptData } from "../utils/EncriptionStore";
 import { Box, CircularProgress } from "@mui/material";
+/*today change */
+import { toggleTheme } from "../../actions/new_dashboard";
+import { Sun, Moon } from "lucide-react";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const NewTabs = ({ sideBarWidth }) => {
-
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [rightSideWidth, setRightSideWidth] = useState(0);
-  const [loader, setLoader] = useState(true)
+  const [loader, setLoader] = useState(true);
   const [percentage, setPercentage] = useState(0);
   const [visibleTabs, setVisibleTabs] = useState(0);
 
@@ -63,7 +65,6 @@ const NewTabs = ({ sideBarWidth }) => {
     };
   }, [rightSideWidth, sideBarWidth, windowWidth]);
 
-
   const [activeTab, setActiveTab] = useState(1);
   const dispatch = useDispatch();
   const apiData = useSelector((state) => state);
@@ -72,23 +73,10 @@ const NewTabs = ({ sideBarWidth }) => {
     const encryptedData = localStorage.getItem("profile");
     return encryptedData ? decryptData(encryptedData) : null;
   })();
-  
-  console.log(user,"user")
+
+  console.log(user, "user");
 
   const [freamData, setfreamData] = useState([]);
-
-  // useEffect(() => {
-  //   dispatch(
-  //     canvashframedataformodification({
-  //       customer_id: user.customer_id,
-  //       group_id: user.group_id,
-  //       database_type: user.database_type,
-  //     })
-  //   );
-  //   dispatch(
-  //     listofgroup({ email: user.user_email_id, database_type: user.database_type })
-  //   );
-  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,20 +95,20 @@ const NewTabs = ({ sideBarWidth }) => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoader(false); 
+        setLoader(false);
       }
     };
     fetchData();
-  }, []); 
-  
+  }, []);
+
   const frameChartdata = apiData?.canvascreation.canvasframedetail;
   useEffect(() => {
     const frames = frameChartdata?.frames?.[0]?.frame || [];
     if (frames.length > 0) {
       setfreamData(frames);
       setActiveTab(0);
-      setLoader(false)
-    }else{
+      setLoader(false);
+    } else {
       console.log('No value found in localStorage for the key "finalfream"');
     }
   }, [frameChartdata]);
@@ -134,43 +122,73 @@ const NewTabs = ({ sideBarWidth }) => {
     setActiveTab(index);
     setfreamData(tabs[index].frame);
   };
+  /*today change */
+  const app_theme = useSelector((state) => state.theme);
+
+  console.log(app_theme, "app_theme");
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   return (
-    <div
-      className="frame-responsive-container"
-    >
-      <div style={{ minWidth: "100%" }}>
-        {" "}
-        <Tabs
-          activeTab={activeTab}
-          onTabClick={onTabClick}
-          hideNavBtnsOnMobile={false}
-          leftBtnIcon={
-            <FiChevronLeft
-              size={"1.5em"}
-              style={{
-                color: "black",
-                display: "inline-block",
-                verticalAlign: "middle",
-              }}
-            />
-          }
-          rightBtnIcon={
-            <FiChevronRight
-              size={"1.5em"}
-              style={{
-                color: "black",
-                display: "inline-block",
-                verticalAlign: "middle",
-              }}
-            />
-          }
-        >
-          {tabs.map((tab) => (
-            <Tab key={tab}>{tab.dashboard_name}</Tab>
-          ))}
-        </Tabs>
+    <div className="frame-responsive-container">
+      {/*today change */}
+      <div className="tabs-and-theme-toggle-container">
+        <div style={{ width: "95%" }}>
+          {" "}
+          <Tabs
+            activeTab={activeTab}
+            onTabClick={onTabClick}
+            hideNavBtnsOnMobile={false}
+            leftBtnIcon={
+              <FiChevronLeft
+                size={"1.5em"}
+                style={{
+                  color: "black",
+                  display: "inline-block",
+                  verticalAlign: "middle",
+                }}
+              />
+            }
+            rightBtnIcon={
+              <FiChevronRight
+                size={"1.5em"}
+                style={{
+                  color: "black",
+                  display: "inline-block",
+                  verticalAlign: "middle",
+                }}
+              />
+            }
+          >
+            {tabs.map((tab) => (
+              <Tab key={tab}>{tab.dashboard_name}</Tab>
+            ))}
+          </Tabs>
+        </div>
+
+        <div className="dashboard-theme-button-container">
+          <div
+            className={`dashboard-theme-button ${
+              app_theme === "dark" ? "dark" : "light"
+            }`}
+          >
+            <button
+              onClick={handleThemeToggle}
+              className="theme-toggle-button"
+              aria-label="Toggle theme"
+            >
+              {app_theme === "dark" ? (
+                <Sun className="icon sun-icon" />
+              ) : (
+                <Moon className="icon moon-icon" />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
+
       <div>
         {loader ? (
           <Box
@@ -185,7 +203,7 @@ const NewTabs = ({ sideBarWidth }) => {
               zIndex: 2,
             }}
           >
-            <CircularProgress  color="secondary"  />
+            <CircularProgress color="secondary" />
           </Box>
         ) : frameChartdata?.frames?.length === 0 ? (
           <ReportDashBoardNew />
@@ -199,13 +217,15 @@ const NewTabs = ({ sideBarWidth }) => {
               rowHeight={30}
               isResizable={false}
               isDraggable={false}
+              margin={[10, 10]}
+          
             >
               {freamData?.map((item) => (
                 <div
                   className="box-layout-and-chart"
                   key={item.i}
                   style={{
-                    border: "1px solid gray",
+                    border: "1px solid rgba(128, 128, 128, 0.2)",
                     background: "white",
                     overflow: "hidden",
                     borderRadius: "5px",
@@ -215,7 +235,7 @@ const NewTabs = ({ sideBarWidth }) => {
                 >
                   <HighCharts
                     width={`${item.w * 100}%`}
-                    height={`${item.h * 38}px`}
+                    height={`${item.h * 40}px`}
                     charttype={item.chartType}
                     chartColours={item.chart_colours}
                     reportType={item.reportType}
@@ -226,7 +246,6 @@ const NewTabs = ({ sideBarWidth }) => {
           </div>
         )}
       </div>
-
     </div>
   );
 };

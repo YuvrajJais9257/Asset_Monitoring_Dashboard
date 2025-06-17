@@ -3,8 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "../header";
 import "./../globalCSS/reportscheduler/reportschedulerlist.css";
-import "./../globalCSS/dashboardmanagement/ListTable.css"
-import "./../globalCSS/dashboardmanagement/DownloadButton.css"
+import "./../globalCSS/dashboardmanagement/ListTable.css";
+import "./../globalCSS/dashboardmanagement/DownloadButton.css";
 import { Button } from "./../globalCSS/Button/Button";
 import {
   listofSchedulereport,
@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Pagination from "./../Pagination/Pagination";
 import * as XLSX from "xlsx";
 import ShowAlert from "../../actions/ShowAlert";
-import { decryptData } from '../utils/EncriptionStore';
+import { decryptData } from "../utils/EncriptionStore";
+/*today change */
+import { toggleTheme } from "../../actions/new_dashboard";
+import { Sun, Moon } from "lucide-react";
 
 function ReportSchedulerList() {
   const history = useNavigate();
@@ -23,18 +26,16 @@ function ReportSchedulerList() {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
 
-  // get the schedule reports throught the reduler
   const apiData = useSelector((state) => state);
-  const schedulereportdetail = apiData?.reportscheduler?.allScheduleReportDetail;
+  const schedulereportdetail =
+    apiData?.reportscheduler?.allScheduleReportDetail;
 
   const user = (() => {
     const encryptedData = localStorage.getItem("profile");
     return encryptedData ? decryptData(encryptedData) : null;
   })();
 
-  // this useEffect help to dispatch the list of schedule reports
   useEffect(() => {
-    // const shemaDetail = JSON.parse(localStorage.getItem('SelectedSchema'));
     dispatch(
       listofSchedulereport({
         database_type: user.database_type,
@@ -136,11 +137,11 @@ function ReportSchedulerList() {
   }, [selectaccessmask]);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to the first page when search term changes
+    setCurrentPage(1);
   }, [search]);
-  // export the schedule reports in excel formate
+
   const handleExport = () => {
-    exportExcel(schedulereportdetail,"ListofScheduleReports");
+    exportExcel(schedulereportdetail, "ListofScheduleReports");
   };
 
   const exportExcel = () => {
@@ -150,12 +151,17 @@ function ReportSchedulerList() {
     XLSX.writeFile(workbook, "ListofScheduleReports.xlsx");
   };
 
+  // today change
+  const app_theme = useSelector((state) => state.theme);
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   const handelclickgotoDashboard = () => {
     history("/Dashboard");
   };
 
-  // it help to handel the remove schedule report
   const handelremoveReport = async (schedulerid) => {
     try {
       const userConfirmed = await ShowAlert({
@@ -168,7 +174,7 @@ function ReportSchedulerList() {
           removeschedulereport({
             scheduleid: schedulerid,
             customer_id: user.customer_id,
-            database_type:user.database_type,
+            database_type: user.database_type,
           })
         )
           .then(() => {
@@ -195,50 +201,98 @@ function ReportSchedulerList() {
         <Header />
       </div>
       <div className="report-scheduler-container">
-      <div className="Page-Header">
-        <span class="fas fa-house-user" aria-hidden="true" onClick={handelclickgotoDashboard}></span>
-        <span>/</span><span>Scheduled Reports for Dashboard</span>
-        <Button className='Report_scheduler_Button' onClick={() => history('/ReportSchedulerNew')}>New Scheduler for DashBoard Report</Button>
-      </div>
-      <div className='Report_scheduler_container'>
 
-
-        <div className="table-top">
-          <div className="right-side-elements">
-            <div className="download-container">
-              <button className="download-btn" onClick={handleExport}>
-                <i className="fas fa-download download-icon" style={{ fontSize: '16px' }}></i>
-              </button>
-            </div>
-
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search" value={search} maxLength={120} onChange={e => setSearch(e.target.value)}
-                className="search-box"
-              />
-              <svg
-                className="search-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                width="16"
-                height="16"
+        {/*today change */}
+        <div className="list_management_header">
+          <div className="Page-Header">
+            <span
+              class="fas fa-house-user"
+              aria-hidden="true"
+              onClick={handelclickgotoDashboard}
+            ></span>
+            <span>/</span>
+            <span>Scheduled Reports for Dashboard</span>
+            <Button
+              className="Report_scheduler_Button"
+              onClick={() => history("/ReportSchedulerNew")}
+            >
+              New Scheduler for DashBoard Report
+            </Button>
+          </div>
+          <div className="theme-button-container">
+            <div
+              className={`theme-button ${
+                app_theme === "dark" ? "dark" : "light"
+              }`}
+            >
+              <button
+                onClick={handleThemeToggle}
+                className="toggle-theme-button"
+                aria-label="Toggle theme"
               >
-                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" />
-                <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" strokeWidth="2" />
-              </svg>
+                {app_theme === "dark" ? (
+                  <Sun className="theme-icon sun-theme-icon" />
+                ) : (
+                  <Moon className="theme-icon moon-theme-icon" />
+                )}
+              </button>
             </div>
           </div>
         </div>
+        <div className="Report_scheduler_container">
+          <div className="table-top">
+            <div className="right-side-elements">
+              <div className="download-container">
+                <button className="download-btn" onClick={handleExport}>
+                  <i
+                    className="fas fa-download download-icon"
+                    style={{ fontSize: "16px" }}
+                  ></i>
+                </button>
+              </div>
 
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  maxLength={120}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="search-box"
+                />
+                <svg
+                  className="search-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  width="16"
+                  height="16"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
 
-
-        <div className='Report_scheduler_table_content'>
-          {/* <div className='report-scheduler-List_table_sub_container'> */}
-            <table id='table-to-excel' className="responsive-table">
+          <div className="Report_scheduler_table_content">
+            {/* <div className='report-scheduler-List_table_sub_container'> */}
+            <table id="table-to-excel" className="responsive-table">
               <thead>
                 <tr className="table-header">
                   <th>Report Title</th>
@@ -249,34 +303,56 @@ function ReportSchedulerList() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData && paginatedData?.map((schedulertpid, index) => (
-                  <tr>
-                    <td>{schedulertpid?.report_title}</td>
-                    <td>{schedulertpid?.scheduled_time?.replace('T', ' ')}</td>
-                    <td>{schedulertpid?.scheduler_period}</td>
-                    <td>{schedulertpid?.emailid.slice(1, -1).split(',').map(email => email.trim().replace(/"/g, '')).join(', ')}</td>
-                    <td>
-                      <Link to={`/ReportSchedulerUpdate?scheduleid=${schedulertpid?.scheduled_id}`} className="fa-solid fa-pen-to-square edit-button">
-                        <span style={{ fontSize: "15px", marginLeft: "3px" }}></span></Link>
-                      <i onClick={() => handelremoveReport(schedulertpid?.scheduled_id)} class="fa-solid fa-trash-can delete-button"></i>
-                    </td>
-                  </tr>))}
+                {paginatedData &&
+                  paginatedData?.map((schedulertpid, index) => (
+                    <tr>
+                      <td>{schedulertpid?.report_title}</td>
+                      <td>
+                        {schedulertpid?.scheduled_time?.replace("T", " ")}
+                      </td>
+                      <td>{schedulertpid?.scheduler_period}</td>
+                      <td>
+                        {schedulertpid?.emailid
+                          .slice(1, -1)
+                          .split(",")
+                          .map((email) => email.trim().replace(/"/g, ""))
+                          .join(", ")}
+                      </td>
+                      <td>
+                        <Link
+                          to={`/ReportSchedulerUpdate?scheduleid=${schedulertpid?.scheduled_id}`}
+                          className="fa-solid fa-pen-to-square edit-button"
+                        >
+                          <span
+                            style={{ fontSize: "15px", marginLeft: "3px" }}
+                          ></span>
+                        </Link>
+                        <i
+                          onClick={() =>
+                            handelremoveReport(schedulertpid?.scheduled_id)
+                          }
+                          class="fa-solid fa-trash-can delete-button"
+                        ></i>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-          {/* </div> */}
+            {/* </div> */}
+          </div>
+        </div>
+        <div>
+          <Pagination
+            className="pagination-bar"
+            currentPage={currentPage}
+            totalCount={filteredData ? filteredData.length : 1}
+            pageSize={PageSize}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
       </div>
-      <div>
-        <Pagination
-          className="pagination-bar"
-          currentPage={currentPage}
-          totalCount={filteredData ? filteredData.length : 1}
-          pageSize={PageSize}
-          onPageChange={page => setCurrentPage(page)}
-        /></div>
-        </div>
     </div>
-  )
+  );
 }
 
 export default ReportSchedulerList;
