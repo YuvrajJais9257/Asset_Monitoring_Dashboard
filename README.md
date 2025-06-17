@@ -4,163 +4,134 @@ A scalable, full-stack solution for managing organizational reports, users, dash
 
 ---
 
+## 📸 Screenshots
+
+> 📂 Located in `/screenshots` folder. Preview of major app features below:
+
+### 🖥️ Dashboard & Builder UI
+
+![Screenshot 2025-06-18 023719](./screenshots/Screenshot%202025-06-18%20023719.png)
+![Screenshot 2025-06-18 023731](./screenshots/Screenshot%202025-06-18%20023731.png)
+![Screenshot 2025-06-18 023741](./screenshots/Screenshot%202025-06-18%20023741.png)
+![Screenshot 2025-06-18 023750](./screenshots/Screenshot%202025-06-18%20023750.png)
+
+### 📋 Report & Query Editor
+
+![Screenshot 2025-06-18 023758](./screenshots/Screenshot%202025-06-18%20023758.png)
+![Screenshot 2025-06-18 023805](./screenshots/Screenshot%202025-06-18%20023805.png)
+![Screenshot 2025-06-18 023818](./screenshots/Screenshot%202025-06-18%20023818.png)
+![Screenshot 2025-06-18 023832](./screenshots/Screenshot%202025-06-18%20023832.png)
+
+### 👥 User & Group Management
+
+![Screenshot 2025-06-18 023842](./screenshots/Screenshot%202025-06-18%20023842.png)
+![Screenshot 2025-06-18 023854](./screenshots/Screenshot%202025-06-18%20023854.png)
+![Screenshot 2025-06-18 023903](./screenshots/Screenshot%202025-06-18%20023903.png)
+![Screenshot 2025-06-18 023912](./screenshots/Screenshot%202025-06-18%20023912.png)
+
+### ⏰ Scheduler & Mail Preview
+
+![Screenshot 2025-06-18 023921](./screenshots/Screenshot%202025-06-18%20023921.png)
+![Screenshot 2025-06-18 023927](./screenshots/Screenshot%202025-06-18%20023927.png)
+![Screenshot 2025-06-18 023935](./screenshots/Screenshot%202025-06-18%20023935.png)
+
+### 🔧 Miscellaneous Settings & Features
+
+![Screenshot 2025-06-18 024024](./screenshots/Screenshot%202025-06-18%20024024.png)
+![Screenshot 2025-06-18 024040](./screenshots/Screenshot%202025-06-18%20024040.png)
+![Screenshot 2025-06-18 024050](./screenshots/Screenshot%202025-06-18%20024050.png)
+![Screenshot 2025-06-18 024100](./screenshots/Screenshot%202025-06-18%20024100.png)
+![Screenshot 2025-06-18 024110](./screenshots/Screenshot%202025-06-18%20024110.png)
+![Screenshot 2025-06-18 024127](./screenshots/Screenshot%202025-06-18%20024127.png)
+
+---
+
 ## 📦 Tech Stack
 
-* **Frontend:** React.js
-* **Backend:** FastAPI, Python
-* **Database:** MySQL
-* **Task Scheduler & Mailer:** Python multiprocessing + SMTP
-* **Authentication:** JWT
+- **Frontend:** React.js
+- **Backend:** FastAPI (Python)
+- **Database:** MySQL
+- **Scheduler:** Python multiprocessing + SMTP
+- **Auth:** JWT
 
 ---
 
-## 🧩 Key Features
+## 🧩 Major Features
 
-### 📝 1. Report Management
+### 📝 Report Management
+- Create, edit, preview reports
+- Customize font, color, title, SQL query, and chart type (Box, Table, Graph)
+- Support for drill-downs and feature tagging
 
-* **Create, edit, delete, and view reports**
-* Customize:
+### 👥 User Management
+- Add/remove/edit users and groups
+- Move/copy users between groups
+- Admin resets passwords; users can edit personal data
+- Data source restrictions based on role
 
-  * **Content & Title**
-  * **Font styles, colors, formatting**
-  * **Chart type**: Box, Card, Table, Graphs
-  * **SQL query** to update live data
-* **Drill-down reports**
-* Assign reports to users or groups with specific access levels
+### 📊 Dashboard Builder
+- Drag-and-drop, resizable components
+- Add charts, boxes, tables
+- Group-based access and multi-dashboard support
 
-### 👥 2. User & Group Management
-
-* **Role-based access control (RBAC)**
-* Admin capabilities:
-
-  * Add, delete, update users and groups
-  * Move or copy users between groups
-  * Reset user passwords
-* Users can:
-
-  * Update personal information
-  * View only authorized features and data sources
-
-### 📊 3. Dashboard Management
-
-* **Drag-and-drop layout builder**
-* **Resizable widgets**
-* Add, remove, edit dashboard components
-* Create multiple dashboards with unique configurations
-* Assign dashboards to groups with custom access (read/write/view)
-
-### ⏰ 4. Report Scheduler
-
-* Schedule reports to be:
-
-  * Sent **daily/weekly/monthly**
-  * Delivered as **PDF, Excel, or CSV**
-* Email includes:
-
-  * Table/chart visualizations
-  * Real-time data snapshots
-  * Descriptive content
-* Alerts and report delivery sent to registered user emails
+### ⏰ Report Scheduler
+- Email scheduled reports (PDF/CSV/XLSX)
+- Supports attachments and HTML preview
+- Multiple recipients and interval setup (Daily, Weekly, etc.)
 
 ---
 
-## 📁 Folder Structure
+## 📁 Project Structure
 
 ### Backend (`/app`)
-
-| Folder/File         | Description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `api/endpoints/v1/` | All core API routes (user, report, dashboard, scheduler) |
-| `config/`           | App and DB settings (`config.ini`)                       |
-| `utilities/`        | Logging, encryption, DB interaction, auth                |
-| `middleware/`       | Router registration and app initialization               |
-| `service/`          | Business logic layer for each domain                     |
-| `ScheduleTask.py`   | Handles scheduled tasks and email automation             |
-| `main.py`           | Entry point for launching services using multiprocessing |
-| `logs/`             | Rotating log files by module/date                        |
-
----
+- `api/`: Endpoints (reports, users, dashboards, scheduler)
+- `service/`: Business logic
+- `middleware/`: Router integration
+- `utilities/`: Logging, auth, encryption
+- `config.ini`: DB and JWT setup
+- `main.py`: Launch APIs with multiprocessing
 
 ### Frontend (`/frontend`)
-
-| Feature                  | Description                                                               |
-| ------------------------ | ------------------------------------------------------------------------- |
-| **React UI**             | Built using React functional components                                   |
-| **Role-based rendering** | Feature components rendered based on user privileges                      |
-| **Dashboard builder**    | Drag, resize, and save dashboard frames using Grid Layout                 |
-| **Dynamic theming**      | Report and dashboard visuals (fonts, colors, etc.) are customizable       |
-| **API Integration**      | Fully integrated with the FastAPI backend via secure token-based requests |
+- React app with role-based rendering
+- Layout: Responsive & modular
+- Integrated with FastAPI using JWT-based APIs
 
 ---
 
-## 🛠️ Installation
+## 🛠️ Setup
 
-### Backend Setup
-
+### Backend
 ```bash
-git clone https://github.com/your-repo/asset-monitoring-dashboard
-cd backend/
+cd backend
 pip install -r requirements.txt
 python main.py
-```
+````
 
-Ensure you encrypt DB password using `encryption.py` and update it in `config.ini`.
+> Encrypt DB password using `encryption.py` before updating `config.ini`.
 
-### Frontend Setup
+### Frontend
 
 ```bash
-cd frontend/
+cd frontend
 npm install
 npm start
 ```
 
 ---
 
-## 🔐 Authentication
+## 🔐 Authentication Flow
 
-1. Use `/validate-login` to authenticate user
-2. Copy the JWT `access_token` from response
-3. Use the token in **Authorization Header** for further requests
-
----
-
-## 🧪 API Overview (Major Routes)
-
-### ✅ Report
-
-* `POST /updateReport`
-* `POST /getReportTemplatealldetail`
-* `POST /assignReports`
-* `POST /saveDrillDownReport`
-
-### 👤 User
-
-* `POST /saveUser`
-* `POST /deleteUser`
-* `POST /resetPassword`
-* `POST /authorization`
-
-### 📋 Dashboard
-
-* `POST /saveFrame`
-* `POST /updateFrame`
-* `POST /listDashboard`
-* `POST /deleteFrame`
-
-### 📆 Scheduler
-
-* `POST /saveScheduler`
-* `POST /updateScheduler`
-* `POST /listScheduler`
-* `POST /deleteScheduler`
+1. Call `POST /validate-login` with user credentials
+2. Copy the `access_token` from the response
+3. Use it as `Authorization: Bearer <token>` for all secure endpoints
 
 ---
 
-## ✨ Live Features Preview
+## 🧪 API Highlights
 
-* Dynamic dashboards with **drag-resize-save** functionality
-* Real-time **email alerts with embedded visuals**
-* Admin can copy/move users across groups and **reset passwords**
-* Restricted feature visibility **based on user roles**
+* `/getReportTemplates`, `/updateReport`, `/assignReports`
+* `/saveUser`, `/deleteUser`, `/authorization`
+* `/saveFrame`, `/updateFrame`, `/listDashboard`
+* `/saveScheduler`, `/listScheduler`, `/deleteScheduler`
 
 
