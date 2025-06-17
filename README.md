@@ -6,43 +6,43 @@ A scalable, full-stack solution for managing organizational reports, users, dash
 
 ## 📸 Screenshots
 
-> 📂 Located in `/screenshots` folder. Preview of major app features below:
+> 📂 Located in `/Screenshots` folder. Preview of major app features below:
 
 ### 🖥️ Dashboard & Builder UI
 
-![Screenshot 2025-06-18 023719](./screenshots/Screenshot%202025-06-18%20023719.png)
-![Screenshot 2025-06-18 023731](./screenshots/Screenshot%202025-06-18%20023731.png)
-![Screenshot 2025-06-18 023741](./screenshots/Screenshot%202025-06-18%20023741.png)
-![Screenshot 2025-06-18 023750](./screenshots/Screenshot%202025-06-18%20023750.png)
+![Screenshot 2025-06-18 023719](./Screenshots/Screenshot%202025-06-18%20023719.png)
+![Screenshot 2025-06-18 023731](./Screenshots/Screenshot%202025-06-18%20023731.png)
+![Screenshot 2025-06-18 023741](./Screenshots/Screenshot%202025-06-18%20023741.png)
+![Screenshot 2025-06-18 023750](./Screenshots/Screenshot%202025-06-18%20023750.png)
 
 ### 📋 Report & Query Editor
 
-![Screenshot 2025-06-18 023758](./screenshots/Screenshot%202025-06-18%20023758.png)
-![Screenshot 2025-06-18 023805](./screenshots/Screenshot%202025-06-18%20023805.png)
-![Screenshot 2025-06-18 023818](./screenshots/Screenshot%202025-06-18%20023818.png)
-![Screenshot 2025-06-18 023832](./screenshots/Screenshot%202025-06-18%20023832.png)
+![Screenshot 2025-06-18 023758](./Screenshots/Screenshot%202025-06-18%20023758.png)
+![Screenshot 2025-06-18 023805](./Screenshots/Screenshot%202025-06-18%20023805.png)
+![Screenshot 2025-06-18 023818](./Screenshots/Screenshot%202025-06-18%20023818.png)
+![Screenshot 2025-06-18 023832](./Screenshots/Screenshot%202025-06-18%20023832.png)
 
 ### 👥 User & Group Management
 
-![Screenshot 2025-06-18 023842](./screenshots/Screenshot%202025-06-18%20023842.png)
-![Screenshot 2025-06-18 023854](./screenshots/Screenshot%202025-06-18%20023854.png)
-![Screenshot 2025-06-18 023903](./screenshots/Screenshot%202025-06-18%20023903.png)
-![Screenshot 2025-06-18 023912](./screenshots/Screenshot%202025-06-18%20023912.png)
+![Screenshot 2025-06-18 023842](./Screenshots/Screenshot%202025-06-18%20023842.png)
+![Screenshot 2025-06-18 023854](./Screenshots/Screenshot%202025-06-18%20023854.png)
+![Screenshot 2025-06-18 023903](./Screenshots/Screenshot%202025-06-18%20023903.png)
+![Screenshot 2025-06-18 023912](./Screenshots/Screenshot%202025-06-18%20023912.png)
 
 ### ⏰ Scheduler & Mail Preview
 
-![Screenshot 2025-06-18 023921](./screenshots/Screenshot%202025-06-18%20023921.png)
-![Screenshot 2025-06-18 023927](./screenshots/Screenshot%202025-06-18%20023927.png)
-![Screenshot 2025-06-18 023935](./screenshots/Screenshot%202025-06-18%20023935.png)
+![Screenshot 2025-06-18 023921](./Screenshots/Screenshot%202025-06-18%20023921.png)
+![Screenshot 2025-06-18 023927](./Screenshots/Screenshot%202025-06-18%20023927.png)
+![Screenshot 2025-06-18 023935](./Screenshots/Screenshot%202025-06-18%20023935.png)
 
 ### 🔧 Miscellaneous Settings & Features
 
-![Screenshot 2025-06-18 024024](./screenshots/Screenshot%202025-06-18%20024024.png)
-![Screenshot 2025-06-18 024040](./screenshots/Screenshot%202025-06-18%20024040.png)
-![Screenshot 2025-06-18 024050](./screenshots/Screenshot%202025-06-18%20024050.png)
-![Screenshot 2025-06-18 024100](./screenshots/Screenshot%202025-06-18%20024100.png)
-![Screenshot 2025-06-18 024110](./screenshots/Screenshot%202025-06-18%20024110.png)
-![Screenshot 2025-06-18 024127](./screenshots/Screenshot%202025-06-18%20024127.png)
+![Screenshot 2025-06-18 024024](./Screenshots/Screenshot%202025-06-18%20024024.png)
+![Screenshot 2025-06-18 024040](./Screenshots/Screenshot%202025-06-18%20024040.png)
+![Screenshot 2025-06-18 024050](./Screenshots/Screenshot%202025-06-18%20024050.png)
+![Screenshot 2025-06-18 024100](./Screenshots/Screenshot%202025-06-18%20024100.png)
+![Screenshot 2025-06-18 024110](./Screenshots/Screenshot%202025-06-18%20024110.png)
+![Screenshot 2025-06-18 024127](./Screenshots/Screenshot%202025-06-18%20024127.png)
 
 ---
 
